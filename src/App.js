@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+    AppProvider,
+    Frame,
+    Navigation
+} from "@shopify/polaris";
+
+  
+import { useRef } from "react";
+import Header from "./components/Header";
+import Sidebar from "./components/sidebar/Sidebar";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    const navigationMarkup = (
+        <Sidebar/>
+    );
+    
+    const skipToContentRef = useRef(null);
 
+    return (
+        <div>
+          <AppProvider>
+            <Frame
+                topBar={<Header />}
+                navigation={navigationMarkup}
+            >
+
+            </Frame>
+          </AppProvider>
+        </div>
+      );
+}
 export default App;

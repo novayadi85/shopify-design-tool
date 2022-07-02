@@ -1,0 +1,38 @@
+function Header() {
+    return (
+        <header className="HeaderArea">
+            <div className="TopBar">
+                <div class="LayoutGroup">
+                    <div class="ExitActionWrapper">
+                        <a href="/#" data-polaris-unstyled="true" class="ExitAction" aria-label="Exit">
+                            <div class="Content">
+                                <div class="IconWrapper">
+                                    <span class="Polaris-Icon">
+                                        
+                                    </span>
+                                </div>
+                                <div class="Label">
+                                    <span class="">Exit</span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="ChildrenWrapper">
+                            <div class="Title">
+                                <h1>
+                                    <span class="">Sense</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="Item">
+                        
+                    </div>
+                
+                </div>
+            </div>
+        </header>
+    );
+}
+
+export default Header;

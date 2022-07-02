@@ -1,0 +1,67 @@
+.Polaris-Link{
+  color: #000;
+}
+.flex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.HeaderArea {
+  grid-area: header;
+  grid-row-start: header;
+  grid-column-start: header;
+  grid-row-end: header;
+  grid-column-end: header;
+  position: relative;
+  width: 100%;
+  z-index: 50;
+} 
+
+.ExitAction {
+    &::after{
+      background-color: #999;
+      bottom: 0;
+      content: "";
+      position: absolute;
+      right: -0.0625rem;
+      top: 0;
+      transition: 0.7;
+      width: 0.0625rem;
+    }
+    
+}
+
+.shrink {
+  flex-shrink: 1;
+}
+
+.TopBar {
+  border: 0;
+  box-shadow: 0 2px 1px #0000000d, 0 0 1px #42474c73;
+  position: relative;
+}
+
+.nav-sidebar{
+  list-style: none;
+  z-index: 9999;
+}
+
+
+.ListItemWrapperContainer:hover > .icon-sortable-wrapper{
+  visibility: visible !important;
+}
+
+.collapse {
+  transform: scaleY(1);    
+  transform-origin: top;
+  transition: all 1500ms ease;
+  overflow: hidden;
+  &.hidden {
+    transform: scaleY(0);
+    height: 0;
+  }
+}
