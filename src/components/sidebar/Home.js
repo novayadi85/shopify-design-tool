@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from "react";
+import { Link as ReactRouterLink, useParams } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import {
 	sortableContainer,
@@ -8,7 +9,8 @@ import {
 } from 'react-sortable-hoc';
 import {
 	Button,
-    Icon
+    Icon,
+    Spinner
 } from "@shopify/polaris";
 import { arrayMoveImmutable } from 'array-move';
 import styled from 'styled-components';
@@ -19,6 +21,9 @@ import {
 	DragHandleMinor,
 	CirclePlusOutlineMinor
 } from "@shopify/polaris-icons";
+
+import { Flex } from "@styles/Sidebar";
+
 
 const SidePanelAreaWrapper = styled.div``
 
@@ -163,14 +168,24 @@ const SortableContainer = sortableContainer(({children}) => {
 });
 
 function Home() {
-    
+    let { handle } = useParams();
     const _items = useSelector(state => state.template);
 	const [items, setItems] = useState(_items);	
-  
+    const [loading, setLoading] = useState(false);
+
 	const onSortEnd = ({ oldIndex, newIndex }) => {
 		setItems(arrayMoveImmutable(items, oldIndex, newIndex));
 	};
 
+    useEffect(() => {
+        setLoading(false);
+        /*
+        setTimeout(() => {
+            return setLoading(false);
+        }, 1500)
+        */
+
+    }, [])
 	
 	const renderChildren = ({items, open = false}) => {
 		return (
@@ -231,15 +246,28 @@ function Home() {
     
     return (
         <SidePanelAreaWrapper>
-            <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-                {items.map((value, index) => (
-                    <SortableItem key={`item-${value.handle}`} index={index} value={value} />
-                ))}
-            </SortableContainer>
+            
+            {(loading) ? (
+                <Flex>
+                    <Spinner
+                        size="small"
+                        accessibilityLabel="Loading"
+                        hasFocusableParent={false}
+                    />
+                </Flex>
+                    
+            ) : (
+                <SortableContainer onSortEnd={onSortEnd} useDragHandle>
+                    {items.map((value, index) => (
+                        <SortableItem key={`item-${value.handle}`} index={index} value={value} />
+                    ))}
+                </SortableContainer>   
+            )}
+
             <PrimaryBox style={{
                 marginLeft: 0
             }}>
-            <Button icon={CirclePlusOutlineMinor}>Add Section</Button>		
+                <Button icon={CirclePlusOutlineMinor}>Add Section</Button>		
             </PrimaryBox>
         </SidePanelAreaWrapper>
     );

@@ -94,3 +94,66 @@
   cursor: pointer;
 }
 
+.has-toggle {
+  .Polaris-Collapsible {
+    border-bottom: 0.0625rem solid var(--p-divider);
+    
+    &[aria-hidden="false"]{
+      max-height: none !important;
+    }
+  }
+}
+
+option[value=arial]{
+  font-family:arial;
+}
+
+option[value='arial black']{
+  font-family:'arial black';
+}
+
+option[value="comic sans ms"]{
+  font-family:'comic sans ms';
+}
+
+option[value="georgia"]{
+  font-family:georgia;
+}
+
+option[value="courier new"]{
+  font-family:"courier new";
+}
+
+option[value="helvetica"]{
+  font-family:"helvetica";
+}
+
+option[value="impact"]{
+  font-family:"impact";
+}
+
+option[value="serif"]{
+  font-family:"serif";
+}
+
+option[value="times new roman"]{
+  font-family:"times new roman";
+}
+
+option[value="trebuchet ms"]{
+  font-family:"trebuchet ms";
+}
+
+option[value="verdana"]{
+  font-family:"verdana";
+}
+
+.container-fields {
+  .Polaris-ButtonGroup{
+    margin: 10px 0;
+  }
+
+  .Polaris-RangeSlider{
+    margin-bottom: 10px;
+  }
+}

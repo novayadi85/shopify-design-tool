@@ -82,3 +82,20 @@ export const RemovePadding = styled.div`
         padding: 0px 0 0 0;
     }
 `
+
+export const Flex = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0 0 0;
+`
+
+
+export const Wrapper = styled.div(props => ({
+    borderTop: props?.BorderTop ? '0.0625rem solid var(--p-divider)': 'none',
+    BorderBottom: props?.BorderBottom ? '0.0625rem solid var(--p-divider)': 'none',
+    margin: props?.rem ? '1rem 0': '10px 10px',
+}));

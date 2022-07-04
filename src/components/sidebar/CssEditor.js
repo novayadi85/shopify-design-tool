@@ -1,20 +1,25 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, Section, SidePanelBottom} from "@styles/Sidebar";
+import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, Section, SidePanelBottom, Flex} from "@styles/Sidebar";
 import { DeleteMinor,ChevronLeftMinor } from "@shopify/polaris-icons";
 
-import { Button, Heading } from '@shopify/polaris';
-import * as Block from '../cssBlock';
+import { Button, Heading, Spinner } from '@shopify/polaris';
+import * as Block from '../styles';
 
 function CssEditor() {
     let { handle } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        // console.log('location',location)
-    }, []);
+        setLoading(true);
+        setTimeout(() => {
+            return setLoading(false);
+        }, 1000)
+    }, [handle]);
  
     const backHandle = () => {
         if (location.pathname.includes('block')) {
@@ -38,22 +43,34 @@ function CssEditor() {
                         </TitleWrapper>
                     </BackAction>
                 </Header>
-                <Section style={{ marginTop: '0' }}>
-                    <ul>
-                        <Block.background/>
-                        <Block.font/>
-                        <Block.text/>
-                        <Block.shadow/>
-                        <Block.border/>
-                        <Block.margin/>
-                        <Block.padding/>
-                        <Block.position/>
-                        <Block.width/>
-                        <Block.height/>
-                        <Block.extra/>
-                    </ul>
+                {(loading) ? (
+                    <Flex>
+                        <Spinner
+                            size="small"
+                            accessibilityLabel="Loading"
+                            hasFocusableParent={false}
+                        />
+                    </Flex>
                     
-                </Section>
+                ) : (
+                    <Section style={{ marginTop: '0' }}>
+                        <ul>
+                            <Block.Background/>
+                            <Block.Font/>
+                            <Block.Text/>
+                            <Block.Shadow/>
+                            <Block.Border/>
+                            <Block.Margin/>
+                            <Block.Padding/>
+                            <Block.Position/>
+                            <Block.Width/>
+                            <Block.Height/>
+                            <Block.Extra/>
+                        </ul>
+                        
+                    </Section>   
+                )};
+                
             </SidePanelArea>
             <SidePanelBottom>
                 <Button plain monochrome removeUnderline icon={DeleteMinor}>Delete Block</Button>

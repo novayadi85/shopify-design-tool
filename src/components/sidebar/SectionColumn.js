@@ -1,26 +1,27 @@
 import { useEffect, useCallback,useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import { Header, BackAction, TitleWrapper, ButtonRightWrapper, Section as SectionElement, RadioGroup, RemovePadding} from "@styles/Sidebar";
+import { useNavigate } from "react-router-dom";
+import { Header, BackAction, TitleWrapper, ButtonRightWrapper, Section as SectionElement, RadioGroup, RemovePadding, Flex} from "@styles/Sidebar";
 
-import { Button, Heading, FormLayout, TextField, RadioButton, Label  } from '@shopify/polaris';
+import { Button, Heading, FormLayout, TextField, ChoiceList, Spinner } from '@shopify/polaris';
 
 function SectionColumn({column, handle, type}) {
     const navigate = useNavigate();
+
     useEffect(() => {
+        setLoading(true);
+        setTimeout(() => {
+            return setLoading(false);
+        }, 500)
+        
+    }, [column]);
 
-    }, []);
-
-    const [value, setValue] = useState(null);
-
-    const handleChange = useCallback(
-        (_checked, newValue) => setValue(newValue), []
-    );
+    const [value, setValue] = useState('text');
+    const [loading, setLoading] = useState(true);
+    const handleChange = useCallback((value) => setValue(value), []);
 
     const editCSSHandle = () => {
         navigate(`/section/css/${handle}`);
     }
-
-    console.log(value);
 
     return (
         <div style={{paddingBottom: 10}}>
@@ -36,32 +37,38 @@ function SectionColumn({column, handle, type}) {
                     </BackAction>
                 </Header>
                 <SectionElement>
-                    <FormLayout>
-                        <RemovePadding>
-                            <Label>Content type</Label>
-                            <RadioGroup style={{marginTop: 5}}>
-                                <RadioButton
-                                    label="Text"
-                                    checked={value === `Text[${column}]` || value === null}
-                                    id={`Text[${column}]`}
-                                    name={`Text[${column}]`}
-                                    value={`Text[${column}]`}
-                                    onChange={handleChange}
-                                />
-                                <RadioButton
-                                    label="Button"
-                                    id={`Button[${column}]`}
-                                    name={`Button[${column}]`}
-                                    checked={value === `Button[${column}]`}
-                                    value="Button"
-                                    onChange={handleChange}
-                                />
-                            </RadioGroup>
-                        </RemovePadding>
-                        
-                        
-                        <TextField label="Content" onChange={() => {}} autoComplete="off" />
-                    </FormLayout>
+                    {(loading) ? (
+                        <Flex>
+                            <Spinner
+                                size="small"
+                                accessibilityLabel="Loading"
+                                hasFocusableParent={false}
+                            />
+                        </Flex>
+                    
+                    ) : (
+                        <FormLayout>
+                            <RemovePadding>
+                                <RadioGroup style={{marginTop: 5}}>
+                                    <ChoiceList
+                                        title="Content type"
+                                        choices={[
+                                            { label: "Button", value: "button" },
+                                            { label: "Text", value: "text" },
+                                        ]}
+                                        selected={value}
+                                        onChange={handleChange}
+                                    />
+                                </RadioGroup>
+                            </RemovePadding>
+                            
+                            
+                            <TextField label="Content" onChange={() => {}} autoComplete="off" />
+                        </FormLayout>    
+                    )}
+
+                    
+                    
                 </SectionElement>
             </div>
         </div>

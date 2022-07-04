@@ -1,18 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState} from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, ButtonRightWrapper, Section as SectionElement, SidePanelBottom} from "@styles/Sidebar";
+import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, ButtonRightWrapper, Section as SectionElement, SidePanelBottom, Flex} from "@styles/Sidebar";
 
 import {
 	DeleteMinor,
 	ChevronLeftMinor
 } from "@shopify/polaris-icons";
 
-import { Button, Heading, FormLayout, TextField } from '@shopify/polaris';
+import { Button, Heading, FormLayout, TextField, Spinner} from '@shopify/polaris';
 import { useSelector } from 'react-redux';
 
 function Block() {
     let { handle } = useParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     const items = useSelector(state => state.template);
     let value = [];
     items.forEach(item => {
@@ -27,8 +28,13 @@ function Block() {
     });
 
     useEffect(() => {
+        setLoading(true);
 
-    }, []);
+        setTimeout(() => {
+            return setLoading(false);
+        }, 500)
+
+    }, [handle]);
 
     const backHandle = () => {
         navigate('/')
@@ -55,9 +61,22 @@ function Block() {
                     </BackAction>
                 </Header>
                 <SectionElement>
-                    <FormLayout>
-                        <TextField label="Text" onChange={() => {}} autoComplete="off" />
-                    </FormLayout>
+                    {(loading) ? (
+                        <Flex>
+                            <Spinner
+                                size="small"
+                                accessibilityLabel="Loading"
+                                hasFocusableParent={false}
+                            />
+                        </Flex>
+                    
+                    ) : (
+                        <FormLayout>
+                            <TextField label="Text" onChange={() => {}} autoComplete="off" />
+                        </FormLayout>      
+                    )}
+
+                    
                 </SectionElement>
             </SidePanelArea>
             <SidePanelBottom>
