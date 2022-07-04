@@ -65,3 +65,32 @@
     height: 0;
   }
 }
+
+
+.removeUnderline{
+  text-decoration: none;
+  color: #282c34;
+}
+
+.capitalize {
+  text-transform: CAPITALIZE;
+}
+
+.border-bottom{
+  border-bottom: 0.0625rem solid var(--p-divider);
+  padding: 10px 15px;
+  
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link {
+  cursor: pointer;
+}
+

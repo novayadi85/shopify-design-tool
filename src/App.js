@@ -1,21 +1,16 @@
-import {
-    AppProvider,
-    Frame,
-    Navigation
-} from "@shopify/polaris";
+import { AppProvider, Frame } from "@shopify/polaris";
+import { BrowserRouter as Router } from 'react-router-dom';
+import Header from "@components/Header";
+import Sidebar from "@components/sidebar/Sidebar";
 
-  
-import { useRef } from "react";
-import Header from "./components/Header";
-import Sidebar from "./components/sidebar/Sidebar";
 
 function App() {
-    const navigationMarkup = (
-        <Sidebar/>
+  const navigationMarkup = (
+      <Router>
+        <Sidebar />
+      </Router>
     );
     
-    const skipToContentRef = useRef(null);
-
     return (
         <div>
           <AppProvider>
@@ -23,7 +18,6 @@ function App() {
                 topBar={<Header />}
                 navigation={navigationMarkup}
             >
-
             </Frame>
           </AppProvider>
         </div>

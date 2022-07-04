@@ -1,13 +1,21 @@
 import React from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom/client";
+import { Provider } from 'react-redux'
 import App from "./App.js";
-import { AppProvider } from "@shopify/polaris";
+import store from '@store/index';
+import { AppProvider} from "@shopify/polaris";
 import reportWebVitals from './reportWebVitals';
 import en from '@shopify/polaris/locales/en.json';
 import "@shopify/polaris/build/esm/styles.css";
 import "./index.scss";
-const app = <AppProvider i18n={en}><App /></AppProvider>;
 
-ReactDOM.render(app, document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+    <AppProvider i18n={en}>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </AppProvider>
+);
 
 reportWebVitals();
