@@ -1,7 +1,8 @@
-import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, hsbToRgb, rgbString } from "@shopify/polaris";
+import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, Label, hsbToRgb, rgbString } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 import { ChevronRightMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
+import { RemovePadding } from "../../styles/Sidebar";
   
 function Font() {
 	const [open, setOpen] = useState(false);
@@ -115,11 +116,14 @@ function Font() {
 
 						)}
 
+						<div style={{marginTop:10, marginBottom: 10}}>
+							<RemovePadding><Label>Font style</Label></RemovePadding>
+							<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Font style'}>
+								<Button pressed={(fontStyle === 'normal')? true: false} onClick={() => handleFontStyleChange('normal')}>Normal</Button>
+								<Button pressed={(fontStyle === 'italic')? true: false} onClick={() => handleFontStyleChange('italic')}>Italic</Button>
+							</ButtonGroup>
+						</div>
 						
-						<ButtonGroup segmented>
-							<Button pressed={(fontStyle === 'normal')? true: false} onClick={() => handleFontStyleChange('normal')}>Normal</Button>
-							<Button pressed={(fontStyle === 'italic')? true: false} onClick={() => handleFontStyleChange('italic')}>Italic</Button>
-						</ButtonGroup>
 
 						<Popover
 							active={popoverActive}
