@@ -1,5 +1,5 @@
 const { Liquid } = require('liquidjs');
-const moneyFiltersPlugin  = require('./modules/filterliquid');
+const {moneyFiltersPlugin}  = require('./modules/filterliquid');
 const engine = new Liquid({
 	cache: true,
 	globals: {data: 'global'}

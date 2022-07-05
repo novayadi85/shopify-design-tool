@@ -115,4 +115,6 @@ function moneyFiltersPlugin(Liquid) {
   });
 }
 
-export default moneyFiltersPlugin;
+module.exports = {
+  moneyFiltersPlugin
+};
