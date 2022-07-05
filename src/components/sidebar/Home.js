@@ -169,7 +169,7 @@ const SortableContainer = sortableContainer(({children}) => {
 });
 
 function Home() {
-    const _items = useSelector(state => state.template);
+    const { items : _items} = useSelector(state => state.template);
 	const [items, setItems] = useState(_items);	
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();

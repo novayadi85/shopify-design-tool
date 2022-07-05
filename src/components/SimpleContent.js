@@ -6,9 +6,7 @@ import { Main, Section } from "@styles/Main";
 import { getSidebar } from "@store/template/action";
 
 const SimpleContent = (props) => {
-    const  state  = useSelector(state => state);
-    const {items} = state.products;
-    const sections = state.template;
+    const { products: { items }, template: {items : sections}}  = useSelector(state => state);
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
     const [style, setStyle] = useState('');
@@ -48,18 +46,8 @@ const SimpleContent = (props) => {
             setLoading(false);
         }
         renderHtml()
-
     }, [items]);
 
-    useEffect(() => {
-        return () => {
-            //your cleanup code codes here
-            console.log('hello')
-        };
-
-    }, []);
-
-    console.log(state)
 
     return (
         <Main>

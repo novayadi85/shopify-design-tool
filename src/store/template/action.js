@@ -17,7 +17,7 @@ export function updateSidebar(items) {
 }
 
 
-export function getSidebar(items) {
+export function getSidebar() {
     return dispatch => {
         dispatch(get());
     };

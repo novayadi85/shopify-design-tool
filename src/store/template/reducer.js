@@ -61,13 +61,22 @@ const _items = [
     }
 ];
 
-const initialState = _items;
+const initialState = {
+    items: _items,
+    loading: false,
+    error: null
+  };
 
 const templateReducer = (state = initialState, action) => {
     const { type } = action
     switch (type) {
         case 'UPDATE_TEMPLATE':
-        return state
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                items: action.payload.items
+            };
 
         default:
         return state
