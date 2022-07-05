@@ -63,11 +63,12 @@ function App() {
 
 	useEffect(() => {
 		setIsLoading(true);
+
+		console.log('Hello From UseEffect!');
+
 		setTimeout(() => {
 			return setIsLoading(false);
-		}, 500)
-		
-
+		}, 500);
 	}, []);
   
 	
