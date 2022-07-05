@@ -117,7 +117,4 @@ engine.registerFilter('save', (initial, arg1) => {
 
 })
 
-
-module.exports = {
-    engine,
-}
+export default engine
