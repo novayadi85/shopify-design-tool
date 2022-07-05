@@ -73,7 +73,7 @@ function CssEditor() {
                 
             </SidePanelArea>
             <SidePanelBottom>
-                <Button plain monochrome removeUnderline icon={DeleteMinor}>Delete Block</Button>
+                <></>
             </SidePanelBottom>
         </SidePanel>
     )

@@ -1,6 +1,6 @@
 import { FormLayout, Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, hsbToRgb, rgbString } from "@shopify/polaris";
 import { useState, useCallback } from "react";
-import { ChevronRightMinor } from "@shopify/polaris-icons";
+import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
   
 function Background() {
@@ -35,7 +35,7 @@ function Background() {
 	
     const handleTabChange = useCallback((selectedTabIndex) => setSelected(selectedTabIndex),[]);
 	const handleToggle = useCallback(() => setOpen((open) => !open), []);
-
+	//eslint-disable-next-line
     return (
         <li className="has-toggle">
           	<div className="flex link border-bottom" onClick={handleToggle}>
@@ -46,7 +46,7 @@ function Background() {
 					monochrome
 					removeUnderline
 				>Background</Button>
-				<Button plain icon={ ChevronRightMinor}></Button>
+				<Button plain icon={ (open) ? ChevronDownMinor : ChevronRightMinor}></Button>
             </div>
             
             <Collapsible
@@ -57,9 +57,9 @@ function Background() {
 			>
 				<Wrapper BorderBottom={true}>
 					<ButtonGroup segmented>
-						<Button pressed={(selected === 'color')? true: false} onClick={() => handleTabChange('color')}>Color</Button>
-						<Button pressed={(selected === 'image')? true: false} onClick={() => handleTabChange('image')}>Image</Button>
-						<Button pressed={(selected === null)? true: false} onClick={() => handleTabChange(null)}>None</Button>
+						<Button size="slim" pressed={(selected === 'color')? true: false} onClick={() => handleTabChange('color')}>Color</Button>
+						<Button size="slim" pressed={(selected === 'image')? true: false} onClick={() => handleTabChange('image')}>Image</Button>
+						<Button size="slim" pressed={(selected === null)? true: false} onClick={() => handleTabChange(null)}>None</Button>
 					</ButtonGroup>
 
 					{(selected === 'color') ? (

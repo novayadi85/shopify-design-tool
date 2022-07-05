@@ -1,6 +1,6 @@
 import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, Label, hsbToRgb, rgbString } from "@shopify/polaris";
 import { useState, useCallback } from "react";
-import { ChevronRightMinor } from "@shopify/polaris-icons";
+import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { RemovePadding } from "../../styles/Sidebar";
   
@@ -52,7 +52,7 @@ function Font() {
 					monochrome
 					removeUnderline>Font</Button>
 						
-				<Button plain icon={ ChevronRightMinor}></Button>
+				<Button plain icon={ (open) ? ChevronDownMinor : ChevronRightMinor}></Button>
 			</div>
 			
 			<Collapsible
@@ -63,8 +63,8 @@ function Font() {
 			>
 				<Wrapper className="container-fields" BorderBottom={true}>
 					<ButtonGroup segmented>
-						<Button pressed={(selected === 'normal')? true: false} onClick={() => handleTabChange('normal')}>Normal</Button>
-						<Button pressed={(selected === 'google')? true: false} onClick={() => handleTabChange('google')}>Google Font</Button>
+						<Button size="slim" pressed={(selected === 'normal')? true: false} onClick={() => handleTabChange('normal')}>Normal</Button>
+						<Button size="slim" pressed={(selected === 'google')? true: false} onClick={() => handleTabChange('google')}>Google Font</Button>
 					</ButtonGroup>
 
 					<div style={{ marginTop: 10, display: 'inline-block', width: '100%' }}>
@@ -119,8 +119,8 @@ function Font() {
 						<div style={{marginTop:10, marginBottom: 10}}>
 							<RemovePadding><Label>Font style</Label></RemovePadding>
 							<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Font style'}>
-								<Button pressed={(fontStyle === 'normal')? true: false} onClick={() => handleFontStyleChange('normal')}>Normal</Button>
-								<Button pressed={(fontStyle === 'italic')? true: false} onClick={() => handleFontStyleChange('italic')}>Italic</Button>
+								<Button size="slim" pressed={(fontStyle === 'normal')? true: false} onClick={() => handleFontStyleChange('normal')}>Normal</Button>
+								<Button size="slim" pressed={(fontStyle === 'italic')? true: false} onClick={() => handleFontStyleChange('italic')}>Italic</Button>
 							</ButtonGroup>
 						</div>
 						
@@ -159,9 +159,9 @@ function Font() {
 						/>
 
 						<ButtonGroup segmented>
-							<Button size="small" pressed={(fontElement === 'px')? true: false} onClick={() => handleFontElmChange('px')}>px</Button>
-							<Button size="small" pressed={(fontElement === 'vh')? true: false} onClick={() => handleFontElmChange('vh')}>vh</Button>
-							<Button size="small" pressed={(fontElement === 'em')? true: false} onClick={() => handleFontElmChange('em')}>em</Button>
+							<Button size="slim" pressed={(fontElement === 'px')? true: false} onClick={() => handleFontElmChange('px')}>px</Button>
+							<Button size="slim" pressed={(fontElement === 'vh')? true: false} onClick={() => handleFontElmChange('vh')}>vh</Button>
+							<Button size="slim" pressed={(fontElement === 'em')? true: false} onClick={() => handleFontElmChange('em')}>em</Button>
 						</ButtonGroup>
 
 					</div>

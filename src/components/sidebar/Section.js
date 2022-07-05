@@ -1,4 +1,4 @@
-import { useEffect, useState,useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, Flex, Section as SectionElement, SidePanelBottom} from "@styles/Sidebar";
 
@@ -7,7 +7,7 @@ import {
 	ChevronLeftMinor
 } from "@shopify/polaris-icons";
 
-import { Button, Heading, FormLayout, Spinner, Select  } from '@shopify/polaris';
+import { Button, Heading, FormLayout, Spinner, Select, Modal, TextContainer  } from '@shopify/polaris';
 import { useSelector } from 'react-redux';
 import SectionColumn from './SectionColumn';
 
@@ -17,6 +17,16 @@ function Section() {
     const [selected, setSelected] = useState(1);
     const [columns, setColumns] = useState([]);
     const [loading, setLoading] = useState(false);
+   
+
+    const [active, setActive] = useState(false);
+    const button = useRef();
+    const handleOpen = useCallback(() => setActive(true), []);
+    const handleClose = useCallback(() => {
+        setActive(false);
+        requestAnimationFrame(() => button.current.querySelector("button").focus());
+    }, []);
+
     const handleSelectChange = useCallback((value) => setSelected(Number(value)), []);
 
     const items = useSelector(state => state.template);
@@ -49,8 +59,6 @@ function Section() {
             setColumns(ops);
             
         };
-      
-        
 
         setTimeout(() => {
             // call the function
@@ -130,8 +138,30 @@ function Section() {
                 
             </SidePanelArea>
             <SidePanelBottom>
-                <Button plain monochrome removeUnderline icon={DeleteMinor}>Delete Block</Button>
+                <Button onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Section</Button>
             </SidePanelBottom>
+            <Modal
+                small
+                open={active}
+                onClose={handleClose}
+                title="Delete"
+                primaryAction={{
+                content: "Yes sure",
+                onAction: handleClose,
+                }}
+                secondaryActions={[
+                {
+                    content: "Cancel",
+                    onAction: handleClose,
+                },
+                ]}
+            >
+                <Modal.Section>
+                    <TextContainer>
+                        <p>Do you sure to remove this section? </p>
+                    </TextContainer>
+                </Modal.Section>
+            </Modal>
         </SidePanel>
     );
 }

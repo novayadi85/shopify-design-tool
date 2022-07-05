@@ -78,7 +78,7 @@
 
 .border-bottom{
   border-bottom: 0.0625rem solid var(--p-divider);
-  padding: 10px 15px;
+  padding: 10px 10px;
   
 }
 
@@ -153,4 +153,17 @@ option[value="verdana"]{
   .Polaris-RangeSlider{
     margin-bottom: 10px;
   }
+}
+.Polaris-Frame--hasNav .Polaris-Frame__Main { 
+  padding-top: 3.9rem;
+}
+
+
+@media (min-width: 48.0625em) { 
+  .Polaris-Frame--hasNav .Polaris-Frame__Main { 
+    padding-left: 15rem; 
+    padding-left: 240px; 
+    padding-left: calc(18.75rem + constant(safe-area-inset-left)); 
+    padding-left: calc(18.75rem + env(safe-area-inset-left)); 
+  } 
 }
