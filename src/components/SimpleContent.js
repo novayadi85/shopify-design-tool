@@ -3,25 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import engine  from "../helper/template";
 import { Helmet } from "react-helmet";
 import { Main, Section } from "@styles/Main";
-import { getSidebar } from "@store/template/action";
 
 const SimpleContent = (props) => {
     const { products: { items }, template: {items : sections}}  = useSelector(state => state);
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
     const [style, setStyle] = useState('');
-    const dispatch = useDispatch();
-
-    const useIsMounted = () => {
-        const isMounted = useRef(false);
-        useEffect(() => {
-          isMounted.current = true;
-          return () => (isMounted.current = false);
-        }, []);
-        return isMounted;
-    };
-    
-    const isMounted = useIsMounted();
 
     useEffect(() => {
         setLoading(true);

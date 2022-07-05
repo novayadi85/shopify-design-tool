@@ -3,7 +3,7 @@ import IframeComm from "react-iframe-comm";
 import { useSelector } from 'react-redux';
 
 const Content = ({ }) => {
-    const items = useSelector(state => state.template);
+    const {items} = useSelector(state => state.template);
 
     const attributes = {
         src: "https://novayadi85.github.io/index.html",

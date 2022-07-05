@@ -14,7 +14,7 @@ function Block() {
     let { handle } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const items = useSelector(state => state.template);
+    const {items} = useSelector(state => state.template);
     let value = [];
 
     const [active, setActive] = useState(false);

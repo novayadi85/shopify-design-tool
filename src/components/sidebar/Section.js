@@ -29,7 +29,7 @@ function Section() {
 
     const handleSelectChange = useCallback((value) => setSelected(Number(value)), []);
 
-    const items = useSelector(state => state.template);
+    const {items} = useSelector(state => state.template);
     let value = [];
     items.forEach(item => {
         if(item.type === 'section' && handle === item.handle){

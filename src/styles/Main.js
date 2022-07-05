@@ -11,7 +11,9 @@ export const Main = styled.div`
 `
 
 export const Section = styled.div`
-    margin-top: 2rem;
-    padding: 0;
+    margin-top: 0.5em;
+    padding: 10px;
     display: block;
+    border: 1px dotted #bfbfff;
+    position: relative;
 `
