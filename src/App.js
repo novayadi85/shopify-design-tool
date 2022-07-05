@@ -3,7 +3,7 @@ import { AppProvider, Frame, SkeletonPage, Layout, Card, TextContainer, Skeleton
 import { BrowserRouter as Router } from 'react-router-dom';
 import Header from "@components/Header";
 import Sidebar from "@components/sidebar/Sidebar";
-import Content from "@components/Content";
+import SimpleContent from "@components/SimpleContent";
 
 
 function App() {
@@ -47,10 +47,16 @@ function App() {
 		</div>
 	);
 
+	/*
 	const actualPageMarkup = (
 		<Content/>
 	);
-		
+	*/
+	
+	const actualPageMarkup = (
+		<SimpleContent/>
+	);
+
 	const actualNavigationMarkup = (
 		<Router>
 			<Sidebar />

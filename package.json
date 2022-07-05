@@ -10,11 +10,13 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "array-move": "^4.0.0",
-    "axios": "^0.27.2",
+    "buffer": "^6.0.3",
     "extract-text-webpack-plugin": "^3.0.2",
+    "liquidjs": "^9.37.0",
     "react": "latest",
     "react-app-rewired": "^2.2.1",
     "react-dom": "latest",
+    "react-helmet": "^6.1.0",
     "react-iframe-comm": "^1.2.2",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
@@ -26,6 +28,7 @@
     "redux-thunk": "^2.4.1",
     "sass": "^1.53.0",
     "styled-components": "^5.3.5",
+    "use-redux-effect": "^1.1.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -54,6 +57,5 @@
   },
   "rules": {
     "no-unused-vars": "off"
-  },
-  "proxy": "https://app.shopadjust-apps.com"
+  }
 }

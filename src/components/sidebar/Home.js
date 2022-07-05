@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
-import { Link as ReactRouterLink, useParams } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useState, useEffect, useContext } from "react";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { useSelector, ReactReduxContext, useDispatch } from 'react-redux';
 import {
 	sortableContainer,
 	sortableElement,
@@ -23,6 +23,7 @@ import {
 } from "@shopify/polaris-icons";
 
 import { Flex } from "@styles/Sidebar";
+import { updateSidebar } from "../../store/template/action";
 
 
 const SidePanelAreaWrapper = styled.div``
@@ -168,24 +169,19 @@ const SortableContainer = sortableContainer(({children}) => {
 });
 
 function Home() {
-    let { handle } = useParams();
     const _items = useSelector(state => state.template);
 	const [items, setItems] = useState(_items);	
     const [loading, setLoading] = useState(false);
-
+    const dispatch = useDispatch();
 	const onSortEnd = ({ oldIndex, newIndex }) => {
-		setItems(arrayMoveImmutable(items, oldIndex, newIndex));
+        setItems(arrayMoveImmutable(items, oldIndex, newIndex));
 	};
-
+    
     useEffect(() => {
         setLoading(false);
-        /*
-        setTimeout(() => {
-            return setLoading(false);
-        }, 1500)
-        */
+        dispatch(updateSidebar(items))
 
-    }, [])
+    }, [items, dispatch])
 	
 	const renderChildren = ({items, open = false}) => {
 		return (
