@@ -93,7 +93,7 @@ function numberWithCommas(x, separator) {
 }
 
 
-function moneyFiltersPlugin(Liquid) {
+export function moneyFiltersPlugin(Liquid) {
   this.registerFilter('money', (value, currency) => {
     return formatMoney(value, currency);
   });
@@ -114,5 +114,3 @@ function moneyFiltersPlugin(Liquid) {
     return `<span class="money" data-currency="${currency}">${value}</span>`;
   });
 }
-
-exports.moneyFiltersPlugin = moneyFiltersPlugin
