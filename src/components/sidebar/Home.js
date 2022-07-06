@@ -47,20 +47,19 @@ function Home() {
         // console.log('state', state.template.items)
     }, [_items])
 	
-    const renderChildren = ({ items = [], open = false }) => {
+    const renderChildren = ({ handle, items = [], open = false }) => {
         return (
             <div className={`collapse ${(open) ? 'visible': 'hidden'}`}>
-                <SortableContainer useDragHandle>
+                <SortableContainer useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
                     <SortableItem key={`item-${value.handle}`} index={index} value={value} />
                 ))}
                 </SortableContainer>
                 <PrimaryBox>
-                    <AddBlock/>		
+                    <AddBlock handle={handle} />		
                 </PrimaryBox>
             </div>
         )
-		
 	}
 
 	const collapseHandler = (value) => {
@@ -75,7 +74,7 @@ function Home() {
 	const SortableItem = sortableElement(({value}) => (
 		<li className={`nav nav-sidebar has-subnav`}>
 			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? 'separator' : ''}`}>
-				<CollapseToggle value={value} className={`visible ${(value.open) ? '': 'collapsed'}`}>
+				<CollapseToggle value={value} className={`visible ${(value.type === 'section') ? 'visible': 'hidden'} ${(value.open) ? '': 'collapsed'}`}>
 					<Button onClick={() => collapseHandler(value)} icon={DropdownMinor}/>
 				</CollapseToggle>
 				<ListItemContent>

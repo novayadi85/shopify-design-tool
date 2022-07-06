@@ -1,4 +1,5 @@
-/*import {
+/*
+import {
 	BlockMinor,
 	NoteMajor,
 	TextAlignmentLeftMajor,
@@ -64,6 +65,7 @@ const _items = [
 */
 
 const initialState = {
+    section: null,
     items: [],
     loading: false,
     error: null
@@ -90,6 +92,30 @@ const templateReducer = (state = initialState, action) => {
                     ...state.items,
                     action.payload.items
                 ]
+            };
+        
+        case 'ADD_BLOCK':
+            let handle = action.payload?.section;
+            state.items.forEach((item, index) => {
+                if (item.handle === handle) {
+                    if (state.items[index]?.items) {
+                        state.items[index]['items'] = [
+                            ...state.items[index].items,
+                            action.payload.items
+                        ]
+                    }
+                    else {
+                        state.items[index]['items'] = [action.payload.items];
+                    }
+                }
+            })
+
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                section: action.payload?.section,
+                items: state.items
             };
 
         default:
