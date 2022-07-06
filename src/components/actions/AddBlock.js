@@ -18,8 +18,6 @@ export default function AddBlock({ handle }) {
         <Button onClick={toggleActive} icon={CirclePlusOutlineMinor}>Add Block</Button>
     );
 
-    console.log(state)
-
     const handleClick = (index) => {
         setIsClicked(Array(actions.length).fill(false));
         setIsClicked((prev) => [

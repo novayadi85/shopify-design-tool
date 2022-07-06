@@ -52,8 +52,6 @@ function Block() {
         navigate(`/block/css/${handle}`);
     }
 
-    console.log(value);
-
     return (
         <SidePanel>
             <SidePanelArea>
