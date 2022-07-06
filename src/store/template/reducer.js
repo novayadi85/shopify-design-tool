@@ -166,14 +166,14 @@ const templateReducer = (state = initialState, action) => {
             const { block, setting } = action.payload
             const { headline } = setting;
 
-            state.items.map((item, index) => {
+            state.items = state.items.map(({...item}) => {
                 if (block.ID === item.ID) {
                     item.setting = setting;
                     item.label = headline;
                 }
 
                 if (item?.items) {
-                    item.items = item.items.map(t => {
+                    item.items = item.items.map(({...t}) => {
                         if (block.ID === t.ID) {
                             t.setting = setting;
                             t.label = headline;

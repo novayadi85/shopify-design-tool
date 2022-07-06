@@ -9,7 +9,7 @@ export default function AddBlock({ handle }) {
     const [loading, setLoading] = useState(true);      
     const [lists, setLists] = useState([]);      
     const dispatch = useDispatch();    
-    const { blocks: { items: actions = [] } } = useSelector(state => state);
+    const { blocks: { items: actions } } = useSelector(state => state);
     const state = useSelector(state => state);
 
     const [isClicked, setIsClicked] = useState(Array(actions.length).fill(false));
