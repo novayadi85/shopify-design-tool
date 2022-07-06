@@ -1,10 +1,11 @@
-import {
+/*import {
 	BlockMinor,
 	NoteMajor,
 	TextAlignmentLeftMajor,
 	ProductsMajor,
 } from "@shopify/polaris-icons";
 
+/*
 const _items = [
     {
         handle: 'offer-content',
@@ -60,9 +61,10 @@ const _items = [
         ]
     }
 ];
+*/
 
 const initialState = {
-    items: _items,
+    items: [],
     loading: false,
     error: null
   };
@@ -76,6 +78,18 @@ const templateReducer = (state = initialState, action) => {
                 loading: false,
                 error: null,
                 items: action.payload.items
+            };
+        
+        case 'ADD_TEMPLATE':
+            // console.log(action.payload.items)
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                items: [
+                    ...state.items,
+                    action.payload.items
+                ]
             };
 
         default:

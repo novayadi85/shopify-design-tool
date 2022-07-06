@@ -13,11 +13,8 @@ function Background() {
 	});
 
 	const rgbaColor = rgbString(hsbToRgb(color));
-
 	const [popoverActive, setPopoverActive] = useState(false);
-
 	const [rangeValue, setRangeValue] = useState(32);
-
 	const handleRangeSliderChange = useCallback(
 		(value) => setRangeValue(value),
 		[]

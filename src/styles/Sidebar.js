@@ -99,3 +99,134 @@ export const Wrapper = styled.div(props => ({
     BorderBottom: props?.BorderBottom ? '0.0625rem solid var(--p-divider)': 'none',
     margin: props?.rem ? '1rem 0': '10px 10px',
 }));
+
+
+
+export const SidePanelAreaWrapper = styled.div``
+
+export const ListItemWrapper = styled.div`
+    margin-left: 2rem;
+`
+export const ListItemWrapperContainer = styled.div`
+    align-items: center;
+    display: grid;
+    height: var(--osui_height-nav-action);
+    position: relative;
+
+    .hidden {
+        display: none;
+    }
+
+    &.separator {
+        &:after{
+            display: block;
+            border-bottom: 1px solid var(--p-divider);
+            height: 1px;
+            width: 100%;
+            content: "";
+            padding: 5px 0 0px;
+            margin-bottom: 10px;
+        }
+        
+    }
+`
+
+export const CollapseToggle = styled.div`
+    grid-area: 1/1;
+    justify-self: self-start;
+    position: relative;
+    z-index: 3;
+    &.collapsed {
+        .Polaris-Icon{
+            transform: rotateZ(270deg);
+        }
+    }
+
+    button {
+        appearance: none;
+        background: none;
+        border: none;
+        box-shadow: none;
+
+        &:hover {
+            appearance: none;
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+    }
+`
+export const ListItemContent = styled.div`
+    grid-area: 1/1;
+    max-width: 100%;
+    min-width: 0;
+`
+
+export const ListItemHandler = styled.div`
+    align-items: center;
+    display: flex;
+    grid-area: 1/1;
+    justify-self: self-end;
+    position: relative;
+    z-index: 2;
+`
+
+
+export const ListItem = styled.button`
+    padding-left: 0.25rem;
+    align-items: center;
+    appearance: none;
+    background: none;
+    border: none;;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    font-size: .9375rem;
+    gap: 0.5rem;
+    height: 2rem;
+    justify-content: left;
+    letter-spacing: normal;
+    line-height: 1;
+    margin: 0;
+    max-width: 100%;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    outline: none;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    text-transform: none;
+    transition: background-color 150ms cubic-bezier(0.25,0.1,0.25,1);
+    width: 100%;
+    z-index: 1;
+    .icon-sortable{
+        .Polaris-Icon {
+            position: absolute;
+            right: 0;
+            top: 10px;
+            cursor: move;
+        }
+    }
+
+`
+
+export const PrimaryBox = styled.div`
+    margin: 0 20px;
+    button{
+        appearance: none;
+        background: none;
+        border: none;
+        box-shadow: none;
+        color: var(--p-interactive);
+        &:hover {
+            appearance: none;
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+        svg {
+            fill: var(--p-interactive);
+        }
+    }
+`

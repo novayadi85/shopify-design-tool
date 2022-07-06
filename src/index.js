@@ -17,6 +17,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
     store.dispatch(fetchProducts(url));
 })();
  
+const backup = console.warn;
+console.warn = function filterWarnings(msg) {
+    const supressedWarnings = ['warning text', 'other warning text', 'Deprecation'];
+    if (!supressedWarnings.some(entry => msg.includes(entry))) {
+        backup.apply(console, arguments);
+    }
+};
 
 root.render(
     <AppProvider i18n={en}>
