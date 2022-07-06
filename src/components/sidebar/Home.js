@@ -43,8 +43,6 @@ function Home() {
     useEffect(() => {
         dispatch(getSidebar())
         setItems(state.template.items);
-
-        console.log('state', state.template.items)
     }, [_items])
 	
     const renderChildren = ({ ID, items = [], open = false }) => {
@@ -84,15 +82,14 @@ function Home() {
 								<Icon
 									source={value.icon}
 									color="base"
-								/>
+                                />
 							</div>
                             <div className='title'>
                                 {(value.handle === 'block-product') ? (
-                                    <ReactRouterLink className="removeUnderline" to={`/product/${value.ID}`}>{value.label}</ReactRouterLink>
+                                    <ReactRouterLink className="removeUnderline" to={`/product/${value.ID}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.handle}`}>{value.label}</ReactRouterLink>  
+                                    <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.handle}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>  
                                 )}
-                                
 							</div>
 							
 						</ListItem>

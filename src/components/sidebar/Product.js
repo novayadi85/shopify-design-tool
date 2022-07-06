@@ -11,7 +11,7 @@ import { Button, Heading, FormLayout, Spinner, Select, Modal, TextContainer  } f
 import { useSelector } from 'react-redux';
 import SectionColumn from './SectionColumn';
 
-function Section() {
+function Product() {
     let { handle } = useParams();
     const navigate = useNavigate();
     const [selected, setSelected] = useState(1);
@@ -29,16 +29,18 @@ function Section() {
 
     const handleSelectChange = useCallback((value) => setSelected(Number(value)), []);
 
-    const {items} = useSelector(state => state.template);
+    const { items } = useSelector(state => state.template);
+    
     let value = [];
+
     items.forEach(item => {
         if(item.type === 'section' && handle === item.ID){
-            value = item
+            // value = item
         }
 
         if (item.type === 'section' && item?.items) {
             item.items.forEach(t => {
-                if (t.ID === handle && t.type === 'section') {
+                if (t.ID === handle && t.type === 'block') {
                     value = t;
                 }
 
@@ -46,6 +48,9 @@ function Section() {
         }
     });
 
+    //console.log('handle', handle)
+    //console.log(value)
+    
     useEffect(() => {
         setLoading(true);
         const options = async () => {
@@ -74,7 +79,7 @@ function Section() {
 
     const ColumnBlocks = () => {
         return [...Array(selected - 1 + 1).keys()].map(x => x + 1).map((n) => {
-            return <SectionColumn key={n} type={'section'} value={value} column={n} handle={handle}/>
+            return <SectionColumn key={n} type={ 'product'} value={value} column={n} handle={handle} />
         })
     }
 
@@ -165,4 +170,4 @@ function Section() {
     );
 }
 
-export default Section;
+export default Product;

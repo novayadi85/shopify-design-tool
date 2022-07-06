@@ -16,7 +16,8 @@ import {
             label: 'Offer top',
             icon: NoteMajor,
             type: 'section',
-            helpText: 'Insert headline / description'
+            helpText: 'Insert headline / description',
+            setting: {}
         },
         {
             handle: 'offer-product',
@@ -24,7 +25,8 @@ import {
             label: 'Offer Products',
             icon: NoteMajor,
             type: 'section',
-            helpText: 'Insert products section'
+            helpText: 'Insert products section',
+            setting: {}
         },
         {
             handle: 'offer-footer',
@@ -33,7 +35,8 @@ import {
             separator: true,
             icon: NoteMajor,
             type: 'section',
-            helpText: ''
+            helpText: '',
+            setting: {}
         },
     ],
     loading: false,

@@ -162,6 +162,36 @@ const templateReducer = (state = initialState, action) => {
                 section: action.payload?.section,
                 items: state.items
             };
+        case 'UPDATE_BLOCK':
+            const { block, setting } = action.payload
+            const { headline } = setting;
+
+            state.items.map((item, index) => {
+                if (block.ID === item.ID) {
+                    item.setting = setting;
+                    item.label = headline;
+                }
+
+                if (item?.items) {
+                    item.items = item.items.map(t => {
+                        if (block.ID === t.ID) {
+                            t.setting = setting;
+                            t.label = headline;
+                        }
+
+                        return t;
+                    })
+                }
+
+                return item;
+            });
+
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                items: state.items
+            };
 
         default:
         return state

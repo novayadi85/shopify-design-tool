@@ -3,7 +3,7 @@ import {
     ProductsMinor
 } from "@shopify/polaris-icons";
 import {
-    UPDATE_BLOCK,
+    UPDATE_BLOCKS,
     FETCH_BLOCK_BEGIN,
     FETCH_BLOCK_SUCCESS,
     FETCH_BLOCK_FAILURE
@@ -17,7 +17,8 @@ import {
             label: 'Editor',
             icon: TextAlignmentLeftMajor,
             type: 'block',
-            helpText: 'Insert Text'
+            helpText: 'Insert Text',
+            setting: {}
         },
         {
             handle: 'block-content',
@@ -25,7 +26,8 @@ import {
             label: 'Content',
             icon: TextAlignmentLeftMajor,
             type: 'block',
-            helpText: 'Insert content type'
+            helpText: 'Insert content type',
+            setting: {}
         },
         {
             handle: 'block-product',
@@ -33,7 +35,8 @@ import {
             label: 'Products',
             icon: ProductsMinor,
             type: 'block',
-            helpText: 'Insert product type'
+            helpText: 'Insert product type',
+            setting: {}
         },
     ],
     loading: false,
@@ -56,7 +59,7 @@ export default function sectionReducer(state = initialState, action) {
             items: action.payload.items
             };
 
-        case UPDATE_BLOCK:
+        case UPDATE_BLOCKS:
             return {
                 ...state,
                 loading: false,

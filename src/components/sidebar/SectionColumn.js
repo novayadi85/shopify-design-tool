@@ -1,14 +1,20 @@
-import { useEffect, useCallback,useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 import { Header, BackAction, TitleWrapper, ButtonRightWrapper, Section as SectionElement, RadioGroup, RemovePadding, Flex} from "@styles/Sidebar";
-
 import { Button, Heading, FormLayout, TextField, ChoiceList, Spinner } from '@shopify/polaris';
+import { editBlock } from "@store/template/action";
 
-function SectionColumn({column, handle, type}) {
+function SectionColumn(props) {
+    const  { column, handle, type, value: prop } = props
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
+    const [textFieldValue, setTextFieldValue] = useState(prop.label);
+    const [content, setContent] = useState(prop?.setting?.content);
+    const [focused, setFocused] = useState(prop.label);
+    
     useEffect(() => {
-        setLoading(true);
+        setLoading(false);
         setTimeout(() => {
             return setLoading(false);
         }, 500)
@@ -16,11 +22,28 @@ function SectionColumn({column, handle, type}) {
     }, [column]);
 
     const [value, setValue] = useState('text');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const handleChange = useCallback((value) => setValue(value), []);
 
     const editCSSHandle = () => {
         navigate(`/section/css/${handle}`);
+    }
+
+    const handleTextFieldChange = (value) => {
+        setTextFieldValue(value);
+        dispatch(editBlock(prop, {
+            headline: value
+        }))   
+        setFocused(true);
+    }
+
+    const handleContentChange = (value) => {
+        setContent(value);
+        dispatch(editBlock(prop, {
+            content: value,
+            headline: prop.label
+        }))   
+        setFocused(true);
     }
 
     return (
@@ -48,27 +71,33 @@ function SectionColumn({column, handle, type}) {
                     
                     ) : (
                         <FormLayout>
-                            <RemovePadding>
-                                <RadioGroup style={{marginTop: 5}}>
-                                    <ChoiceList
-                                        title="Content type"
-                                        choices={[
-                                            { label: "Button", value: "button" },
-                                            { label: "Text", value: "text" },
-                                        ]}
-                                        selected={value}
-                                        onChange={handleChange}
-                                    />
-                                </RadioGroup>
-                            </RemovePadding>
+                                {(type === 'product') ? (
+                                    <>
+                                    <RemovePadding>
+                                        <RadioGroup style={{marginTop: 5}}>
+                                            <ChoiceList
+                                                title="Content type"
+                                                choices={[
+                                                    { label: "Button", value: "button" },
+                                                    { label: "Text", value: "text" },
+                                                ]}
+                                                selected={value}
+                                                onChange={handleChange}
+                                            />
+                                        </RadioGroup>
+                                    </RemovePadding>
+                                    <div style={{ marginTop: 10 }}>
+                                        <TextField focused={focused} onChange={handleContentChange} label="Content" value={content} autoComplete="off" />   
+                                    </div>
+                                    
+                                    </>
+                                ): (
+                                    <TextField focused={focused} onChange={handleTextFieldChange} label="Label" value={textFieldValue} autoComplete="off" />
+                                )}        
                             
                             
-                            <TextField label="Content" onChange={() => {}} autoComplete="off" />
                         </FormLayout>    
                     )}
-
-                    
-                    
                 </SectionElement>
             </div>
         </div>

@@ -1,11 +1,11 @@
-export const UPDATE_BLOCK   = 'UPDATE_BLOCK';
+export const UPDATE_BLOCKS   = 'UPDATE_BLOCKS';
 export const FETCH_BLOCK_BEGIN   = 'FETCH_BLOCK_BEGIN';
 export const FETCH_BLOCK_SUCCESS   = 'FETCH_BLOCK_SUCCESS';
 export const GET_BLOCK   = 'GET_BLOCK';
 export const FETCH_BLOCK_FAILURE   = 'FETCH_BLOCK_FAILURE';
 
 export const updateBlocks = items => ({
-  type: UPDATE_BLOCK,
+  type: UPDATE_BLOCKS,
   payload: { items }
 });
 
