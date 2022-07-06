@@ -88,7 +88,7 @@ function Home() {
                                 {(value.handle === 'block-product') ? (
                                     <ReactRouterLink className="removeUnderline" to={`/product/${value.ID}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.handle}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>  
+                                    <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>  
                                 )}
 							</div>
 							

@@ -9,6 +9,7 @@ import {
 
 import { Button, Heading, FormLayout, TextField, Spinner, Modal, TextContainer} from '@shopify/polaris';
 import { useSelector } from 'react-redux';
+import BlockContent from './BlockContent';
 
 function Block() {
     let { handle } = useParams();
@@ -16,7 +17,6 @@ function Block() {
     const [loading, setLoading] = useState(true);
     const {items} = useSelector(state => state.template);
     let value = [];
-
     const [active, setActive] = useState(false);
     const button = useRef();
     const handleOpen = useCallback(() => setActive(true), []);
@@ -28,7 +28,7 @@ function Block() {
     items.forEach(item => {
         if (item.type === 'section' && item?.items) {
             item.items.forEach(t => {
-                if (t.handle === handle && t.type === 'block') {
+                if (t.ID === handle && t.type === 'block') {
                     value = t;
                 }
 
@@ -38,7 +38,6 @@ function Block() {
 
     useEffect(() => {
         setLoading(true);
-
         setTimeout(() => {
             return setLoading(false);
         }, 500)
@@ -52,6 +51,8 @@ function Block() {
     const editCSSHandle = () => {
         navigate(`/block/css/${handle}`);
     }
+
+    console.log(value);
 
     return (
         <SidePanel>
@@ -80,9 +81,7 @@ function Block() {
                         </Flex>
                     
                     ) : (
-                        <FormLayout>
-                            <TextField label="Text" onChange={() => {}} autoComplete="off" />
-                        </FormLayout>      
+                        <BlockContent type={'block'} value={value}/>    
                     )}
 
                     
