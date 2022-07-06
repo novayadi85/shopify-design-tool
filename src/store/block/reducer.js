@@ -1,5 +1,6 @@
 import {
-	TextAlignmentLeftMajor,
+    TextAlignmentLeftMajor,
+    ProductsMinor
 } from "@shopify/polaris-icons";
 import {
     UPDATE_BLOCK,
@@ -25,6 +26,14 @@ import {
             icon: TextAlignmentLeftMajor,
             type: 'block',
             helpText: 'Insert content type'
+        },
+        {
+            handle: 'block-product',
+            url: '/#',
+            label: 'Products',
+            icon: ProductsMinor,
+            type: 'block',
+            helpText: 'Insert product type'
         },
     ],
     loading: false,

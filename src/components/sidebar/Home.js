@@ -44,19 +44,19 @@ function Home() {
         dispatch(getSidebar())
         setItems(state.template.items);
 
-        // console.log('state', state.template.items)
+        console.log('state', state.template.items)
     }, [_items])
 	
-    const renderChildren = ({ handle, items = [], open = false }) => {
+    const renderChildren = ({ ID, items = [], open = false }) => {
         return (
             <div className={`collapse ${(open) ? 'visible': 'hidden'}`}>
                 <SortableContainer useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
-                    <SortableItem key={`item-${value.handle}`} index={index} value={value} />
+                    <SortableItem key={`item-${index}`} index={index} value={value} />
                 ))}
                 </SortableContainer>
                 <PrimaryBox>
-                    <AddBlock handle={handle} />		
+                    <AddBlock handle={ID} />		
                 </PrimaryBox>
             </div>
         )
@@ -64,7 +64,7 @@ function Home() {
 
 	const collapseHandler = (value) => {
 		setItems(items.map(item => {
-			if (item.handle === value.handle) {
+			if (item.ID === value.ID) {
 				item.open = item.open ? false : true
 			}
 			return item;
@@ -86,8 +86,13 @@ function Home() {
 									color="base"
 								/>
 							</div>
-							<div className='title'>
-                                <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.handle}`: `/block/${value.handle}`}>{value.label}</ReactRouterLink>
+                            <div className='title'>
+                                {(value.handle === 'block-product') ? (
+                                    <ReactRouterLink className="removeUnderline" to={`/product/${value.ID}`}>{value.label}</ReactRouterLink>
+                                ): (
+                                    <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.handle}`}>{value.label}</ReactRouterLink>  
+                                )}
+                                
 							</div>
 							
 						</ListItem>
@@ -119,7 +124,7 @@ function Home() {
             ) : (
                 <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                     {items.map((value, index) => (
-                        <SortableItem key={`item-${value.handle}`} index={index} value={value} />
+                        <SortableItem key={`item-${index}`} index={index} value={value} />
                     ))}
                 </SortableContainer>   
             )}

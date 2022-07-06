@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import engine  from "../helper/template";
 import { Helmet } from "react-helmet";
-import { Main, Section } from "@styles/Main";
+import { Main, Section, Block } from "@styles/Main";
+import { Label } from "@shopify/polaris";
 
 const SimpleContent = (props) => {
     const { products: { items }, template: {items : sections}}  = useSelector(state => state);
@@ -35,6 +36,17 @@ const SimpleContent = (props) => {
         renderHtml()
     }, [items]);
 
+    const renderChildren = ({ ID, items = [] }) => {
+        return (
+            <div>
+                <div  style={{marginLeft: '10px'}}>
+                    {items.map((value, index) => (
+                        <div key={index}>{value.label}</div>
+                ))}
+                </div>
+            </div>
+        )
+	}
 
     return (
         <Main>
@@ -46,7 +58,12 @@ const SimpleContent = (props) => {
             </Helmet>
             <div>
                 {sections.map((value, index) => (
-                        <Section key={index}>{ value.label}</Section>
+                    <Section key={index}>
+                        <>
+                            <Label>{value.label}</Label>
+                            <Block>{renderChildren(value)}</Block>
+                        </>
+                    </Section>
                 ))}
 
                 <p style={{marginTop: '5rem', borderTop: '1px solid #000'}}>Sample is like this :</p>
