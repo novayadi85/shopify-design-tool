@@ -50,7 +50,6 @@ function Product() {
         }))
         await sleep(2000)
     }
-
     
     useEffect(() => {
         setLoading(true);
@@ -122,6 +121,8 @@ function Product() {
         
         
     }, [selected]);
+
+    console.log(value)
     
     
     const backHandle = () => {

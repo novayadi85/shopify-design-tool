@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {sortableContainer,sortableElement, sortableHandle } from 'react-sortable-hoc';
 import {Button, Icon, Spinner } from "@shopify/polaris";
 import { arrayMoveImmutable } from 'array-move';
-import { DropdownMinor, DragHandleMinor } from "@shopify/polaris-icons";
+import { DropdownMinor, DragHandleMinor, NoteMajor } from "@shopify/polaris-icons";
 import { Flex, PrimaryBox, ListItemWrapperContainer, CollapseToggle, ListItemContent, ListItemWrapper, ListItem, ListItemHandler, SidePanelAreaWrapper } from "@styles/Sidebar";
 import { updateSidebar } from "@store/template/action";
 import AddSection from "@components/actions/AddSection";
@@ -72,7 +72,36 @@ function Home() {
                 </PrimaryBox>
             </div>
         )
-	}
+    }
+    
+    const ParentSection = () => {
+        return (
+            <div className={`visible'}`}>
+                <SortableContainer style={{marginLeft: '10px'}}>
+                <li className={`nav nav-sidebar has-subnav`}>
+                    <ListItemWrapperContainer className={`ListItemWrapperContainer separator`}>
+                        <ListItemContent>
+                            <ListItemWrapper>
+                                <ListItem>
+                                    <div className='prefixIcon'>
+                                        <Icon
+                                            source={NoteMajor}
+                                            color="base"
+                                        />
+                                    </div>
+                                    <div className='title'>
+                                        <ReactRouterLink className="removeUnderline" to={`/block/offer-container`}>Offer Content</ReactRouterLink>  
+                                    </div>
+                                </ListItem>
+                            </ListItemWrapper>
+                            
+                        </ListItemContent>
+                    </ListItemWrapperContainer>
+                </li>
+                </SortableContainer>
+            </div>
+        )
+    }
 
 	const collapseHandler = (value) => {
 		setItems(items.map(item => {
@@ -133,11 +162,15 @@ function Home() {
                 </Flex>
                     
             ) : (
-                <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-                    {items.map((value, index) => (
-                        <SortableItem key={`item-${index}`} index={index} value={value} />
-                    ))}
-                </SortableContainer>   
+                    <>
+                        <ParentSection/>
+                        <SortableContainer onSortEnd={onSortEnd} useDragHandle>
+                            {items.map((value, index) => (
+                                <SortableItem key={`item-${index}`} index={index} value={value} />
+                            ))}
+                        </SortableContainer>   
+                    </>
+                
             )}
 
             <PrimaryBox style={{

@@ -13,7 +13,7 @@ function SectionColumn(props) {
     const [textFieldValue, setTextFieldValue] = useState(prop.label);
     const [content, setContent] = useState(prop?.setting?.content);
     const [text, setText] = useState('');
-    const [focused, setFocused] = useState(false);
+    const [focused, setFocused] = useState(prop?.label);
     const searchInput = useRef(null);
 
     console.log(setting);
@@ -99,7 +99,7 @@ function SectionColumn(props) {
         }))   
         */
         
-        // setFocused(true);
+        setFocused(true);
 
     }
     /*

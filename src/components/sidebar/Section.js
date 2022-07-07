@@ -55,8 +55,7 @@ function Section() {
                 }
             })
 
-            setColumns(ops);
-            
+            setColumns(ops); 
         };
 
         setTimeout(() => {
@@ -72,10 +71,15 @@ function Section() {
         navigate('/')
     }
 
+    /*
     const ColumnBlocks = () => {
         return [...Array(selected - 1 + 1).keys()].map(x => x + 1).map((n) => {
-            return <SectionColumn key={n} type={'section'} value={value} setting={value} column={n} handle={handle}/>
+            return <SectionColumn key={n} type={'section'} value={value} setting={(value?.setting?.content[n - 1]) ? value.setting.content[n - 1]: []} column={n} handle={handle}/>
         })
+    }
+    */
+    const ColumnBlock = () => {
+        return <SectionColumn type={'section'} value={value} setting={(value?.setting) ? value.setting: []} column={selected} handle={handle}/>
     }
 
     return (
@@ -113,8 +117,7 @@ function Section() {
                                             onChange={handleSelectChange}
                                             value={selected}
                                         />
-
-                                        <ColumnBlocks/>
+                                        <ColumnBlock/>    
                                     </FormLayout>
                                 )
                             }
