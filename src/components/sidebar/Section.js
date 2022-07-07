@@ -8,29 +8,39 @@ import {
 } from "@shopify/polaris-icons";
 
 import { Button, Heading, FormLayout, Spinner, Select, Modal, TextContainer  } from '@shopify/polaris';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import SectionColumn from './SectionColumn';
+import { updateSidebar } from '@store/template/action';
 
 function Section() {
     let { handle } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const {items} = useSelector(state => state.template);
+    let value = [];
+
     const [selected, setSelected] = useState(1);
     const [columns, setColumns] = useState([]);
     const [loading, setLoading] = useState(false);
-   
 
     const [active, setActive] = useState(false);
-    const button = useRef();
+    const buttonRef = useRef(null);
     const handleOpen = useCallback(() => setActive(true), []);
     const handleClose = useCallback(() => {
         setActive(false);
-        requestAnimationFrame(() => button.current.querySelector("button").focus());
+        requestAnimationFrame(() => buttonRef.current.querySelector("button").focus());
+    }, []);
+
+    const handleDelete = useCallback(() => {
+        let _items = items.filter(t => t.ID !== value.ID);
+        dispatch(updateSidebar(_items));
+        setActive(false);
+        navigate('/');
     }, []);
 
     const handleSelectChange = useCallback((value) => setSelected(Number(value)), []);
 
-    const {items} = useSelector(state => state.template);
-    let value = [];
+
     items.forEach(item => {
         if(item.type === 'section' && handle === item.ID){
             value = item
@@ -81,6 +91,12 @@ function Section() {
     const ColumnBlock = () => {
         return <SectionColumn type={'section'} value={value} setting={(value?.setting) ? value.setting: []} column={selected} handle={handle}/>
     }
+
+    const activator = (
+        <div ref={buttonRef}>
+            <Button props={value} onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Section</Button>
+        </div>
+      );
 
     return (
         <SidePanel>
@@ -140,16 +156,17 @@ function Section() {
                 
             </SidePanelArea>
             <SidePanelBottom>
-                <Button onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Section</Button>
+                {activator}
             </SidePanelBottom>
             <Modal
                 small
+                activator={buttonRef}
                 open={active}
                 onClose={handleClose}
                 title="Delete"
                 primaryAction={{
-                content: "Yes sure",
-                onAction: handleClose,
+                    content: "Yes sure",
+                    onAction: handleDelete,
                 }}
                 secondaryActions={[
                 {

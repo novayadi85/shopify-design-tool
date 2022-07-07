@@ -8,11 +8,10 @@ import { iframeStyle } from '@styles/Iframe';
 import { SaButton } from "../styles/Iframe";
 
 const SimpleContent = (props) => {
-    const { products: { items }, template: {items : sections}}  = useSelector(state => state);
+    const { products: { items }, template: {items : sections}, styles: { items: styles }}  = useSelector(state => state);
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
     const [style, setStyle] = useState('');
-
     useEffect(() => {
         setLoading(true);
         async function renderHtml() {
@@ -38,13 +37,15 @@ const SimpleContent = (props) => {
         renderHtml()
     }, [items]);
 
+    console.log(styles)
+
     const renderChildren = ({ ID, items = [] }) => {
         return (
             <div>
                 <div style={{marginLeft: '10px'}}>
                     {items.map((value, index) => {
                         return (
-                            <div props={value} className={`sa-content`}>
+                            <div key={`child-${index}`} props={value} className={`sa-content`}>
                                 <div key={index}>{value.label}</div>
                                 <div className={`sa-row`}>
                                 {(value?.setting?.values) ? (
@@ -86,23 +87,36 @@ const SimpleContent = (props) => {
                 }
                 </style>
             </Helmet>
-            <div>
-                {sections.map((value, index) => (
-                    <Section key={index}>
-                        <>
-                            <Label>{value.label}</Label>
-                            <Block>{renderChildren(value)}</Block>
-                        </>
-                    </Section>
-                ))}
-
+            <div className="sa-offer-container">
+                <div className="offer-container">
+                    {sections.map((value, index) => (
+                        <Section key={index}>
+                            <>
+                                <Label>{value.label}</Label>
+                                <Block>{renderChildren(value)}</Block>
+                            </>
+                        </Section>
+                    ))}
+                </div>
                 <p style={{marginTop: '5rem', borderTop: '1px solid #000'}}>Sample is like this :</p>
                 <div
                     dangerouslySetInnerHTML={{__html: content}}
                 />
 
-                
+                <pre style={{
+                    height: "195px",
+                    color: "#666",
+                    tabSize: 4,
+                    overflow: "auto",
+                    padding: "10px",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "3px",
+                    background: "#eee"
+                }}>
+                    <code>{JSON.stringify(styles, null, 2)}</code>
+                </pre>
             </div>
+
             
         </Main>
     );

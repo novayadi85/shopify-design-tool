@@ -90,7 +90,7 @@ function Home() {
                                         />
                                     </div>
                                     <div className='title'>
-                                        <ReactRouterLink className="removeUnderline" to={`/offer-css`}>Offer Setting</ReactRouterLink>  
+                                        <ReactRouterLink className="removeUnderline" to={`/offer-setting`}>Offer Setting</ReactRouterLink>  
                                     </div>
                                 </ListItem>
                             </ListItemWrapper>
@@ -129,7 +129,10 @@ function Home() {
 							</div>
                             <div className='title'>
                                 {(value.handle === 'block-product') ? (
-                                    <ReactRouterLink className="removeUnderline" to={`/product/${value.ID}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>
+                                    <ReactRouterLink className="removeUnderline" to={{
+                                        pathname: `/product/${value.ID}`,
+                                        state: value
+                                    }}>{(value.label) ? value.label : '...'}</ReactRouterLink>
                                 ): (
                                     <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>  
                                 )}

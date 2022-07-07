@@ -4,6 +4,7 @@ import templateReducer from "./template/reducer";
 import productReducer from "./product/reducer";
 import sectionReducer from "./sections/reducer";
 import blockReducer from "./block/reducer";
+import styleReducer from "./style/reducer";
 
 const rootReducer = combineReducers({
     count: countReducer,
@@ -11,5 +12,6 @@ const rootReducer = combineReducers({
     products: productReducer,
     sections: sectionReducer,
     blocks: blockReducer,
+    styles: styleReducer
 })
 export default rootReducer

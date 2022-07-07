@@ -8,21 +8,39 @@ import {
 } from "@shopify/polaris-icons";
 
 import { Button, Heading, FormLayout, TextField, Spinner, Modal, TextContainer} from '@shopify/polaris';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import BlockContent from './BlockContent';
+import { updateSidebar } from '@store/template/action';
 
 function Block() {
     let { handle } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(true);
     const {items} = useSelector(state => state.template);
     let value = [];
+
     const [active, setActive] = useState(false);
-    const button = useRef();
+
+    const buttonRef = useRef(null);
+
     const handleOpen = useCallback(() => setActive(true), []);
     const handleClose = useCallback(() => {
         setActive(false);
-        requestAnimationFrame(() => button.current.querySelector("button").focus());
+        requestAnimationFrame(() => buttonRef.current.querySelector("button").focus());
+    }, []);
+
+    const handleDelete = useCallback(() => {
+        let _items = items.map(({ ...item }) => {
+            item.items = item.items.filter(t => t.ID !== value.ID);
+            return item;
+        })
+
+        console.log(_items)
+        dispatch(updateSidebar(_items));
+        setActive(false);
+        navigate('/');
     }, []);
         
     items.forEach(item => {
@@ -53,6 +71,12 @@ function Block() {
     }
 
     if ('offer-container' === handle) value = { label: "Offer content" }
+
+    const activator = (
+        <div ref={buttonRef}>
+            <Button props={value} onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Block</Button>
+        </div>
+    );
 
     return (
         <SidePanel>
@@ -88,16 +112,17 @@ function Block() {
                 </SectionElement>
             </SidePanelArea>
             <SidePanelBottom>
-                <Button onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Block</Button>
+                {activator}
             </SidePanelBottom>
             <Modal
+                activator={buttonRef}
                 small
                 open={active}
                 onClose={handleClose}
                 title="Delete"
                 primaryAction={{
-                content: "Yes sure",
-                onAction: handleClose,
+                    content: "Yes sure",
+                    onAction: handleDelete,
                 }}
                 secondaryActions={[
                 {

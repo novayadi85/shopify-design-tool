@@ -136,7 +136,6 @@ function Product() {
                 return <SectionForm key={item.key} type={ 'product'} value={value} setting={item} column={item.key} handle={handle}/>
             })
         }
-
         return (
             <></>
         )
@@ -248,10 +247,6 @@ function Product() {
                                                     ) : (
                                                         <></>
                                                     )}
-                                                
-                                                    <pre style={style}>
-                                                        <code>{JSON.stringify(values, null, 2)}</code>
-                                                    </pre>
                                                 </form>
                                             )}
                                         />  

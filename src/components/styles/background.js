@@ -2,7 +2,7 @@ import { FormLayout, Select, Button, Collapsible, ButtonGroup, ColorPicker, Rang
 import { useState, useCallback } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
-  
+import { Field } from 'react-final-form';
 function Background() {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(null);
@@ -53,11 +53,25 @@ function Background() {
 				expandOnPrint
 			>
 				<Wrapper BorderBottom={true}>
-					<ButtonGroup segmented>
-						<Button size="slim" pressed={(selected === 'color')? true: false} onClick={() => handleTabChange('color')}>Color</Button>
-						<Button size="slim" pressed={(selected === 'image')? true: false} onClick={() => handleTabChange('image')}>Image</Button>
-						<Button size="slim" pressed={(selected === null)? true: false} onClick={() => handleTabChange(null)}>None</Button>
-					</ButtonGroup>
+					
+						<Field name={`background-type`}>
+							{({ input, meta, ...rest }) => (
+								<ButtonGroup segmented>
+									<Button size="slim" pressed={(selected === 'color') ? true : false} onClick={() => {
+										handleTabChange('color')
+										input.onChange('color')
+									}}>Color</Button>
+									<Button size="slim" pressed={(selected === 'image')? true: false} onClick={() => {
+										handleTabChange('image')
+										input.onChange('image')
+									}}>Image</Button>
+									<Button size="slim" pressed={(selected === null || selected=== 'none')? true: false} onClick={() => {
+										handleTabChange('none')
+										input.onChange('none')
+									}}>None</Button>
+								</ButtonGroup>
+							)}
+						</Field>
 
 					{(selected === 'color') ? (
 						<>
@@ -67,52 +81,88 @@ function Background() {
 								autofocusTarget="first-node"
 								onClose={togglePopoverActive}
 							>
-								<ColorPicker onChange={setColor} color={color} allowAlpha />
+								
+								<Field name={`background-color`}>
+									{({ input, meta, ...rest }) => (
+										<ColorPicker onChange={(val) => {
+											input.onChange(val)
+											setColor(val)
+										}} name={input.name} color={color} allowAlpha />
+									)}
+								</Field>
 							</Popover>
-
-							<RangeSlider
-								label="Opacity percentage"
-								value={rangeValue}
-								onChange={handleRangeSliderChange}
-								output
-							/>
+							<Field name={`background-opacity`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										label="Opacity percentage"
+										value={rangeValue}
+										onChange={(val) => {
+											input.onChange(val)
+											handleRangeSliderChange(val)
+										}}
+										output
+										name={input.name}
+									/>
+								)}
+							</Field>			
+							
 						</>
 					) : (null)}
 
 					{(selected === 'image') ? (
 						<div style={{marginTop: 10, display: 'inline-block', width: '100%'}}>
 							<FormLayout>
-								<TextField label="Image path" onChange={() => {}} autoComplete="off" />
-								<Select
-									label="Repeat"
-									options={
-										[
-											{ label: "Repeat", value: "repeat" },
-											{ label: "Repeat-X", value: "repeat-x" },
-											{ label: "Repeat-Y", value: "repeat-y" },
-											{ label: "No repeat", value: "no-repeat" },
-										]
-									}
-									onChange={''}
-									value={selected}
-								/>
-
-								<Select
-									label="Position"
-									options={[
-										{ value: "left top", label: "Left top" },
-										{ value: "center top", label: "Center top" },
-										{ value: "right top", label: "Right top" },
-										{ value: "left center", label: "Left center" },
-										{ value: "center center", label: "Center center" },
-										{ value: "right center", label: "Right center" },
-										{ value: "left bottom", label: "Left bottom" },
-										{ value: "center bottom", label: "Center bottom" },
-										{ value: "right bottom", label: "Right bottom" },
-									]}
-									onChange={''}
-									value={selected}
-								/>
+								<Field name={`background-image`}>
+									{props => (
+										<TextField
+											label="Image path"        
+											name={props.input.name}
+											value={props.input.value}
+											onChange={props.input.onChange}
+										/>
+								)}
+								</Field>
+								
+								<Field name={`background-repeat`}>
+									{props => (
+										<Select
+											label="Repeat"
+											options={
+												[
+													{ label: "Repeat", value: "repeat" },
+													{ label: "Repeat-X", value: "repeat-x" },
+													{ label: "Repeat-Y", value: "repeat-y" },
+													{ label: "No repeat", value: "no-repeat" },
+												]
+											}
+											name={props.input.name}
+											value={props.input.value}
+											onChange={props.input.onChange}
+										/>
+									)}
+								</Field>
+								
+								<Field name={`background-position`}>
+									{props => (
+										<Select
+											label="Position"
+											options={[
+												{ value: "left top", label: "Left top" },
+												{ value: "center top", label: "Center top" },
+												{ value: "right top", label: "Right top" },
+												{ value: "left center", label: "Left center" },
+												{ value: "center center", label: "Center center" },
+												{ value: "right center", label: "Right center" },
+												{ value: "left bottom", label: "Left bottom" },
+												{ value: "center bottom", label: "Center bottom" },
+												{ value: "right bottom", label: "Right bottom" },
+											]}
+											name={props.input.name}
+											value={props.input.value}
+											onChange={props.input.onChange}
+										/>
+									)}
+								</Field>
 							</FormLayout>
 						</div>
 					) : (null)}
