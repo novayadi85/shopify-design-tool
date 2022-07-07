@@ -28,12 +28,20 @@ function BlockContent(props) {
 
     }, []);
 
-
     return (
-        <FormLayout>
-            <TextField label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
-        </FormLayout>         
-    );
+        <>
+            {(!prop?.handle) ? (
+                <FormLayout>
+                    <TextField disabled label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
+                </FormLayout>
+            ) : (
+                <FormLayout>
+                    <TextField label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
+                </FormLayout>
+            )}
+                 
+        </>
+    )
 }
 
 export default BlockContent;

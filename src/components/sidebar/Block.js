@@ -52,6 +52,8 @@ function Block() {
         navigate(`/block/css/${handle}`);
     }
 
+    if ('offer-container' === handle) value = { label: "Offer content" }
+
     return (
         <SidePanel>
             <SidePanelArea>
