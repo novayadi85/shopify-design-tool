@@ -25,7 +25,9 @@ function CssEditor() {
         if (location.pathname.includes('block')) {
             navigate(`/block/${handle}`)
         }
-        else {
+        else if (location.pathname.includes('offer-css')) {
+            navigate(`/`)
+        }  else {
             navigate(`/section/${handle}`)
         }
     }

@@ -18,6 +18,7 @@ const MainRoutes = () => {
         <Route path="/product/:handle" element={<Product/>} />
         <Route path="/block/css/:handle" element={<CssEditor/>} />
         <Route path="/section/css/:handle" element={<CssEditor/>} />
+        <Route path="/offer-css" element={<CssEditor/>} />
     </Routes>
 }
 
