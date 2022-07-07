@@ -5,14 +5,19 @@ import { Header, BackAction, TitleWrapper, ButtonRightWrapper, Section as Sectio
 import { Button, Heading, FormLayout, TextField, ChoiceList, Spinner } from '@shopify/polaris';
 import { editBlock } from "@store/template/action";
 
+let contents = [];
 function SectionColumn(props) {
-    const  { column, handle, type, value: prop } = props
+    const  { column, handle, type, value: prop, setting } = props
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [textFieldValue, setTextFieldValue] = useState(prop.label);
     const [content, setContent] = useState(prop?.setting?.content);
-    const [focused, setFocused] = useState(prop.label);
-    
+    const [text, setText] = useState('');
+    const [focused, setFocused] = useState(false);
+    const searchInput = useRef(null);
+
+    console.log(setting);
+
     useEffect(() => {
         setLoading(false);
         setTimeout(() => {
@@ -32,20 +37,91 @@ function SectionColumn(props) {
     const handleTextFieldChange = (value) => {
         setTextFieldValue(value);
         dispatch(editBlock(prop, {
-            headline: value
+            headline: value,
         }))   
         setFocused(true);
     }
 
+    const handleContentChange = (e) => {
+        let value = e.target.value;
+        setText(value)
+
+        let update = props.value.setting.values.map(({ ...t }) => {
+            if (t.key === props.setting.key) {
+                t.value = value;
+            }
+            return t;
+        })
+
+        dispatch(editBlock(prop, {
+            ...prop.setting,
+            values: update,
+        }))  
+
+        /*
+        
+        let update = props.value.setting.values.map(({ ...t }) => {
+            if (t.key === props.setting.key) {
+                t.value = value;
+            }
+            return t;
+        })
+
+        dispatch(editBlock(prop, {
+            ...prop.setting,
+            values: update,
+        }))  
+
+        console.log(update)
+        searchInput.current.focus();
+        /*
+        if (contents.find(find => find.name === name)) {
+            contents = contents.map(({ ...test }) => {
+                if (test.name === name) test.value = value;
+                return test
+            })
+        }
+        else {
+            contents.push({
+                name,
+                value
+            })
+        }
+
+        console.log(setting);
+
+        /*
+        dispatch(editBlock(prop, {
+            content: contents,
+            contentType: [],
+            column: column,
+            headline: prop.label
+        }))   
+        */
+        
+        // setFocused(true);
+
+    }
+    /*
     const handleContentChange = (value) => {
         setContent(value);
+        console.log(prop)
         dispatch(editBlock(prop, {
-            content: value,
+            content: [
+                ...prop.setting.content,
+                content
+            ],
+            contentType: [
+                ...prop.setting.contentType,
+                value
+            ],
+            column: column,
             headline: prop.label
         }))   
         setFocused(true);
     }
-
+    */
+    
     return (
         <div style={{paddingBottom: 10}}>
             <div>
@@ -87,9 +163,8 @@ function SectionColumn(props) {
                                         </RadioGroup>
                                     </RemovePadding>
                                     <div style={{ marginTop: 10 }}>
-                                        <TextField focused={focused} onChange={handleContentChange} label="Content" value={content} autoComplete="off" />   
+                                        <input ref={searchInput} type={'text'} onChange={handleContentChange} value={text} autoComplete="off"/>
                                     </div>
-                                    
                                     </>
                                 ): (
                                     <TextField focused={focused} onChange={handleTextFieldChange} label="Label" value={textFieldValue} autoComplete="off" />
@@ -105,3 +180,4 @@ function SectionColumn(props) {
 }
 
 export default SectionColumn;
+

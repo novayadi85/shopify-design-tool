@@ -4,6 +4,8 @@ import engine  from "../helper/template";
 import { Helmet } from "react-helmet";
 import { Main, Section, Block } from "@styles/Main";
 import { Label } from "@shopify/polaris";
+import { iframeStyle } from '@styles/Iframe';
+import { SaButton } from "../styles/Iframe";
 
 const SimpleContent = (props) => {
     const { products: { items }, template: {items : sections}}  = useSelector(state => state);
@@ -39,10 +41,34 @@ const SimpleContent = (props) => {
     const renderChildren = ({ ID, items = [] }) => {
         return (
             <div>
-                <div  style={{marginLeft: '10px'}}>
-                    {items.map((value, index) => (
-                        <div key={index}>{value.label}</div>
-                ))}
+                <div style={{marginLeft: '10px'}}>
+                    {items.map((value, index) => {
+                        return (
+                            <div props={value} className={`sa-content`}>
+                                <div key={index}>{value.label}</div>
+                                <div className={`sa-row`}>
+                                {(value?.setting?.values) ? (
+                                    value.setting.values.map((item, idx) => {
+                                        return (
+                                            <div props={item} key={`${index}-${idx}`} className={`sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                {(item?.contentType && item.contentType.includes('button')) ? (
+                                                    <SaButton>{item.content}</SaButton>
+                                                ): (
+                                                    <>{item.content}</>
+                                                )}
+                                            </div>
+                                        )
+                                    })
+                                    
+                                    ): (
+                                        <></>    
+                                    )}
+                                </div>
+                            </div>
+                        )
+                    })}
+
+                        
                 </div>
             </div>
         )
@@ -52,9 +78,13 @@ const SimpleContent = (props) => {
         <Main>
             <Helmet>
                 <link rel="stylesheet" href={style} />
-                <style type="text/css">{`
+                <style type="text/css">{
+                `
                     .all-in-one-offer-product-variants.product-variants {display: none;}
-                `}</style>
+                    ${iframeStyle}
+                `
+                }
+                </style>
             </Helmet>
             <div>
                 {sections.map((value, index) => (

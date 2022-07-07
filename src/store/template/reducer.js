@@ -186,6 +186,13 @@ const templateReducer = (state = initialState, action) => {
                 return item;
             });
 
+            console.log({
+                ...state,
+                loading: false,
+                error: null,
+                items: state.items
+            })
+
             return {
                 ...state,
                 loading: false,

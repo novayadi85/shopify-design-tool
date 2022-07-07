@@ -10,6 +10,6 @@ const rootReducer = combineReducers({
     template: templateReducer,
     products: productReducer,
     sections: sectionReducer,
-    blocks: blockReducer
+    blocks: blockReducer,
 })
 export default rootReducer

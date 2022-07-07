@@ -74,7 +74,7 @@ function Section() {
 
     const ColumnBlocks = () => {
         return [...Array(selected - 1 + 1).keys()].map(x => x + 1).map((n) => {
-            return <SectionColumn key={n} type={'section'} value={value} column={n} handle={handle}/>
+            return <SectionColumn key={n} type={'section'} value={value} setting={value} column={n} handle={handle}/>
         })
     }
 

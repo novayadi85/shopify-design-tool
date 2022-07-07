@@ -32,6 +32,20 @@ function Home() {
     const dispatch = useDispatch();
 	const onSortEnd = ({ oldIndex, newIndex }) => {
         setItems(arrayMoveImmutable(items, oldIndex, newIndex));
+    };
+    
+    const onSortChildEnd = (data) => {
+        const { collection, newIndex, oldIndex } = data 
+        const updates = items.map(({...item}) => {
+            if (item.ID === collection) {
+                item.items = arrayMoveImmutable(item.items, oldIndex, newIndex)
+            }
+
+            return item;
+        })
+
+        setItems(updates);
+
 	};
     
     useEffect(() => {
@@ -48,9 +62,9 @@ function Home() {
     const renderChildren = ({ ID, items = [], open = false }) => {
         return (
             <div className={`collapse ${(open) ? 'visible': 'hidden'}`}>
-                <SortableContainer useDragHandle style={{marginLeft: '10px'}}>
+                <SortableContainer props={{ id: ID}}  onSortEnd={onSortChildEnd} useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
-                    <SortableItem key={`item-${index}`} index={index} value={value} />
+                    <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
                 ))}
                 </SortableContainer>
                 <PrimaryBox>
@@ -70,7 +84,7 @@ function Home() {
 	}
 
 	const SortableItem = sortableElement(({value}) => (
-		<li className={`nav nav-sidebar has-subnav`}>
+		<li className={`nav nav-sidebar has-subnav`} data-parent={value.ID}>
 			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? 'separator' : ''}`}>
 				<CollapseToggle value={value} className={`visible ${(value.type === 'section') ? 'visible': 'hidden'} ${(value.open) ? '': 'collapsed'}`}>
 					<Button onClick={() => collapseHandler(value)} icon={DropdownMinor}/>

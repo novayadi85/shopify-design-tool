@@ -36,7 +36,12 @@ import {
             icon: ProductsMinor,
             type: 'block',
             helpText: 'Insert product type',
-            setting: {}
+            setting: {
+                content: [],
+                values:[],
+                headline: 'Products',
+                contentType: []
+            }
         },
     ],
     loading: false,
