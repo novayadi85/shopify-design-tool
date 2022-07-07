@@ -85,7 +85,7 @@ function Background() {
 								<Field name={`background-color`}>
 									{({ input, meta, ...rest }) => (
 										<ColorPicker onChange={(val) => {
-											input.onChange(val)
+											input.onChange(rgbString(hsbToRgb(val)))
 											setColor(val)
 										}} name={input.name} color={color} allowAlpha />
 									)}

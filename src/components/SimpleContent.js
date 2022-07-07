@@ -6,11 +6,13 @@ import { Main, Section, Block } from "@styles/Main";
 import { Label } from "@shopify/polaris";
 import { iframeStyle } from '@styles/Iframe';
 import { SaButton } from "../styles/Iframe";
+import { css } from "styled-components";
 
 const SimpleContent = (props) => {
     const { products: { items }, template: {items : sections}, styles: { items: styles }}  = useSelector(state => state);
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
+    const [appendCss, setAppendCss] = useState('');
     const [style, setStyle] = useState('');
     useEffect(() => {
         setLoading(true);
@@ -31,13 +33,13 @@ const SimpleContent = (props) => {
                 setStyle(items.asset)
             }
 
-            setContent(html)
+            setContent(html);
+            setAppendCss(__styles(styles))
             setLoading(false);
+            console.log(appendCss)
         }
         renderHtml()
-    }, [items]);
-
-    console.log(styles)
+    }, [items, styles]);
 
     const renderChildren = ({ ID, items = [] }) => {
         return (
@@ -75,6 +77,18 @@ const SimpleContent = (props) => {
         )
 	}
 
+    const __styles = () => {
+        let css = ``
+        if (styles.length) {
+            styles.forEach((name, value) => {
+                css += `${name} : "${value}"`
+            })
+        }
+        
+
+        return css;
+    }
+
     return (
         <Main>
             <Helmet>
@@ -83,6 +97,8 @@ const SimpleContent = (props) => {
                 `
                     .all-in-one-offer-product-variants.product-variants {display: none;}
                     ${iframeStyle}
+                    .offer-container {${appendCss}}
+
                 `
                 }
                 </style>
