@@ -10,6 +10,7 @@ import {
   
   const initialState = {
     items: [
+        /*
         {
             handle: 'offer-top',
             url: '/#',
@@ -36,6 +37,17 @@ import {
             icon: NoteMajor,
             type: 'section',
             helpText: '',
+            setting: {}
+        },
+        */
+        {
+            handle: 'section',
+            url: '/#',
+            label: 'Section ',
+            separator: true,
+            icon: NoteMajor,
+            type: 'section',
+            helpText: 'Insert new section into content',
             setting: {}
         },
     ],
