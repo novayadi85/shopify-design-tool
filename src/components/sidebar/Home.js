@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {sortableContainer,sortableElement, sortableHandle } from 'react-sortable-hoc';
 import {Button, Icon, Spinner } from "@shopify/polaris";
 import { arrayMoveImmutable } from 'array-move';
-import { DropdownMinor, DragHandleMinor, NoteMajor } from "@shopify/polaris-icons";
+import { DropdownMinor, DragHandleMinor, SettingsMinor } from "@shopify/polaris-icons";
 import { Flex, PrimaryBox, ListItemWrapperContainer, CollapseToggle, ListItemContent, ListItemWrapper, ListItem, ListItemHandler, SidePanelAreaWrapper } from "@styles/Sidebar";
 import { updateSidebar } from "@store/template/action";
 import AddSection from "@components/actions/AddSection";
@@ -85,12 +85,12 @@ function Home() {
                                 <ListItem>
                                     <div className='prefixIcon'>
                                         <Icon
-                                            source={NoteMajor}
+                                            source={SettingsMinor}
                                             color="base"
                                         />
                                     </div>
                                     <div className='title'>
-                                        <ReactRouterLink className="removeUnderline" to={`/block/offer-container`}>Offer Content</ReactRouterLink>  
+                                        <ReactRouterLink className="removeUnderline" to={`/block/offer-container`}>Offer Setting</ReactRouterLink>  
                                     </div>
                                 </ListItem>
                             </ListItemWrapper>
