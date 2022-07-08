@@ -3,7 +3,8 @@ import { useState, useCallback } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { RemovePadding } from "../../styles/Sidebar";
-  
+import { Field } from 'react-final-form';
+
 function Text() {
 	const [open, setOpen] = useState(false);
 	const [lineHeight, setLineHeight] = useState('16');
@@ -46,52 +47,105 @@ function Text() {
 				expandOnPrint
 			>
 				<Wrapper className="container-fields" BorderBottom={true}>
-          <div style={{marginTop:10, marginBottom: 10}}>
-							<RemovePadding><Label>Text align</Label></RemovePadding>
-							<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Text align'}>
-								<Button size="slim"  pressed={(align === 'left')? true: false} onClick={() => handleAlignChange('left')}>Normal</Button>
-								<Button size="slim" pressed={(align === 'center')? true: false} onClick={() => handleAlignChange('center')}>Center</Button>
-								<Button size="slim" pressed={(align === 'right')? true: false} onClick={() => handleAlignChange('right')}>Right</Button>
-							</ButtonGroup>
-          </div>
+					<div style={{marginTop:10, marginBottom: 10}}>
+						<RemovePadding><Label>Text align</Label></RemovePadding>
+						<Field name={`text-align`}>
+							{({ input, meta, ...rest }) => (
+								<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Text align'}>
+									<Button size="slim"  pressed={(align === 'left')? true: false} onClick={() => {
+										handleAlignChange('left')
+										input.onChange('left')
+									}}>Normal</Button>
+									<Button size="slim" pressed={(align === 'center')? true: false} onClick={() => {
+										handleAlignChange('center')
+										input.onChange('center')
+									}}>Center</Button>
+									<Button size="slim" pressed={(align === 'right')? true: false} onClick={() => {
+										handleAlignChange('right')
+										input.onChange('right')
+									}}>Right</Button>
+								</ButtonGroup>
+							)}
+						</Field>
+					</div>
 
-          <div style={{marginTop:10, marginBottom: 10}}>
-							<RemovePadding><Label>Decoration</Label></RemovePadding>
-							<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Decoration'}>
-								<Button size="slim" pressed={(decoration === 'none')? true: false} onClick={() => handleDecorationChange('none')}>None</Button>
-								<Button size="slim" pressed={(decoration === 'overline')? true: false} onClick={() => handleDecorationChange('overline')}>Overline</Button>
-								<Button size="slim" pressed={(decoration === 'through')? true: false} onClick={() => handleDecorationChange('through')}>Through</Button>
-								<Button size="slim" pressed={(decoration === 'underline')? true: false} onClick={() => handleDecorationChange('underline')}>Underline</Button>
-							</ButtonGroup>
-          </div>
+					<div style={{marginTop:10, marginBottom: 10}}>
+						<RemovePadding><Label>Decoration</Label></RemovePadding>
+						<Field name={`text-decoration`}>
+							{({ input, meta, ...rest }) => (
+								<ButtonGroup className={'test'} style={{ marginTop: 10, marginBottom: 10 }} segmented label={'Decoration'}>
+									<Button onClick={() => {
+										handleDecorationChange('none')
+										input.onChange('none')
+									}} size="slim" pressed={(decoration === 'none') ? true : false}>None</Button>
+									<Button onClick={() => {
+										handleDecorationChange('overline')
+										input.onChange('overline')
+									}} size="slim" pressed={(decoration === 'overline') ? true : false}>Overline</Button>
+									<Button onClick={() => {
+										handleDecorationChange('through')
+										input.onChange('through')
+									}} size="slim" pressed={(decoration === 'through') ? true : false}>Through</Button>
+									<Button onClick={() => {
+										handleDecorationChange('underline')
+										input.onChange('underline')
+									}} size="slim" pressed={(decoration === 'underline') ? true : false}>Underline</Button>
+								</ButtonGroup>
+							)}
+						</Field>
+					</div>
 
-          <div style={{marginTop:10, marginBottom: 10}}>
-							<RemovePadding><Label>Text transform</Label></RemovePadding>
-							<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Font style'}>
-								<Button size="slim" pressed={(transform === 'uppercase')? true: false} onClick={() => handleTransformChange('uppercase')}>UPERCASE</Button>
-								<Button size="slim" pressed={(transform === 'lowercase')? true: false} onClick={() => handleTransformChange('lowercase')}>lowercase</Button>
-								<Button size="slim" pressed={(transform === 'capitalize')? true: false} onClick={() => handleTransformChange('capitalize')}>Capitalize</Button>
-								<Button size="slim" pressed={(transform === 'none')? true: false} onClick={() => handleTransformChange('none')}>None</Button>
-							</ButtonGroup>
-          </div>
+					<div style={{marginTop:10, marginBottom: 10}}>
+						<RemovePadding><Label>Text transform</Label></RemovePadding>
+						<Field name={`text-transform`}>
+							{({ input, meta, ...rest }) => (
+								<ButtonGroup className={'test'} style={{ marginTop: 10, marginBottom: 10 }} segmented label={'text transform'}>
+									<Button onClick={() => {
+										handleTransformChange('uppercase')
+										input.onChange('uppercase')
+									}} size="slim" pressed={(transform === 'uppercase') ? true : false}>UPERCASE</Button>
+									<Button onClick={() => {
+										handleTransformChange('lowercase')
+										input.onChange('lowercase')
+									}} size="slim" pressed={(transform === 'lowercase') ? true : false}>lowercase</Button>
+									<Button onClick={() => {
+										handleTransformChange('capitalize')
+										input.onChange('capitalize')
+									}} size="slim" pressed={(transform === 'capitalize') ? true : false}>Capitalize</Button>
+									<Button onClick={() => {
+										handleTransformChange('none')
+										input.onChange('none')
+									}} size="slim" pressed={(transform === 'none') ? true : false}>None</Button>
+								</ButtonGroup>
+							)}
+						</Field>
+					</div>
 
-          <RangeSlider
-							output
-							label="Line height"
-							min={0}
-							max={100}
-							step={1}
-							value={lineHeight}
-							fontSize={lineHeight}
-							onChange={setLineHeight}
-							suffix={<p style={suffixStyles}>{lineHeight}</p>}
-						/>
-
-						<ButtonGroup segmented>
-							<Button size="slim" pressed={(lineHeightType === 'px')? true: false} onClick={() => handleLineHeightTypeChange('px')}>px</Button>
-							<Button size="slim" pressed={(lineHeightType === 'vh')? true: false} onClick={() => handleLineHeightTypeChange('vh')}>vh</Button>
-							<Button size="slim" pressed={(lineHeightType === 'em')? true: false} onClick={() => handleLineHeightTypeChange('em')}>em</Button>
-						</ButtonGroup>
+					<Field name={`line-height`}>
+						{({ input, meta, ...rest }) => (
+							<RangeSlider
+								output
+								label="Line height"
+								min={0}
+								max={100}
+								step={1}
+								value={lineHeight}
+								fontSize={lineHeight}
+								onChange={(val) => {
+									input.onChange(`${val}${lineHeightType}`)
+									setLineHeight(val)
+								}}
+								name={input.name}
+								suffix={<p style={suffixStyles}>{lineHeightType}</p>}
+							/>
+						)}
+					</Field>
+					
+					<ButtonGroup segmented>
+						<Button size="slim" pressed={(lineHeightType === 'px')? true: false} onClick={() => handleLineHeightTypeChange('px')}>px</Button>
+						<Button size="slim" pressed={(lineHeightType === 'vh')? true: false} onClick={() => handleLineHeightTypeChange('vh')}>vh</Button>
+						<Button size="slim" pressed={(lineHeightType === 'em')? true: false} onClick={() => handleLineHeightTypeChange('em')}>em</Button>
+					</ButtonGroup>
 
 				</Wrapper>
 			</Collapsible>

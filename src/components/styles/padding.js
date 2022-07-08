@@ -2,7 +2,8 @@ import { Button, Collapsible, ButtonGroup, RangeSlider, Label } from "@shopify/p
 import { useState, useCallback } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
-  
+import { Field } from 'react-final-form';
+
 function Padding() {
 	const [open, setOpen] = useState(false);
 	const [topType, setTopType] = useState('auto');
@@ -50,67 +51,124 @@ function Padding() {
 						<div style={{ marginTop: 0, display: 'inline-block', width: '100%' }}>
 						<div style={{ marginTop: 0, marginBottom: 10 }}>
 							<Label>Padding Top</Label>
-							<ButtonGroup segmented>
-								<Button size="slim" pressed={(topType === 'auto')? true: false} onClick={() => handleTopTypeChange('auto')}>Auto</Button>
-								<Button size="slim" pressed={(topType === 'detail')? true: false} onClick={() => handleTopTypeChange('detail')}>Detail</Button>
-							</ButtonGroup>	
+							<Field name={`padding-top`}>
+								{({ input, meta, ...rest }) => (
+									<ButtonGroup segmented>
+										<Button size="slim" pressed={(topType === 'auto')? true: false} onClick={() => {
+										handleTopTypeChange('auto')
+										input.onChange('auto')
+									}}>Auto</Button>
+										<Button size="slim" pressed={(topType === 'detail')? true: false} onClick={() => {
+										handleTopTypeChange('detail')
+										input.onChange('detail')
+									}}>Detail</Button>
+									</ButtonGroup>	
+								)}
+							</Field>
 							{(topType === 'detail') ? (
-								<RangeSlider
-									output
-									label=""
-									min={0}
-									max={100}
-									step={1}
-									value={top}
-									fontSize={top}
-									onChange={setTop}
-									suffix={<p style={suffixStyles}>{top} {std}</p>}
-								/>
+								<Field name={`padding-top`}>
+									{({ input, meta, ...rest }) => (
+										<RangeSlider
+											output
+											label=""
+											min={0}
+											max={100}
+											step={1}
+											value={top}
+											fontSize={top}
+											onChange={(val) => {
+												setTop(val)
+												input.onChange(`${val}${std}`)
+											}}
+											suffix={<p style={suffixStyles}>{top} {std}</p>}
+											name={input.name}
+										/>
+									)}
+								</Field>
 							): (
 								<></>	
 							)}
 							
 						</div>
 						<div style={{ marginTop: 10, marginBottom: 10 }}>
-							<Label>Padding Left</Label>
-							<ButtonGroup segmented>
-								<Button size="slim" pressed={(leftType === 'auto')? true: false} onClick={() => handleLeftTypeChange('auto')}>Auto</Button>
-								<Button size="slim" pressed={(leftType === 'detail')? true: false} onClick={() => handleLeftTypeChange('detail')}>Detail</Button>
-							</ButtonGroup>	
+							<Label>Padding Left</Label>	
+							<Field name={`padding-left`}>
+								{({ input, meta, ...rest }) => (
+									<ButtonGroup segmented>
+										<Button size="slim" pressed={(leftType === 'auto')? true: false} onClick={() => {
+										handleLeftTypeChange('auto')
+										input.onChange('auto')
+									}}>Auto</Button>
+										<Button size="slim" pressed={(leftType === 'detail')? true: false} onClick={() => {
+										handleLeftTypeChange('detail')
+										input.onChange('detail')
+									}}>Detail</Button>
+									</ButtonGroup>	
+								)}
+							</Field>
 							{(leftType === 'detail') ? (
-								<RangeSlider
-									output
-									label="Left"
-									min={0}
-									max={100}
-									step={1}
-									value={left}
-									fontSize={left}
-									onChange={setLeft}
-									suffix={<p style={suffixStyles}>{left} {std}</p>}
-								/>) : (
+								<Field name={`padding-left`}>
+									{({ input, meta, ...rest }) => (
+										<RangeSlider
+											output
+											label="Left"
+											min={0}
+											max={100}
+											step={1}
+											value={left}
+											fontSize={left}
+											onChange={(val) => {
+												setLeft(val)
+												input.onChange(`${val}${std}`)
+											}}
+											suffix={<p style={suffixStyles}>{left} {std}</p>}
+											name={input.name}
+										/>
+									)}
+								</Field>
+								): (
 								<></>
 							)}
 						</div>
 
 						<div style={{ marginTop: 10, marginBottom: 10 }}>
 							<Label>Padding Bottom</Label>
-							<ButtonGroup segmented>
-								<Button size="slim" pressed={(bottomType === 'auto')? true: false} onClick={() => handleBottomTypeChange('auto')}>Auto</Button>
-								<Button size="slim" pressed={(bottomType === 'detail')? true: false} onClick={() => handleBottomTypeChange('detail')}>Detail</Button>
-							</ButtonGroup>	
+							<Field name={`padding-bottom`}>
+								{({ input, meta, ...rest }) => (
+									<ButtonGroup segmented>
+										<Button size="slim" pressed={(bottomType === 'auto')? true: false} onClick={() => {
+										handleBottomTypeChange('auto')
+										input.onChange('auto')
+									}}>Auto</Button>
+										<Button size="slim" pressed={(bottomType === 'detail')? true: false} onClick={() => {
+										handleBottomTypeChange('detail')
+										input.onChange('detail')
+									}}>Detail</Button>
+									</ButtonGroup>	
+								)}
+							</Field>
 							{(bottomType === 'detail') ? (
-								<RangeSlider
-									output
-									label="Bottom"
-									min={0}
-									max={100}
-									step={1}
-									value={bottom}
-									fontSize={bottom}
-									onChange={setBottom}
-									suffix={<p style={suffixStyles}>{bottom} {std}</p>}
-								/>) : (
+								<Field name={`padding-bottom`}>
+									{({ input, meta, ...rest }) => (
+										<RangeSlider
+											output
+											label="Bottom"
+											min={0}
+											max={100}
+											step={1}
+											value={bottom}
+											fontSize={bottom}
+											onChange={(val) => {
+												setBottom(val)
+												input.onChange(`${val}${std}`)
+											}}
+											suffix={<p style={suffixStyles}>{bottom} {std}</p>}
+											name={input.name}
+										/>
+									)}
+								</Field>
+
+								): (
 									<></>
 								)}
 
@@ -118,22 +176,40 @@ function Padding() {
 
 						<div style={{ marginTop: 10, marginBottom: 10 }}>
 							<Label>Padding Right</Label>
-							<ButtonGroup segmented>
-								<Button size="slim" pressed={(rightType === 'auto')? true: false} onClick={() => handleRightTypeChange('auto')}>Auto</Button>
-								<Button size="slim" pressed={(rightType === 'detail')? true: false} onClick={() => handleRightTypeChange('detail')}>Detail</Button>
-							</ButtonGroup>	
+							<Field name={`padding-right`}>
+								{({ input, meta, ...rest }) => (
+									<ButtonGroup segmented>
+										<Button size="slim" pressed={(rightType === 'auto')? true: false} onClick={() => {
+										handleRightTypeChange('auto')
+										input.onChange('auto')
+									}}>Auto</Button>
+										<Button size="slim" pressed={(rightType === 'detail')? true: false} onClick={() => {
+										handleRightTypeChange('detail')
+										input.onChange('detail')
+									}}>Detail</Button>
+									</ButtonGroup>	
+								)}
+							</Field>
 							{(rightType === 'detail') ? (
-								<RangeSlider
-									output
-									label="Right"
-									min={0}
-									max={100}
-									step={1}
-									value={right}
-									fontSize={right}
-									onChange={setRight}
-									suffix={<p style={suffixStyles}>{right} {std}</p>}
-								/>
+								<Field name={`padding-right`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										output
+										label="Right"
+										min={0}
+										max={100}
+										step={1}
+										value={right}
+										fontSize={right}
+										onChange={(val) => {
+											setRight(val)
+											input.onChange(`${val}${std}`)
+										}}
+										suffix={<p style={suffixStyles}>{right} {std}</p>}
+										name={input.name}
+									/>
+								)}
+							</Field>
 							) : (
 								<></>
 							)}

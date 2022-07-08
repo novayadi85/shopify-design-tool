@@ -91,13 +91,13 @@ function Background() {
 									)}
 								</Field>
 							</Popover>
-							<Field name={`background-opacity`}>
+							<Field name={`opacity`}>
 								{({ input, meta, ...rest }) => (
 									<RangeSlider
 										label="Opacity percentage"
 										value={rangeValue}
 										onChange={(val) => {
-											input.onChange(val)
+											input.onChange(`${val}%`)
 											handleRangeSliderChange(val)
 										}}
 										output

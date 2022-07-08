@@ -3,7 +3,8 @@ import { useState, useCallback } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { RemovePadding } from "../../styles/Sidebar";
-  
+import { Field } from 'react-final-form';
+
 function Font() {
 	const [open, setOpen] = useState(false);
 	const [selected, setSelected] = useState('normal');
@@ -69,59 +70,85 @@ function Font() {
 
 					<div style={{ marginTop: 10, display: 'inline-block', width: '100%' }}>
 						{(selected === 'google') ? (
-							<Select
-							label="Font family"
-							options={
-							[
-								{ value: "arial", label: "Arial" },
-								{ value: "arial black", label: "Arial Black" },
-								{ value: "comic sans ms", label: "Comic Sans MS" },
-								{ value: "georgia", label: "Georgia" },
-								{ value: "courier new", label: "Courier New" },
-								{ value: "helvetica", label: "Helvetica" },
-								{ value: "impact", label: "Impact" },
-								{ value: "serif", label: "Serif" },
-								{ value: "times new roman", label: "Times New Roman" },
-								{ value: "trebuchet ms", label: "Trebuchet MS" },
-								{ value: "verdana", label: "Verdana" },
-							]
-							}
-							onChange={setFontFamily}
-							value={fontFamily}
-							fontFamily={fontFamily}
-						/>
-
-						): (
-							<Select
-							label="Font family"
-							options={
-							[
-								{ value: "arial", label: "Arial" },
-								{ value: "arial black", label: "Arial Black" },
-								{ value: "comic sans ms", label: "Comic Sans MS" },
-								{ value: "georgia", label: "Georgia" },
-								{ value: "courier new", label: "Courier New" },
-								{ value: "helvetica", label: "Helvetica" },
-								{ value: "impact", label: "Impact" },
-								{ value: "serif", label: "Serif" },
-								{ value: "times new roman", label: "Times New Roman" },
-								{ value: "trebuchet ms", label: "Trebuchet MS" },
-								{ value: "verdana", label: "Verdana" },
-							]
-							}
-							onChange={setFontFamily}
-							value={fontFamily}
-							fontFamily={fontFamily}
-						/>
+						<Field name={`font-family`}>
+							{({ input, meta, ...rest }) => (
+								<Select
+									label="Font family"
+									options={
+									[
+										{ value: "arial", label: "Arial" },
+										{ value: "arial black", label: "Arial Black" },
+										{ value: "comic sans ms", label: "Comic Sans MS" },
+										{ value: "georgia", label: "Georgia" },
+										{ value: "courier new", label: "Courier New" },
+										{ value: "helvetica", label: "Helvetica" },
+										{ value: "impact", label: "Impact" },
+										{ value: "serif", label: "Serif" },
+										{ value: "times new roman", label: "Times New Roman" },
+										{ value: "trebuchet ms", label: "Trebuchet MS" },
+										{ value: "verdana", label: "Verdana" },
+									]
+									}
+									value={fontFamily}
+									fontFamily={fontFamily}
+									onChange={(val) => {
+										input.onChange(`${val}`)
+										setFontFamily(val)
+									}}
+									name={input.name}
+								/>
+								)}
+							</Field>
+						) : (
+							<Field name={`font-family`}>
+								{({ input, meta, ...rest }) => (
+									<Select
+										label="Font family"
+										options={
+										[
+											{ value: "arial", label: "Arial" },
+											{ value: "arial black", label: "Arial Black" },
+											{ value: "comic sans ms", label: "Comic Sans MS" },
+											{ value: "georgia", label: "Georgia" },
+											{ value: "courier new", label: "Courier New" },
+											{ value: "helvetica", label: "Helvetica" },
+											{ value: "impact", label: "Impact" },
+											{ value: "serif", label: "Serif" },
+											{ value: "times new roman", label: "Times New Roman" },
+											{ value: "trebuchet ms", label: "Trebuchet MS" },
+											{ value: "verdana", label: "Verdana" },
+										]
+										}
+										value={fontFamily}
+										fontFamily={fontFamily}
+										onChange={(val) => {
+											input.onChange(`${val}`)
+											setFontFamily(val)
+										}}
+										name={input.name}
+									/>
+								)}
+							</Field>
 
 						)}
 
 						<div style={{marginTop:10, marginBottom: 10}}>
 							<RemovePadding><Label>Font style</Label></RemovePadding>
-							<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Font style'}>
-								<Button size="slim" pressed={(fontStyle === 'normal')? true: false} onClick={() => handleFontStyleChange('normal')}>Normal</Button>
-								<Button size="slim" pressed={(fontStyle === 'italic')? true: false} onClick={() => handleFontStyleChange('italic')}>Italic</Button>
-							</ButtonGroup>
+							<Field name={`font-style`}>
+								{({ input, meta, ...rest }) => (
+									<ButtonGroup className={ 'test' } style={{marginTop:10, marginBottom: 10}} segmented label={'Font style'}>
+										<Button size="slim" pressed={(fontStyle === 'normal')? true: false} onClick={() => {
+										handleFontStyleChange('normal')
+										input.onChange('normal')
+									}}>Normal</Button>
+										<Button size="slim" pressed={(fontStyle === 'italic')? true: false} onClick={() => {
+										handleFontStyleChange('italic')
+										input.onChange('italic')
+									}}>Italic</Button>
+									</ButtonGroup>
+								)}
+							</Field>
+							
 						</div>
 						
 
@@ -130,40 +157,59 @@ function Font() {
 							activator={activator}
 							autofocusTarget="first-node"
 							onClose={togglePopoverActive}
-						>
-							<ColorPicker onChange={setColor} color={color} allowAlpha />
+						>	
+							<Field name={`color`}>
+								{({ input, meta, ...rest }) => (
+									<ColorPicker onChange={(val) => {
+										input.onChange(rgbString(hsbToRgb(val)))
+										setColor(val)
+									}} name={input.name} color={color} allowAlpha />
+								)}
+							</Field>
 						</Popover>
 
-						<RangeSlider
-							output
-							label="Font Weight"
-							min={100}
-							max={700}
-							step={100}
-							value={fontWeight}
-							fontWeight={fontWeight}
-							onChange={setFontWeight}
-							suffix={<p style={suffixStyles}>{fontWeight}</p>}
-						/>
-
-						<RangeSlider
-							output
-							label="Font Size"
-							min={0}
-							max={100}
-							step={1}
-							value={fontSize}
-							fontSize={fontSize}
-							onChange={setFontSize}
-							suffix={<p style={suffixStyles}>{fontSize}</p>}
-						/>
-
+						<Field name={`font-weight`}>
+							{({ input, meta, ...rest }) => (
+								<RangeSlider
+									output
+									label="Font Weight"
+									min={100}
+									max={700}
+									step={100}
+									value={fontWeight}
+									fontSize={fontWeight}
+									suffix={<p style={suffixStyles}>{fontWeight}</p>}
+									onChange={(val) => {
+										input.onChange(`${val}`)
+										setFontWeight(val)
+									}}
+									name={input.name}
+								/>
+							)}
+						</Field>
+						<Field name={`font-size`}>
+							{({ input, meta, ...rest }) => (
+								<RangeSlider
+									output
+									label="Font Size"
+									min={0}
+									max={100}
+									step={1}
+									value={fontSize}
+									fontSize={fontSize}
+									onChange={(val) => {
+										input.onChange(`${fontSize}${fontElement}`)
+										setFontSize(val)
+									}}
+									suffix={<p style={suffixStyles}>{fontSize}</p>}
+								/>
+							)}
+						</Field>
 						<ButtonGroup segmented>
 							<Button size="slim" pressed={(fontElement === 'px')? true: false} onClick={() => handleFontElmChange('px')}>px</Button>
 							<Button size="slim" pressed={(fontElement === 'vh')? true: false} onClick={() => handleFontElmChange('vh')}>vh</Button>
 							<Button size="slim" pressed={(fontElement === 'em')? true: false} onClick={() => handleFontElmChange('em')}>em</Button>
 						</ButtonGroup>
-
 					</div>
 
 					

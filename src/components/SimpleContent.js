@@ -7,6 +7,86 @@ import { Label } from "@shopify/polaris";
 import { iframeStyle } from '@styles/Iframe';
 import { SaButton } from "../styles/Iframe";
 import { css } from "styled-components";
+import { toCSS, toJSON } from 'cssjson';
+
+/*
+const jsonObject = {
+    "children": {
+      ".offer-container ": {
+        "attributes": {
+          "margin": "0 7.6%",
+          "width": "auto"
+        }
+      },
+    },
+}
+*/
+
+const convertCss = (string) => {
+    let jsonObject;
+    let skip = ['background-type', 'box-shadow-x', 'box-shadow-y', 'box-shadow-blur', 'box-shadow-width', 'box-shadow-color', 'border-type', 'background-opacity'];
+    /*
+    "box-shadow-x": "8px",
+    "box-shadow-y": "9px",
+    "box-shadow-blur": "9px",
+    "box-shadow-width": "8px",
+    */
+    if (string) {
+        let newObject = {};
+        let shadow = '{box-shadow-x} {box-shadow-y} {box-shadow-blur} {box-shadow-width} {box-shadow-color}';
+        Object.keys(string).forEach(key => {
+            if (!skip.includes(key)) {
+                newObject[key] = string[key];
+            }
+            if (['box-shadow-x', 'box-shadow-y','box-shadow-blur', 'box-shadow-width', 'box-shadow-color'].includes(key)) {
+                shadow = shadow.replace(`{${key}}`, string[key])
+            }
+
+            if ('border-type' === key) {
+                switch (string[key]) {
+                    case 'left':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    case 'bottom':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    
+                    case 'right':
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    
+                    case 'top':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+
+        });
+
+        newObject['box-shadow'] = shadow;
+        
+        jsonObject = {
+            "children": {
+                ".offer-container ": {
+                    "attributes": newObject
+                },
+            }
+        }
+        
+    }
+    return toCSS(jsonObject);
+}
 
 const SimpleContent = (props) => {
     const { products: { items }, template: {items : sections}, styles: { items: styles }}  = useSelector(state => state);
@@ -14,6 +94,7 @@ const SimpleContent = (props) => {
     const [content, setContent] = useState('');
     const [appendCss, setAppendCss] = useState('');
     const [style, setStyle] = useState('');
+    const states = useSelector(state => state);
     useEffect(() => {
         setLoading(true);
         async function renderHtml() {
@@ -40,6 +121,8 @@ const SimpleContent = (props) => {
         }
         renderHtml()
     }, [items, styles]);
+
+    console.log('states', states.styles.items)
 
     const renderChildren = ({ ID, items = [] }) => {
         return (
@@ -97,8 +180,7 @@ const SimpleContent = (props) => {
                 `
                     .all-in-one-offer-product-variants.product-variants {display: none;}
                     ${iframeStyle}
-                    .offer-container {${appendCss}}
-
+                    ${convertCss(states.styles.items)}
                 `
                 }
                 </style>

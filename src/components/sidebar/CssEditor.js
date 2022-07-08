@@ -109,9 +109,6 @@ function CssEditor() {
                                         <Block.Width />
                                         <Block.Height />
                                         <Block.Extra />
-                                        <pre style={style}>
-                                            <code>{JSON.stringify(values, null, 2)}</code>
-                                        </pre>
                                     </form>
                                         
                                 )}

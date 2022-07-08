@@ -2,7 +2,8 @@ import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Pop
 import { useState, useCallback } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
-  
+import { Field } from 'react-final-form';
+
 function Border() {
 	const [open, setOpen] = useState(false);
 	const [selected, setSelected] = useState('all');
@@ -58,63 +59,103 @@ function Border() {
 				expandOnPrint
 			>
 				<Wrapper className="container-fields" BorderBottom={true}>
-					<ButtonGroup segmented>
-						<Button size="slim" pressed={(selected === 'all')? true: false} onClick={() => handleTabChange('all')}>All</Button>
-						<Button size="slim" pressed={(selected === 'left')? true: false} onClick={() => handleTabChange('left')}>Left</Button>
-						<Button size="slim" pressed={(selected === 'top')? true: false} onClick={() => handleTabChange('top')}>Top</Button>
-						<Button size="slim" pressed={(selected === 'right')? true: false} onClick={() => handleTabChange('right')}>Right</Button>
-						<Button size="slim" pressed={(selected === 'bottom')? true: false} onClick={() => handleTabChange('bottom')}>Bottom</Button>
-					</ButtonGroup>
-          
+					<Field name={`border-type`}>
+						{({ input, meta, ...rest }) => (
+							<ButtonGroup segmented>
+								<Button size="slim" pressed={(selected === 'all') ? true : false} onClick={() => {
+									handleTabChange('all')
+									input.onChange('all');
+								}}>All</Button>
+								<Button size="slim" pressed={(selected === 'left')? true: false} onClick={() => {
+									handleTabChange('left')
+									input.onChange('left');
+								}}>Left</Button>
+								<Button size="slim" pressed={(selected === 'top')? true: false} onClick={() => {
+									handleTabChange('top')
+									input.onChange('top');
+								}}>Top</Button>
+								<Button size="slim" pressed={(selected === 'right')? true: false} onClick={() => {
+									handleTabChange('right')
+									input.onChange('right');
+								}}>Right</Button>
+								<Button size="slim" pressed={(selected === 'bottom')? true: false} onClick={() => {
+									handleTabChange('bottom')
+									input.onChange('bottom');
+								}}>Bottom</Button>
+							</ButtonGroup>
+						)}
+					</Field>
 
                <div style={{ marginTop: 10, display: 'inline-block', width: '100%' }}>
                   <div style={{marginTop:10, marginBottom: 10}}>
-                     <RangeSlider
-                        output
-                        label="Border Width"
-                        min={0}
-                        max={100}
-                        step={1}
-                        value={width}
-                        fontSize={width}
-                        onChange={setWidth}
-                        suffix={<p style={suffixStyles}>{width}</p>}
-                     />
-
+						<Field name={`border-width`}>
+							{({ input, meta, ...rest }) => (
+								<RangeSlider
+									output
+									label="Border Width"
+									min={0}
+									max={100}
+									step={1}
+									value={width}
+									fontSize={width}
+									suffix={<p style={suffixStyles}>{width}</p>}
+									onChange={(val) => {
+										input.onChange(`${val}${widthType}`)
+										setWidth(val)
+									}}
+									name={input.name}
+								/>
+							)}
+						</Field>
+							
                      <ButtonGroup segmented>
                         <Button size="slim" pressed={(widthType === 'px')? true: false} onClick={() => handleWidthTypeChange('px')}>px</Button>
                         <Button size="slim" pressed={(widthType === 'vh')? true: false} onClick={() => handleWidthTypeChange('vh')}>vh</Button>
                         <Button size="slim" pressed={(widthType === 'em')? true: false} onClick={() => handleWidthTypeChange('em')}>em</Button>
-                     </ButtonGroup>
+					</ButtonGroup>
+							
                   </div>
-                  <div style={{marginTop:10, marginBottom: 10}}>
-                     <Select
-                        label="Style"
-                        options={
-                        [
-                           { value: "solid", label: "solid" },
-                           { value: "dotted", label: "dotted" },
-                           { value: "dashed", label: "dashed" },
-                           { value: "double", label: "double" },
-                           { value: "groove", label: "groove" },
-                           { value: "ridge", label: "ridge" },
-                           { value: "inset", label: "inset" },
-                           { value: "outset", label: "outset" },
-                        ]
-                        }
-                        onChange={setStyle}
-                        value={style}
-                        fontFamily={style}
-                        />
-                  </div>
-
-                  <Popover
+						<div style={{ marginTop: 10, marginBottom: 10 }}>
+						<Field name={`border-style`}>
+							{({ input, meta, ...rest }) => (
+								<Select
+									label="Style"
+									options={
+									[
+									{ value: "solid", label: "solid" },
+									{ value: "dotted", label: "dotted" },
+									{ value: "dashed", label: "dashed" },
+									{ value: "double", label: "double" },
+									{ value: "groove", label: "groove" },
+									{ value: "ridge", label: "ridge" },
+									{ value: "inset", label: "inset" },
+									{ value: "outset", label: "outset" },
+									]
+									}
+									onChange={(val) => {
+										setStyle(val)
+										input.onChange(val)
+									}}
+									value={style}
+								/>
+							)}
+						</Field>
+                     
+						</div>
+                  	<Popover
 							active={popoverActive}
 							activator={activator}
 							autofocusTarget="first-node"
 							onClose={togglePopoverActive}
 						>
-							<ColorPicker onChange={setColor} color={color} allowAlpha />
+							<Field name={`border-color`}>
+								{({ input, meta, ...rest }) => (
+									<ColorPicker onChange={(val) => {
+										input.onChange(rgbString(hsbToRgb(val)))
+										setColor(val)
+									}} name={input.name} color={color} allowAlpha />
+								)}
+							</Field>
 						</Popover>
 
                </div>

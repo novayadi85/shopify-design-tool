@@ -2,11 +2,12 @@ import { Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, Te
 import { useState, useCallback } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
+import { Field } from 'react-final-form';
 
 function Shadow() {
 	const [open, setOpen] = useState(false);
-	const [y, setX] = useState(0);
-	const [x, setY] = useState(0);
+	const [y, setY] = useState(0);
+	const [x, setX] = useState(0);
 	const [width, setWidth] = useState(0);
 	const [blur, setBlur] = useState(0);
 
@@ -69,17 +70,25 @@ function Shadow() {
 				<Wrapper className="container-fields" BorderBottom={true}>
 					<div style={{ marginTop: 10, display: 'inline-block', width: '100%' }}>
 						<div style={{marginTop:0, marginBottom: '1rem'}}>
-							<RangeSlider
-								output
-								label="X"
-								min={0}
-								max={100}
-								step={1}
-								value={x}
-								fontSize={x}
-								onChange={setX}
-								suffix={<p style={suffixStyles}>{x}</p>}
-							/>
+							<Field name={`box-shadow-x`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										output
+										label="X Offset"
+										min={0}
+										max={100}
+										step={1}
+										value={x}
+										fontSize={x}
+										suffix={<p style={suffixStyles}>{x}{xType}</p>}
+										onChange={(val) => {
+											input.onChange(`${val}${xType}`)
+											setX(val)
+										}}
+										name={input.name}
+									/>
+								)}
+							</Field>
 
 							<ButtonGroup segmented>
 								<Button size="slim" pressed={(xType === 'px')? true: false} onClick={() => handlexTypeChange('px')}>px</Button>
@@ -89,17 +98,25 @@ function Shadow() {
 						</div>
 						
 						<div style={{marginTop:'1rem', marginBottom: '1rem'}}>
-							<RangeSlider
-								output
-								label="Y"
-								min={0}
-								max={100}
-								step={1}
-								value={y}
-								fontSize={y}
-								onChange={setY}
-								suffix={<p style={suffixStyles}>{y}</p>}
-							/>
+							<Field name={`box-shadow-y`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										output
+										label="Y Offset"
+										min={0}
+										max={100}
+										step={1}
+										value={y}
+										fontSize={y}
+										suffix={<p style={suffixStyles}>{x}{yType}</p>}
+										onChange={(val) => {
+											input.onChange(`${val}${yType}`)
+											setY(val)
+										}}
+										name={input.name}
+									/>
+								)}
+							</Field>
 
 							<ButtonGroup segmented>
 								<Button size="slim" pressed={(yType === 'px')? true: false} onClick={() => handleyTypeChange('px')}>px</Button>
@@ -109,17 +126,25 @@ function Shadow() {
 						</div>
 
 						<div style={{marginTop:'1rem', marginBottom: '1rem'}}>
-							<RangeSlider
-								output
-								label="Blur"
-								min={0}
-								max={100}
-								step={1}
-								value={blur}
-								fontSize={blur}
-								onChange={setBlur}
-								suffix={<p style={suffixStyles}>{blur}</p>}
-							/>
+							<Field name={`box-shadow-blur`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										output
+										label="Blur"
+										min={0}
+										max={100}
+										step={1}
+										value={blur}
+										fontSize={blur}
+										suffix={<p style={suffixStyles}>{blur}{blurType}</p>}
+										onChange={(val) => {
+											input.onChange(`${val}${blurType}`)
+											setBlur(val)
+										}}
+										name={input.name}
+									/>
+								)}
+							</Field>
 
 							<ButtonGroup segmented>
 								<Button size="slim" pressed={(blurType === 'px')? true: false} onClick={() => handleblurTypeChange('px')}>px</Button>
@@ -129,17 +154,25 @@ function Shadow() {
 						</div>
 
 						<div style={{marginTop:'1rem', marginBottom: '1rem'}}>
-							<RangeSlider
-								output
-								label="Width"
-								min={0}
-								max={100}
-								step={1}
-								value={width}
-								fontSize={width}
-								onChange={setWidth}
-								suffix={<p style={suffixStyles}>{width}</p>}
-							/>
+							<Field name={`box-shadow-width`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										output
+										label="Width"
+										min={0}
+										max={100}
+										step={1}
+										value={width}
+										fontSize={width}
+										suffix={<p style={suffixStyles}>{width}{widthType}</p>}
+										onChange={(val) => {
+											input.onChange(`${val}${widthType}`)
+											setWidth(val)
+										}}
+										name={input.name}
+									/>
+								)}
+							</Field>
 
 							<ButtonGroup segmented>
 								<Button size="slim" pressed={(widthType === 'px')? true: false} onClick={() => handlewidthTypeChange('px')}>px</Button>
@@ -154,7 +187,14 @@ function Shadow() {
 							autofocusTarget="first-node"
 							onClose={togglePopoverActive}
 						>
-							<ColorPicker onChange={setColor} color={color} allowAlpha />
+							<Field name={`box-shadow-color`}>
+								{({ input, meta, ...rest }) => (
+									<ColorPicker onChange={(val) => {
+										input.onChange(rgbString(hsbToRgb(val)))
+										setColor(val)
+									}} name={input.name} color={color} allowAlpha />
+								)}
+							</Field>
 						</Popover>
 						
 					</div>
