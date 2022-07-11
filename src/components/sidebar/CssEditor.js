@@ -7,7 +7,7 @@ import { Form, Field } from 'react-final-form';
 import { Button, Heading, Spinner } from '@shopify/polaris';
 import * as Block from '../styles';
 import { updateStyles } from '../../store/style/action';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AutoSave from '../actions/AutoSaveStyle';
 
 const style = {
@@ -63,6 +63,22 @@ function CssEditor({ type = false }) {
         await sleep(2000)
     }
 
+    
+
+    const InitialValues = () => {
+        const initial_values_styles = (useSelector(state => state.styles));
+        if (initial_values_styles.items) {
+            let found = initial_values_styles.items.find(item => item.ID === `sa-${type}-${handle}`);
+
+            if (found) return found.items;
+        }
+
+        return {};
+    }
+
+    const _initialValues = InitialValues(); 
+    console.log(_initialValues)
+
     return (
         <SidePanel>
             <SidePanelArea style={{padding: 0}}>
@@ -89,12 +105,7 @@ function CssEditor({ type = false }) {
                         <Section style={{ marginTop: '0' }}> 
                         <ul>
                             <Form onSubmit={save}
-                                initialValues={{
-                                    "background-image": "",
-                                    "background-repeat": "repeat-y",
-                                    "background-position": "center center",
-                                    "background-color": "#000000"
-                                }}
+                                initialValues={_initialValues}
                                 render={({ handleSubmit, form, submitting, pristine, values }) => (
                                     <form onSubmit={handleSubmit}>
                                         <AutoSave debounce={1000} save={save} />
