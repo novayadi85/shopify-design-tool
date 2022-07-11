@@ -102,7 +102,8 @@ const templateReducer = (state = initialState, action) => {
 
             const temp = [];
             items = items.map(({ ...item }) => {
-                item.ID = uuid();
+                // item.ID = uuid();
+                item.ID = item?.ID ?? uuid()
                 if (!temp.includes(item.ID)) {
                     temp.push(item.ID);
                 }
@@ -133,7 +134,7 @@ const templateReducer = (state = initialState, action) => {
             
                         const temp = [];
                         items = items.map(({ ...item }) => {
-                            item.ID = uuid();
+                            item.ID  = item?.ID ?? uuid();
                             if (!temp.includes(item.ID)) {
                                 temp.push(item.ID);
                             }

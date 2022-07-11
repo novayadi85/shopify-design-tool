@@ -22,6 +22,79 @@ const jsonObject = {
 }
 */
 
+const convertCssItem = (items) => {
+    let jsonObject = {
+        children: {}
+    };
+    
+    Object.keys(items).forEach(key => {
+        let item = items[key];
+        jsonObject['children'][`.${item.ID}`] = {
+            "attributes": getCssString(item.items)
+        }
+    })
+
+    
+    //console.log(jsonObject)
+    return toCSS(jsonObject);
+
+}
+
+
+const getCssString = (string) => {
+    let newObject = {};
+    let skip = ['background-type', 'box-shadow-x', 'box-shadow-y', 'box-shadow-blur', 'box-shadow-width', 'box-shadow-color', 'border-type', 'background-opacity'];
+    if (string) {
+        
+        let shadow = '{box-shadow-x} {box-shadow-y} {box-shadow-blur} {box-shadow-width} {box-shadow-color}';
+        Object.keys(string).forEach(key => {
+           // console.log(key)
+            if (!skip.includes(key)) {
+                newObject[key] = string[key];
+            }
+            if (['box-shadow-x', 'box-shadow-y','box-shadow-blur', 'box-shadow-width', 'box-shadow-color'].includes(key)) {
+                shadow = shadow.replace(`{${key}}`, string[key])
+            }
+
+            if ('border-type' === key) {
+                switch (string[key]) {
+                    case 'left':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    case 'bottom':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    
+                    case 'right':
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    
+                    case 'top':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+
+        });
+
+        newObject['box-shadow'] = shadow;
+
+    }
+
+    return newObject;
+}
+
 const convertCss = (string) => {
     let jsonObject;
     let skip = ['background-type', 'box-shadow-x', 'box-shadow-y', 'box-shadow-blur', 'box-shadow-width', 'box-shadow-color', 'border-type', 'background-opacity'];
@@ -117,12 +190,10 @@ const SimpleContent = (props) => {
             setContent(html);
             setAppendCss(__styles(styles))
             setLoading(false);
-            console.log(appendCss)
+            // console.log(appendCss)
         }
         renderHtml()
     }, [items, styles]);
-
-    console.log('states', states.styles.items)
 
     const renderChildren = ({ ID, items = [] }) => {
         return (
@@ -130,7 +201,7 @@ const SimpleContent = (props) => {
                 <div style={{marginLeft: '10px'}}>
                     {items.map((value, index) => {
                         return (
-                            <div key={`child-${index}`} props={value} className={`sa-content`}>
+                            <div key={`child-${index}`} props={value} className={`sa-content sa-block-${value.ID}`}>
                                 <div key={index}>{value.label}</div>
                                 <div className={`sa-row`}>
                                 {(value?.setting?.values) ? (
@@ -172,15 +243,16 @@ const SimpleContent = (props) => {
         return css;
     }
 
+    console.log('states', states)
     return (
         <Main>
             <Helmet>
                 <link rel="stylesheet" href={style} />
-                <style type="text/css">{
+                <style type="text/css">{ 
                 `
                     .all-in-one-offer-product-variants.product-variants {display: none;}
                     ${iframeStyle}
-                    ${convertCss(states.styles.items)}
+                    ${convertCssItem(states.styles.items)}
                 `
                 }
                 </style>
@@ -188,7 +260,7 @@ const SimpleContent = (props) => {
             <div className="sa-offer-container">
                 <div className="offer-container">
                     {sections.map((value, index) => (
-                        <Section key={index}>
+                        <Section className={`sa-section-${value.ID}`} key={index}>
                             <>
                                 <Label>{value.label}</Label>
                                 <Block>{renderChildren(value)}</Block>

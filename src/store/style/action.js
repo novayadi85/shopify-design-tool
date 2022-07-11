@@ -1,14 +1,14 @@
 export const UPDATE_STYLE   = 'UPDATE_STYLE';
 
-export const updateStyle = items => ({
+export const updateStyle = (type, items) => ({
   type: UPDATE_STYLE,
-  payload: { items }
+  payload: { type, items }
 });
 
 
-export function updateStyles(items) {
+export function updateStyles(type, items) {
     return dispatch => {
-        dispatch(updateStyle(items));
+        dispatch(updateStyle(type, items));
     };
 }
 

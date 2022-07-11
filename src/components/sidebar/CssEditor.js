@@ -22,7 +22,7 @@ const style = {
 };
 
 
-function CssEditor() {
+function CssEditor({ type = false }) {
     let { handle } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -59,7 +59,7 @@ function CssEditor() {
 
     const save = async lines => {
         console.log('Saving', lines)
-        dispatch(updateStyles(lines))
+        dispatch(updateStyles(`sa-${type}-${handle}`, lines))
         await sleep(2000)
     }
 
