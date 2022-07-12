@@ -404,7 +404,7 @@ const SimpleContent = (props) => {
                                     {(value?.setting?.values) ? (
                                         value.setting.values.map((item, idx) => {
                                             return (
-                                                <div props={item} key={`${index}-${idx}`} className={`sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>
                                                     {(item?.contentType && item.contentType.includes('button')) ? (
                                                         <SaButton>{item.content}</SaButton>
                                                     ): (
@@ -442,7 +442,7 @@ const SimpleContent = (props) => {
         return css;
     }
 
-    console.log(products)
+    console.log(states)
 
     return (
         <Main style={{display: 'block', width: '100%'}}>

@@ -37,7 +37,9 @@ function Product() {
     }, []);
 
     const handleSelectChange = useCallback((value) => setSelected(Number(value)), []);
+
     const { items } = useSelector(state => state.template);
+    const states = useSelector(state => state);
 
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -48,11 +50,31 @@ function Product() {
             column: selected,
             values: lines?.values ? lines.values : value.values,
         }))
+
+        // value.values = lines?.values ? lines.values : value.values;
+        states.template.items.forEach(async (item) => {
+            if (item.items) {
+                item.items.forEach(t => {
+                    if (t.ID === value.ID) {
+                        if (t?.setting?.values) {
+                            t.setting.values.map((tt, index) => {
+                                tt.key = index;
+                            })
+                        }
+
+                        setValue(t);
+                    }
+                })
+            }
+            
+        })
+
         await sleep(2000)
     }
     
     useEffect(() => {
         setLoading(true);
+        
         const options = async () => {
             const ops = [...Array(10 - 1 + 1).keys()].map(x => x + 1).map((n) => {
                 return {
@@ -62,7 +84,8 @@ function Product() {
 
             setColumns(ops);
         };
-
+        
+        
         setTimeout(() => {
             // call the function
             options().catch(console.error);
@@ -109,6 +132,7 @@ function Product() {
         
         dispatch(editBlock(value, {
             headline: value.label,
+            column: selected,
             values,
         })) 
         
@@ -122,9 +146,6 @@ function Product() {
         
     }, [selected]);
 
-    console.log(value)
-    
-    
     const backHandle = () => {
         navigate('/')
     }
@@ -142,12 +163,16 @@ function Product() {
     }
     */
     
-    const editCSSHandle = () => {
-        navigate(`/section/css/${handle}`);
+    const editCSSHandle = (item) => {
+        navigate(`/block/css/${handle}-column-${item.key}`, {
+            back : `/product/${handle}`
+        });
     }
+
+    console.log('columns', columns)
     
     return (
-        <SidePanel>
+        <SidePanel> 
             <SidePanelArea>
                 <Header>
                     <BackAction>
@@ -184,7 +209,7 @@ function Product() {
 
                                         <Form
                                             onSubmit={save}        
-                                            initialValues={{  }}
+                                            initialValues={{}}
                                             render={({ handleSubmit, form, submitting, pristine, values }) => (
                                                 <form onSubmit={handleSubmit}>
                                                     <AutoSave debounce={1000} save={save} />
@@ -198,7 +223,9 @@ function Product() {
                                                                                 <Heading><span className='capitalize'>{ `Column ${item.key}` }</span></Heading>
                                                                             </TitleWrapper>
                                                                             <ButtonRightWrapper style={{width: 'auto'}}>
-                                                                                <Button onClick={editCSSHandle}>Edit CSS</Button>
+                                                                                <Button onClick={() => {
+                                                                                    editCSSHandle(item);
+                                                                                }}>Edit CSS</Button>
                                                                             </ButtonRightWrapper>
                                                                         </BackAction>
                                                                     </Header>
@@ -247,6 +274,18 @@ function Product() {
                                                     ) : (
                                                         <></>
                                                     )}
+                                                    <pre style={{
+                                                        height: "195px",
+                                                        color: "#666",
+                                                        tabSize: 4,
+                                                        overflow: "auto",
+                                                        padding: "10px",
+                                                        border: "1px solid #e5e5e5",
+                                                        borderRadius: "3px",
+                                                        background: "#eee"
+                                                    }}>
+                                                        <code>{JSON.stringify(values, null, 2)}</code>
+                                                    </pre>
                                                 </form>
                                             )}
                                         />  

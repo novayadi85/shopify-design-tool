@@ -24,12 +24,14 @@ const style = {
 
 
 function CssEditor({ type = false }) {
-    let { handle } = useParams();
+    let params, { handle } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [selector, setSelector] = useState(handle);
+
+    console.log('params', params)
 
     useEffect(() => {
         setLoading(true);
@@ -51,9 +53,17 @@ function CssEditor({ type = false }) {
         }
         else if (location.pathname.includes('offer-css')) {
             navigate(`/`)
-        }  else {
+        }
+        if (location.pathname.includes('-column-')) {
+            let new_handle = handle.split('-column-');
+            console.log(new_handle)
+            navigate(`/product/${new_handle[0]}`)
+        }
+        else {
             navigate(`/section/${handle}`)
         }
+
+        
     }
 
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))

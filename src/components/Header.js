@@ -69,13 +69,16 @@ function Header() {
     useEffect(() => {
         if (items.length) {
             const { offer = {} } = items[0];
+            let pageDefault = null;
             let _options = Object.values(offer).map(item => {
+                pageDefault = item.id;
                 return {
                     label: item.title,
                     value: item.id
                 }
             })
             setOptions(_options)
+            dispatch(updatePage(pageDefault))
         }
         
     }, [items])
