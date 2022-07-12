@@ -16,24 +16,24 @@ export const iframeStyle = `
 
     .sa-row {
         display: block;
-        &:before{
-            content: "";
-            clear: both;
-        }
-        &:after{
-            content: "";
-            clear: both;
-        }
+    }
+    .sa-row:before, .sa-row:after {
+        content: "";
+        clear: both;
     }
 
     .sa-row > div {
         margin: 0.5rem;
     }
 
-    [class^=sa-columns-] {
+    .sa-columns-2,.sa-columns-3,.sa-columns-4,.sa-columns-5,.sa-columns-6,.sa-columns-7,.sa-columns-8,.sa-columns-9,.sa-columns-10 {
+        float: left !important;
         width: auto;
-        display: inline-block;
-        float: left;
+        display: inline-block !important;
+    }
+
+    .sa-columns-1{
+        float: none;
     }
 `
 
