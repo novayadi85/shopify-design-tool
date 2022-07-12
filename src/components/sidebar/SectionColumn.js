@@ -128,7 +128,7 @@ function SectionColumn(props) {
                 <Header>
                     <BackAction className={ 'space-between'}  style={{justifyContent: 'space-between'}}>
                         <TitleWrapper style={{padding: 0}}>
-                            <Heading><span className='capitalize'>{ `Column ${column}` }</span></Heading>
+                            <Heading style={{display: 'none'}}><span className='capitalize'>{ `Section` }</span></Heading>
                         </TitleWrapper>
                         <ButtonRightWrapper style={{width: 'auto'}}>
                             <Button onClick={editCSSHandle}>Edit CSS</Button>

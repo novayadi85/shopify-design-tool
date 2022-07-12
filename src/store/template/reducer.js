@@ -79,9 +79,11 @@ function uuid() {
     });
 }
 
+/*
 const uid = function(){
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
+*/
 
 const templateReducer = (state = initialState, action) => {
     const { type } = action
@@ -186,13 +188,6 @@ const templateReducer = (state = initialState, action) => {
 
                 return item;
             });
-
-            console.log({
-                ...state,
-                loading: false,
-                error: null,
-                items: state.items
-            })
 
             return {
                 ...state,

@@ -9,6 +9,7 @@ import * as Block from '../styles';
 import { updateStyles } from '../../store/style/action';
 import { useDispatch, useSelector } from 'react-redux';
 import AutoSave from '../actions/AutoSaveStyle';
+import { stdStyles } from '../../helper/style';
 
 const style = {
     height: "195px",
@@ -70,13 +71,22 @@ function CssEditor({ type = false }) {
         if (initial_values_styles.items) {
             let found = initial_values_styles.items.find(item => item.ID === `sa-${type}-${handle}`);
 
-            if (found) return found.items;
+            if (found) {
+                const extraCSS = found.items;
+                let newStyles = {
+                    ...stdStyles,
+                    ...extraCSS
+                }
+
+                return newStyles;
+            }
         }
 
-        return {};
+        return stdStyles;
     }
 
     const _initialValues = InitialValues(); 
+    
     console.log(_initialValues)
 
     return (

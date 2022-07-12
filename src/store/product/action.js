@@ -1,9 +1,15 @@
 export const FETCH_PRODUCTS_BEGIN   = 'FETCH_PRODUCTS_BEGIN';
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
 export const FETCH_PRODUCTS_FAILURE = 'FETCH_PRODUCTS_FAILURE';
+export const UPDATE_PAGE = 'UPDATE_PAGE';
 
 export const fetchProductsBegin = () => ({
   type: FETCH_PRODUCTS_BEGIN
+});
+
+export const updatePage = page => ({
+  type: UPDATE_PAGE,
+  payload: { page }
 });
 
 export const fetchProductsSuccess = products => ({
@@ -16,6 +22,12 @@ export const fetchProductsFailure = error => ({
   payload: { error }
 });
 
+
+export function setPage(id) {
+  return dispatch => {
+    dispatch(updatePage(id));
+  };
+};
 
 export function fetchProducts(url) {
   return dispatch => {

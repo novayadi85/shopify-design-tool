@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import ReactDOMServer from 'react-dom/server';
 import { useSelector, useDispatch } from 'react-redux';
 import engine  from "../helper/template";
 import { Helmet } from "react-helmet";
@@ -8,7 +9,11 @@ import { iframeStyle } from '@styles/Iframe';
 import { SaButton } from "../styles/Iframe";
 import { css } from "styled-components";
 import { toCSS, toJSON } from 'cssjson';
-
+import { useParams, useLocation } from "react-router-dom";
+import { ReactLiquid } from 'react-liquid'
+import { discounts, toFixedNumber } from "../helper/price";
+import { parseJSON } from "../helper/json";
+import { decodeHTML } from "../helper/html";
 /*
 const jsonObject = {
     "children": {
@@ -29,8 +34,16 @@ const convertCssItem = (items) => {
     
     Object.keys(items).forEach(key => {
         let item = items[key];
-        jsonObject['children'][`.${item.ID}`] = {
-            "attributes": getCssString(item.items)
+
+        if (item.ID.includes('global')) {
+            jsonObject['children'][`.sa-offer-container`] = {
+                "attributes": getCssString(item.items)
+            }
+        }
+        else {
+            jsonObject['children'][`.${item.ID}`] = {
+                "attributes": getCssString(item.items)
+            }
         }
     })
 
@@ -162,14 +175,19 @@ const convertCss = (string) => {
 }
 
 const SimpleContent = (props) => {
-    const { products: { items }, template: {items : sections}, styles: { items: styles }}  = useSelector(state => state);
+    const { products: { items, page }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
+    
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
     const [appendCss, setAppendCss] = useState('');
+    const [products, setProducts] = useState('');
     const [style, setStyle] = useState('');
     const states = useSelector(state => state);
+    const [fetchData, setFetchData] = useState(false)
+
     useEffect(() => {
         setLoading(true);
+        /*
         async function renderHtml() {
             let html = '';
             if (items?.template?.liquid) {
@@ -192,8 +210,185 @@ const SimpleContent = (props) => {
             setLoading(false);
             // console.log(appendCss)
         }
-        renderHtml()
-    }, [items, styles]);
+
+        // renderHtml()
+        */
+        
+        async function renderCSS() {
+            setAppendCss(__styles(styles))
+            setLoading(false);
+        }
+
+        renderCSS();
+        
+    }, [styles]);
+
+    const simulateFetchData = async (allowProduct) => {
+        const url = 'https://app.shopadjust-apps.com/packages/api/product?domain=finaltestoftheapp.myshopify.com';
+        return fetch(`${url}&id=${allowProduct}`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((response) => {
+            return response
+        });
+    }
+
+    const RenderOffer = () => {
+        const element = (
+            <>
+            {sections.map((value, index) => (
+                <Section className={`sa-section-${value.ID}`} key={index}>
+                    <>
+                        <Block>{renderChildren(value)}</Block>
+                    </>
+                </Section>
+            ))}  
+            </>
+        )
+
+        let params = products;
+
+        console.log('params', params)
+
+        const template = ReactDOMServer.renderToStaticMarkup(element);
+
+        return (
+            <ReactLiquid
+                template={template}
+                data={params}
+                render={(renderedTemplate) => {
+                    return <span dangerouslySetInnerHTML={renderedTemplate} />
+                }}
+            />
+        )
+    }
+
+    useEffect(() => {        
+        async function renderPage() {
+            setFetchData(true)
+            let _products = [];
+            let lang = 'en';
+            let params = {};
+            if (items.length) {
+                const { offer = {} } = items[0];
+                let template = Object.values(offer).find(item => {
+                    return item.id === page
+                })
+                /*
+                let allowProducts = template?.allowProducts ?? [];
+                if (allowProducts.length) {
+                    console.time("promise all");
+                    _products = await Promise.all(allowProducts.map(async (allowProduct) => {
+                        return await simulateFetchData(allowProduct);
+                    }))
+                    console.timeEnd("promise all");
+                }
+                */
+                
+                let totalNormalPrice = 0,
+                    totalOfferPrice = 0,
+                    totalOfferSave = 0;
+                
+                let _newProducts = [];
+                switch (template.group_type) {
+                    case 'tier':
+                        _newProducts = await Promise.all(template.childs.map(async (child) => {
+                            const { products: _tierProduct } = child;
+                            const tierProduct = JSON.parse(_tierProduct);
+                            let _product = await simulateFetchData(tierProduct.id);
+                            
+                            _product.price = _product.variants[0].price
+                            let prices = await (discounts({
+                                quantity: tierProduct.qty,
+                                specialPrice: tierProduct.specialPrice,
+                                priceType: child.value_type,
+                                groupType: child.group_type,
+                                price: _product.price
+                            }));
+    
+                            
+                            return {
+                                ..._product,
+                                ...{
+                                    quantity: tierProduct.qty,
+                                    productQuantity: tierProduct.qty,
+                                    specialPrice: tierProduct.specialPrice,
+                                    totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
+                                    totalOfferSave: prices.totalOfferSave,
+                                    offerPrice: child.specialPrice,
+                                    selectVariants: '',
+                                    totalOfferPrice: (prices.totalOfferPrice / 100),
+                                    totalNormalPrice: _product.price * Number(tierProduct.qty) / 100,
+                                    addToCart: '',
+                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
+                                },
+                                offerId: template.id
+                            }; 
+                        }))
+    
+                        _products = _newProducts
+                        break;
+                    default:
+                        const productOffers = JSON.parse(template.products);
+                        _products = await Promise.all(productOffers.map(async (child) => {
+                            const { id } = child;
+                            let _product = await simulateFetchData(id);
+                            _product.price = _product.variants.price
+                            let prices = await (discounts({
+                                quantity: child.qty,
+                                specialPrice: child.specialPrice,
+                                priceType: template.value_type,
+                                groupType: template.group_type,
+                                price: _product.price,
+                            }));
+
+                            return {
+                                ..._product,
+                                ...{
+                                    quantity: child.qty,
+                                    specialPrice: child.specialPrice,
+                                    offerPrice: prices.offerPrice,
+                                    OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
+                                    totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
+                                    selectVariants: '',
+                                    totalOfferPrice: (prices.totalOfferPrice / 100),
+                                    addToCart: '',
+                                    normalPrice: (_product.price / 100) * parseFloat(child.qty),
+                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    image: _product.media[0],
+                                    productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
+                                    
+                                },
+                                offerId: template.id
+                            }
+                        }))
+                            
+                    break;
+                }
+
+                params = {
+                    products: _products,
+                    addToCart: "Add To cart",
+                    headline: parseJSON(template[`headline_${lang}`]),
+                    description: decodeHTML(parseJSON(template[`description_${lang}`])),
+                    totalNormalPrice: totalNormalPrice,
+                    totalOfferPrice: totalOfferPrice,
+                    totalOfferSave: totalOfferSave,
+                    BuyNow: "Buy It NOW"
+                }
+
+
+            }
+
+            setProducts(params)
+            
+        }
+        renderPage();
+        
+    }, [page, fetchData]);
+    
 
     const renderChildren = ({ ID, items = [] }) => {
         return (
@@ -203,24 +398,28 @@ const SimpleContent = (props) => {
                         return (
                             <div key={`child-${index}`} props={value} className={`sa-content sa-block-${value.ID}`}>
                                 <div key={index}>{value.label}</div>
+                                {`{%- for product in products -%} `}
                                 <div className={`sa-row`}>
-                                {(value?.setting?.values) ? (
-                                    value.setting.values.map((item, idx) => {
-                                        return (
-                                            <div props={item} key={`${index}-${idx}`} className={`sa-columns-${value?.setting?.column} column-id-${item.key}`}>
-                                                {(item?.contentType && item.contentType.includes('button')) ? (
-                                                    <SaButton>{item.content}</SaButton>
-                                                ): (
-                                                    <>{item.content}</>
-                                                )}
-                                            </div>
-                                        )
-                                    })
+                                    
+                                    {(value?.setting?.values) ? (
+                                        value.setting.values.map((item, idx) => {
+                                            return (
+                                                <div props={item} key={`${index}-${idx}`} className={`sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                    {(item?.contentType && item.contentType.includes('button')) ? (
+                                                        <SaButton>{item.content}</SaButton>
+                                                    ): (
+                                                        <>{item.content}</>
+                                                    )}
+                                                </div>
+                                            )
+                                        })
                                     
                                     ): (
                                         <></>    
                                     )}
+                                    
                                 </div>
+                                {`{%- endfor -%}`}
                             </div>
                         )
                     })}
@@ -243,9 +442,10 @@ const SimpleContent = (props) => {
         return css;
     }
 
-    console.log('states', states)
+    console.log(products)
+
     return (
-        <Main>
+        <Main style={{display: 'block', width: '100%'}}>
             <Helmet>
                 <link rel="stylesheet" href={style} />
                 <style type="text/css">{ 
@@ -259,20 +459,15 @@ const SimpleContent = (props) => {
             </Helmet>
             <div className="sa-offer-container">
                 <div className="offer-container">
-                    {sections.map((value, index) => (
-                        <Section className={`sa-section-${value.ID}`} key={index}>
-                            <>
-                                <Label>{value.label}</Label>
-                                <Block>{renderChildren(value)}</Block>
-                            </>
-                        </Section>
-                    ))}
+                    
                 </div>
-                <p style={{marginTop: '5rem', borderTop: '1px solid #000'}}>Sample is like this :</p>
-                <div
-                    dangerouslySetInnerHTML={{__html: content}}
-                />
-
+                <RenderOffer/>
+                <div style={{display: 'none'}}>
+                    <p style={{marginTop: '5rem', borderTop: '1px solid #000'}}>Sample is like this :</p>
+                    <div
+                        dangerouslySetInnerHTML={{__html: content}}
+                    />
+                </div>
                 <pre style={{
                     height: "195px",
                     color: "#666",

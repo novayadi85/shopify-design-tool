@@ -30,7 +30,6 @@ export default function ActionListWithSuffixExample() {
         ...prev.slice(index + 1)
         ]);
 
-        console.log('actions', actions)
         dispatch(addSidebar(actions[index]))
         toggleActive();
     };

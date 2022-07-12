@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
     Layout,
     ButtonGroup,
@@ -10,8 +10,11 @@ import {
     Button
 } from "@shopify/polaris";
 import { ExitMajor, ExternalMinor } from "@shopify/polaris-icons";
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Device from "./header/device";
+import { useDispatch } from "react-redux";
+import { updatePage } from "../store/product/action";
 const TopBarContent = styled.div`
     min-height: 40px;
     
@@ -56,14 +59,33 @@ const ExitAction = styled.div`
 `
   
 function Header() {
-    const [selected, setSelected] = useState("today");
-    const handleSelectChange = useCallback((value) => setSelected(value), []);
-    const options = [
-        { label: "Buy more t-shirt and save money", value: "1" },
-        { label: "Buy more pan and save money", value: "2" },
-        { label: "Buy more cap and save money", value: "3" },
-    ];
+    const [selected, setSelected] = useState(null);
+    const [options, setOptions] = useState([]);
+    // const handleSelectChange = useCallback((value) => setSelected(value), []);
+    const { products: { items } } = useSelector(state => state);
+    const states= useSelector(state => state);
+    const dispatch = useDispatch();
     
+    useEffect(() => {
+        if (items.length) {
+            const { offer = {} } = items[0];
+            let _options = Object.values(offer).map(item => {
+                return {
+                    label: item.title,
+                    value: item.id
+                }
+            })
+            setOptions(_options)
+        }
+        
+    }, [items])
+
+    const handleSelectChange = useCallback((value) => {
+        setSelected(value)
+        dispatch(updatePage(value))
+
+    }, []);
+
     return (
         <header className="HeaderArea">
             <div className="TopBar">

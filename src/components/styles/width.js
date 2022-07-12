@@ -82,7 +82,7 @@ function Wide() {
 										output
 										label="Width"
 										min={0}
-										max={100}
+										max={(type === 'fixed') ? '1440':  100}
 										step={1}
 										value={width}
 										width={width}

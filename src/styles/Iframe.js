@@ -15,16 +15,25 @@ export const iframeStyle = `
     }
 
     .sa-row {
-        display: inline-flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-content: center;
-        justify-content: space-between;
-        align-items: flex-start;
+        display: block;
+        &:before{
+            content: "";
+            clear: both;
+        }
+        &:after{
+            content: "";
+            clear: both;
+        }
     }
 
     .sa-row > div {
         margin: 0.5rem;
+    }
+
+    [class^=sa-columns-] {
+        width: auto;
+        display: inline-block;
+        float: left;
     }
 `
 
