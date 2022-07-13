@@ -7,6 +7,7 @@ import {
 import Block from '@sidebar/Block';
 import Section from '@sidebar/Section';
 import Product from '@sidebar/Product';
+import ProductBlock from '@sidebar/ProductBlock'; 
 import Home from '@sidebar/Home';
 import CssEditor from '@sidebar/CssEditor';
 

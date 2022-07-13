@@ -402,15 +402,19 @@ const SimpleContent = (props) => {
                                 <div className={`sa-row`}>
                                     
                                     {(value?.setting?.values) ? (
-                                        value.setting.values.map((item, idx) => {
+                                        value.setting.values.filter(item => item.content !== '' ).map((item, idx) => {
                                             return (
-                                                <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                <>
                                                     {(item?.contentType && item.contentType.includes('button')) ? (
-                                                        <SaButton>{item.content}</SaButton>
+                                                        <SaButton key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>{item.content}</SaButton>
                                                     ): (
-                                                        <>{item.content}</>
+                                                        <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                            {item.content}
+                                                        </div>
                                                     )}
-                                                </div>
+                                                    
+                                                </>
+                                                
                                             )
                                         })
                                     
@@ -478,7 +482,7 @@ const SimpleContent = (props) => {
                     borderRadius: "3px",
                     background: "#eee"
                 }}>
-                    <code>{JSON.stringify(styles, null, 2)}</code>
+                    <code>{JSON.stringify(states.template, null, 2)}</code>
                 </pre>
             </div>
 
