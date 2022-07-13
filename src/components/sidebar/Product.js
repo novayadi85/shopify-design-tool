@@ -61,7 +61,6 @@ function Product() {
                 }))
             }
             
-            
             return item;
         });
 

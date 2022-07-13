@@ -104,8 +104,8 @@ function Home() {
     }
 
 	const collapseHandler = (value) => {
-		setItems(items.map(item => {
-			if (item.ID === value.ID) {
+		setItems(items.map(({...item}) => {
+            if (item.ID === value.ID) {
 				item.open = item.open ? false : true
 			}
 			return item;
@@ -115,9 +115,13 @@ function Home() {
 	const SortableItem = sortableElement(({value}) => (
 		<li className={`nav nav-sidebar has-subnav`} data-parent={value.ID}>
 			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? 'separator' : ''}`}>
-				<CollapseToggle value={value} className={`visible ${(value.type === 'section') ? 'visible': 'hidden'} ${(value.open) ? '': 'collapsed'}`}>
-					<Button onClick={() => collapseHandler(value)} icon={DropdownMinor}/>
-				</CollapseToggle>
+                {(!value?.child || value.child === false) ? (
+                <CollapseToggle value={value} className={`visible ${(value.type === 'section' && (value.child !== false)) ? 'visible' : 'hidden'} ${(value.open) ? '' : 'collapsed'}`}>
+                    <Button onClick={() => collapseHandler(value)} icon={DropdownMinor}/>
+                </CollapseToggle>
+                ) : (<></>)}
+                
+                
 				<ListItemContent>
 					<ListItemWrapper>
 						<ListItem>
@@ -169,7 +173,7 @@ function Home() {
                         <ParentSection/>
                         <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                             {items.map((value, index) => (
-                                <SortableItem key={`item-${index}`} index={index} value={value} />
+                                <SortableItem child={ value.child} key={`item-${index}`} index={index} value={value} />
                             ))}
                         </SortableContainer>   
                     </>

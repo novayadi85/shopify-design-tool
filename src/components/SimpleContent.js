@@ -328,7 +328,7 @@ const SimpleContent = (props) => {
                             }; 
                         }))
     
-                        _products = _newProducts
+                        _products = [_newProducts[0]]
                         break;
                     default:
                         const productOffers = JSON.parse(template.products);
@@ -388,6 +388,8 @@ const SimpleContent = (props) => {
         renderPage();
         
     }, [page, fetchData]);
+
+    console.log(states.template)
     
 
     const renderChildren = ({ ID, items = [] }) => {
@@ -395,9 +397,12 @@ const SimpleContent = (props) => {
             <div>
                 <div style={{marginLeft: '10px'}}>
                     {items.map((value, index) => {
+                        if (value.handle === 'product-block') {
+                            console.log("HANDLE", value.setting.values)
+                        }
                         return (
                             <div key={`child-${index}`} props={value} className={`sa-content sa-block-${value.ID}`}>
-                                {('block-product' === value.handle) ? (
+                                {('block-product' === value.handle || value.handle === 'offer-product') ? (
                                     <>
                                     {`{%- for product in products -%} `}
                                     <div className={`sa-row`}>
@@ -406,9 +411,9 @@ const SimpleContent = (props) => {
                                                 return (
                                                     <>
                                                         {(item?.contentType && item.contentType.includes('button')) ? (
-                                                            <SaButton key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>{item.content}</SaButton>
+                                                            <SaButton key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>{item.content}</SaButton>
                                                         ): (
-                                                            <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                            <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>
                                                                 {item.content}
                                                             </div>
                                                         )}
@@ -487,9 +492,10 @@ const SimpleContent = (props) => {
                     padding: "10px",
                     border: "1px solid #e5e5e5",
                     borderRadius: "3px",
-                    background: "#eee"
+                    background: "#eee",
+                    display: 'block'
                 }}>
-                    <code>{JSON.stringify(states.template, null, 2)}</code>
+                    <code>{JSON.stringify(states.styles, null, 2)}</code>
                 </pre>
             </div>
 

@@ -1,4 +1,3 @@
-/*
 import {
 	BlockMinor,
 	NoteMajor,
@@ -6,67 +5,52 @@ import {
 	ProductsMajor,
 } from "@shopify/polaris-icons";
 
-/*
+
 const _items = [
     {
-        handle: 'offer-content',
-        url: '/#',
-        label: 'Offer Content',
-        separator: true,
-        icon: NoteMajor,
-        type: 'section',
-    }, {
         handle: 'offer-top',
+        ID: uuid(),
         url: '/#',
         label: 'Offer top',
         icon: NoteMajor,
         type: 'section',
-        items: [
-            {
-                handle: 'headline',
-                url: '/#',
-                label: 'headline',
-                icon: TextAlignmentLeftMajor,
-                type: 'block',
-            },
-            {
-                handle: 'description',
-                url: '/#',
-                label: 'description',
-                icon: TextAlignmentLeftMajor,
-                type: 'block',
-            }
-        ]
+        items: []
     },
     {
+        ID: uuid(),
+        handle: 'offer-bottom',
+        url: '/#',
+        label: 'Offer Bottom',
+        separator: true,
+        icon: NoteMajor,
+        type: 'section',
+    }, 
+    {
+        ID: 'sa-product-block-offer',
         handle: 'offer-product',
         url: '/#',
-        label: 'Offer products',
+        label: 'Offer Products',
         icon: ProductsMajor,
         type: 'section',
         items: [
             {
-                handle: 'save',
-                url: '/#',
-                label: 'Save',
-                icon: TextAlignmentLeftMajor,
+                ID: 'sa-product-block-offer',
+                handle: 'block-product',
+                label: 'Products',
+                icon: ProductsMajor,
                 type: 'block',
-            },
-            {
-                handle: 'product-content',
-                url: '/#',
-                label: 'Product content',
-                icon: BlockMinor,
-                type: 'block',
+                setting: {
+                    values : []
+                }
             }
         ]
     }
 ];
-*/
+
 
 const initialState = {
     section: null,
-    items: [],
+    items: _items,
     loading: false,
     error: null
 };

@@ -49,6 +49,16 @@ import {
             type: 'section',
             helpText: 'Insert new section into content',
             setting: {}
+          },
+          {
+            handle: 'product-section',
+            url: '/#',
+            label: 'Product Section ',
+            separator: true,
+            icon: NoteMajor,
+            type: 'section',
+            helpText: 'Insert new product section',
+            setting: {}
         },
     ],
     loading: false,
