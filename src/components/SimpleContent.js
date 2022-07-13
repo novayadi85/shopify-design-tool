@@ -397,33 +397,40 @@ const SimpleContent = (props) => {
                     {items.map((value, index) => {
                         return (
                             <div key={`child-${index}`} props={value} className={`sa-content sa-block-${value.ID}`}>
-                                <div key={index}>{value.label}</div>
-                                {`{%- for product in products -%} `}
-                                <div className={`sa-row`}>
-                                    
-                                    {(value?.setting?.values) ? (
-                                        value.setting.values.filter(item => item.content !== '' ).map((item, idx) => {
-                                            return (
-                                                <>
-                                                    {(item?.contentType && item.contentType.includes('button')) ? (
-                                                        <SaButton key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>{item.content}</SaButton>
-                                                    ): (
-                                                        <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>
-                                                            {item.content}
-                                                        </div>
-                                                    )}
+                                {('block-product' === value.handle) ? (
+                                    <>
+                                    {`{%- for product in products -%} `}
+                                    <div className={`sa-row`}>
+                                        {(value?.setting?.values) ? (
+                                            value.setting.values.filter(item => item.content !== '' ).map((item, idx) => {
+                                                return (
+                                                    <>
+                                                        {(item?.contentType && item.contentType.includes('button')) ? (
+                                                            <SaButton key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>{item.content}</SaButton>
+                                                        ): (
+                                                            <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value?.setting?.column} column-id-${item.key}`}>
+                                                                {item.content}
+                                                            </div>
+                                                        )}
+                                                        
+                                                    </>
                                                     
-                                                </>
-                                                
-                                            )
-                                        })
+                                                )
+                                            })
+                                        
+                                        ): (
+                                            <></>    
+                                        )}
+                                        
+                                    </div>
+                                    {`{%- endfor -%}`}
+                                    </>
                                     
-                                    ): (
-                                        <></>    
-                                    )}
                                     
-                                </div>
-                                {`{%- endfor -%}`}
+                                ): (
+                                    <div key={index}>{value.label}</div>
+                                )}
+                                
                             </div>
                         )
                     })}
