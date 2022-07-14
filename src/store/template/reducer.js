@@ -32,6 +32,7 @@ const _items = [
         label: 'Offer Products',
         icon: ProductsMajor,
         type: 'section',
+        /*
         items: [
             {
                 ID: 'sa-product-block-offer',
@@ -44,6 +45,7 @@ const _items = [
                 }
             }
         ]
+        */
     }
 ];
 

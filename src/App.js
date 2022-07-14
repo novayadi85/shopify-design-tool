@@ -70,7 +70,7 @@ function App() {
 	useEffect(() => {
 		setIsLoading(true);
 
-		console.log('Hello From UseEffect!');
+		//console.log('Hello From UseEffect!');
 
 		setTimeout(() => {
 			return setIsLoading(false);

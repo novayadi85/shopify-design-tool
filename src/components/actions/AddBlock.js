@@ -37,7 +37,7 @@ export default function AddBlock({ handle }) {
             active: isClicked[i],
             content: a.label,
             helpText: a.helpText,
-            prefix: ('block-content' === a.handle) ? <Icon source={BlockMinor} /> : <Icon source={TextAlignmentLeftMajor} />
+            prefix: ('block-content' === a.handle) ? <Icon source={BlockMinor} /> : <Icon source={a.icon} />
         }))
 
         setLists(_lists);

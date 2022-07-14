@@ -37,7 +37,7 @@ function Block() {
             return item;
         })
 
-        console.log(_items)
+        //console.log(_items)
         dispatch(updateSidebar(_items));
         setActive(false);
         navigate('/');

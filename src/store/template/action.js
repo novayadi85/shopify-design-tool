@@ -48,7 +48,7 @@ export function addNewBlock(section, items) {
 }
 
 export function updateBlock(block, items) {
-  console.log(items)
+  //console.log(items)
   return dispatch => {
     dispatch(editBlock(block, items));
   };

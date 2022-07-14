@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from 'react-redux';
+import { useParams, useLocation } from "react-router-dom";
 import App from "./App.js";
 import store from '@store/index';
 import { AppProvider} from "@shopify/polaris";
@@ -13,8 +14,11 @@ import { fetchProducts } from "@store/product/action.js";
 const url = 'https://app.shopadjust-apps.com/packages/api?domain=finaltestoftheapp.myshopify.com';
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+
 (async () => {
-    store.dispatch(fetchProducts(url));
+    let params = new URLSearchParams(window.location.search);
+    let sourceid = params.get('id')
+    store.dispatch(fetchProducts(`${url}&id=${sourceid}`));
 })();
  
 const backup = console.warn;

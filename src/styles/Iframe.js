@@ -35,6 +35,15 @@ export const iframeStyle = `
     .sa-columns-1{
         float: none;
     }
+
+    .sa-display-columns {
+        float: left;
+    }
+
+    .sa-rows-columns {
+        CLEAR: both;
+        position: relative;
+    }
 `
 
 export const SaButton = styled.button``;

@@ -127,13 +127,23 @@ function Section() {
                             if (columns.length > 0) {
                                 return (
                                     <FormLayout>
-                                        <Select
-                                            label="Number of columns"
-                                            options={columns}
-                                            onChange={handleSelectChange}
-                                            value={selected}
-                                        />
-                                        <ColumnBlock/>    
+                                        {(handle === 'sa-product-block-offer') ? (
+                                            <>
+                                                <ColumnBlock/>  
+                                            </>
+                                        ): (
+                                                <>
+                                                    <Select
+                                                        label="Number of columns"
+                                                        options={columns}
+                                                        onChange={handleSelectChange}
+                                                        value={selected}
+                                                    />
+                                                    <ColumnBlock/>  
+                                                </>
+                                                  
+                                        )}
+                                          
                                     </FormLayout>
                                 )
                             }

@@ -12,12 +12,12 @@ export const Main = styled.div`
 
 export const Section = styled.section`
     margin-top: 0.5em;
-    padding: 10px;
+    padding: 0px;
     display: block;
     border: 1px dotted #bfbfff;
     position: relative;
 `
 export const Block = styled.aside`
-    padding: 10px;
+    padding: 0px;
     display: inline-block;
 `

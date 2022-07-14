@@ -31,7 +31,7 @@ function CssEditor({ type = false }) {
     const [loading, setLoading] = useState(true);
     const [selector, setSelector] = useState(handle);
 
-    console.log('params', params)
+    //console.log('params', params)
 
     useEffect(() => {
         setLoading(true);
@@ -56,7 +56,7 @@ function CssEditor({ type = false }) {
         }
         if (location.pathname.includes('-column-')) {
             let new_handle = handle.split('-column-');
-            console.log(new_handle)
+           // console.log(new_handle)
             navigate(`/product/${new_handle[0]}`)
         }
         else {
@@ -69,7 +69,7 @@ function CssEditor({ type = false }) {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const save = async lines => {
-        console.log('Saving', lines)
+        //console.log('Saving', lines)
         dispatch(updateStyles(`sa-${type}-${handle}`, lines))
         await sleep(2000)
     }
@@ -97,7 +97,7 @@ function CssEditor({ type = false }) {
 
     const _initialValues = InitialValues(); 
     
-    console.log(_initialValues)
+    //console.log(_initialValues)
 
     return (
         <SidePanel>

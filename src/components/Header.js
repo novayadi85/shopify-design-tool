@@ -70,6 +70,7 @@ function Header() {
         if (items.length) {
             const { offer = {} } = items[0];
             let pageDefault = null;
+            
             let _options = Object.values(offer).map(item => {
                 pageDefault = item.id;
                 return {
@@ -79,6 +80,8 @@ function Header() {
             })
             setOptions(_options)
             dispatch(updatePage(pageDefault))
+
+            //console.log('offer opt', {pageDefault})
         }
         
     }, [items])
@@ -88,6 +91,8 @@ function Header() {
         dispatch(updatePage(value))
 
     }, []);
+
+    //console.log('offer', selected)
 
     return (
         <header className="HeaderArea">

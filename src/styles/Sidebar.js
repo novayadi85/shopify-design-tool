@@ -57,7 +57,10 @@ export const Section = styled.div`
     margin-top: 2rem;
     padding: 0;
 `
-
+export const FieldGroup = styled.div`
+    margin-top: .8rem;
+    margin-bottom: .8rem;
+`
 
 export const SidePanelBottom = styled.div`
     padding: 0.7rem 10px 0.7rem;

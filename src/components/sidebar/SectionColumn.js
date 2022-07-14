@@ -2,8 +2,9 @@ import { useEffect, useCallback, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { Header, BackAction, TitleWrapper, ButtonRightWrapper, Section as SectionElement, RadioGroup, RemovePadding, Flex} from "@styles/Sidebar";
-import { Button, Heading, FormLayout, TextField, ChoiceList, Spinner } from '@shopify/polaris';
+import { Button, Heading, FormLayout, TextField, ChoiceList, Spinner, Select } from '@shopify/polaris';
 import { editBlock } from "@store/template/action";
+import SectionSetting from '../actions/SectionSetting';
 
 let contents = [];
 function SectionColumn(props) {
@@ -16,7 +17,7 @@ function SectionColumn(props) {
     const [focused, setFocused] = useState(prop?.label);
     const searchInput = useRef(null);
 
-    console.log(setting);
+    //console.log(setting);
 
     useEffect(() => {
         setLoading(false);
@@ -166,8 +167,16 @@ function SectionColumn(props) {
                                         <input ref={searchInput} type={'text'} onChange={handleContentChange} value={text} autoComplete="off"/>
                                     </div>
                                     </>
-                                ): (
-                                    <TextField focused={focused} onChange={handleTextFieldChange} label="Label" value={textFieldValue} autoComplete="off" />
+                                ) : (
+                                        <>
+                                            {('sa-product-block-offer' === handle) ? (
+                                                <SectionSetting props={props} />
+                                            ): (
+                                                <TextField focused={focused} onChange={handleTextFieldChange} label="Label" value={textFieldValue} autoComplete="off" />
+                                            )}
+                                            
+                                        </>
+                                    
                                 )}        
                             
                             

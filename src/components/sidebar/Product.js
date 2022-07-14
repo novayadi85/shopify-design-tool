@@ -194,9 +194,9 @@ function Product() {
         }
     }
 
-    console.log('use effect set', value)
-    console.log('use effect columns', columns)
-    console.log('_initialValues', initialValues)
+    //console.log('use effect set', value)
+    //console.log('use effect columns', columns)
+    //console.log('_initialValues', initialValues)
     
     return (
         <SidePanel> 
@@ -247,13 +247,9 @@ function Product() {
                                         <AutoSave debounce={1000} save={save} />
                                         {(columns?.setting?.values.length) ? (
                                             columns.setting.values.filter(col => col.key).map(col => {
-                                                console.log([
-                                                    col.key,
-                                                    col.index,
-                                                    col.content
-                                                ])
+                                               
                                                 return (
-                                                    <div data-values={`${col.key}`} key={`key-${col.key}`} style={{ marginTop: '1rem' }}>
+                                                    <div key={`key-${col.key}`} style={{ marginTop: '1rem' }}>
                                                         <Header>
                                                             <BackAction className={ 'space-between'}  style={{justifyContent: 'space-between'}}>
                                                                 <TitleWrapper style={{padding: 0}}>

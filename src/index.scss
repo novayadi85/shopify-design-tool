@@ -209,5 +209,13 @@ option[value="verdana"]{
     pointer-events: all;
     --padding: 5px;
   }
+
 }
 
+.truncate-text {
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}

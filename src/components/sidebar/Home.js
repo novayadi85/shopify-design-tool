@@ -113,7 +113,7 @@ function Home() {
 	}
 
 	const SortableItem = sortableElement(({value}) => (
-		<li className={`nav nav-sidebar has-subnav`} data-parent={value.ID}>
+		<li className={`nav nav-sidebar has-subnav`} parent={value.ID}>
 			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? 'separator' : ''}`}>
                 {(!value?.child || value.child === false) ? (
                 <CollapseToggle value={value} className={`visible ${(value.type === 'section' && (value.child !== false)) ? 'visible' : 'hidden'} ${(value.open) ? '' : 'collapsed'}`}>
@@ -133,12 +133,14 @@ function Home() {
 							</div>
                             <div className='title'>
                                 {(value.handle === 'block-product') ? (
-                                    <ReactRouterLink className="removeUnderline" to={{
+                                    <ReactRouterLink className="removeUnderline truncate-text" to={{
                                         pathname: `/product/${value.ID}`,
                                         state: value
-                                    }}>{(value.label) ? value.label : '...'}</ReactRouterLink>
+                                    }}>
+                                        {(value.label) ? value.label :  '...'}
+                                    </ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink className="removeUnderline" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? value.label : '...'}</ReactRouterLink>  
+                                    <ReactRouterLink className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? value.label : (value.handle === 'offer-product') ? "Offer Products" : '...'}</ReactRouterLink>  
                                 )}
 							</div>
 							
