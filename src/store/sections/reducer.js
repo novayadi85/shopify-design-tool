@@ -50,7 +50,7 @@ import {
             helpText: 'Insert new section into content',
             setting: {}
           },
-          {
+          /*{
             handle: 'product-section',
             url: '/#',
             label: 'Product Section ',
@@ -60,6 +60,7 @@ import {
             helpText: 'Insert new product section',
             setting: {}
         },
+        */
     ],
     loading: false,
     error: null
