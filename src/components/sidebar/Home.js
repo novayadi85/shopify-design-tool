@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {sortableContainer,sortableElement, sortableHandle } from 'react-sortable-hoc';
 import {Button, Icon, Spinner } from "@shopify/polaris";
 import { arrayMoveImmutable } from 'array-move';
-import { DropdownMinor, DragHandleMinor, SettingsMinor } from "@shopify/polaris-icons";
+import { DropdownMinor, DragHandleMinor, SettingsMinor, SectionMajor, BlockMinor, ProductsMajor, TextAlignmentLeftMajor, ButtonMinor} from "@shopify/polaris-icons";
 import { Flex, PrimaryBox, ListItemWrapperContainer, CollapseToggle, ListItemContent, ListItemWrapper, ListItem, ListItemHandler, SidePanelAreaWrapper } from "@styles/Sidebar";
 import { updateSidebar } from "@store/template/action";
 import AddSection from "@components/actions/AddSection";
@@ -110,7 +110,23 @@ function Home() {
 			}
 			return item;
 		}));
-	}
+    }
+    
+    const IconBlock = (value) => {
+        const Icons = {
+            'offer-top': SectionMajor,
+            'offer-bottom': SectionMajor,
+            'offer-product': ProductsMajor,
+            'block-editor': TextAlignmentLeftMajor,
+            'block-button': ButtonMinor,
+        }
+
+        if (!Icons[value.handle] && value.type === 'block') {
+            Icons[value.handle] = BlockMinor
+        }
+
+        return Icons[value.handle] ? Icons[value.handle] : SectionMajor
+    }
 
 	const SortableItem = sortableElement(({value}) => (
 		<li className={`nav nav-sidebar has-subnav`} parent={value.ID}>
@@ -125,12 +141,12 @@ function Home() {
 				<ListItemContent>
 					<ListItemWrapper>
 						<ListItem>
-							<div className='prefixIcon'>
-								<Icon
-									source={value.icon}
-									color="base"
+                            <div className='prefixIcon nodemayor'>
+                                <Icon
+                                    source={IconBlock(value)}
+                                    color="base"
                                 />
-							</div>
+                            </div>
                             <div className='title'>
                                 {(value.handle === 'block-product') ? (
                                     <ReactRouterLink className="removeUnderline truncate-text" to={{

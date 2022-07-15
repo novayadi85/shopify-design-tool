@@ -1,3 +1,5 @@
+import { updateSidebar } from "../template/action";
+
 export const FETCH_PRODUCTS_BEGIN   = 'FETCH_PRODUCTS_BEGIN';
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
 export const FETCH_PRODUCTS_FAILURE = 'FETCH_PRODUCTS_FAILURE';
@@ -39,6 +41,12 @@ export function fetchProducts(url) {
       .then(json => {
         dispatch(fetchProductsSuccess(json.data));
         return json.data;
+      }).then(data => {
+        let sch = data?.template?.schema ?? [];
+        if (sch.length >= 3) {
+          dispatch(updateSidebar(sch));
+        }
+       
       })
       .catch(error => dispatch(fetchProductsFailure(error)));
   };

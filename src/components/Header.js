@@ -94,6 +94,35 @@ function Header() {
 
     //console.log('offer', selected)
 
+    const handleSubmit = () => {
+        const url = 'https://app.shopadjust-apps.com/packages/api?domain=finaltestoftheapp.myshopify.com';
+        // return fetch('https://app.shopadjust-apps.com/packages/api?domain=finaltestoftheapp.myshopify.com').then(data => data.json()).catch(reason => console.log(reason))
+        (async () => {
+            console.log(states)
+            let params = new URLSearchParams(window.location.search);
+            let sourceid = params.get('id')
+            const rawResponse = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                mode: 'cors',
+                body: JSON.stringify({
+                    id: sourceid ? sourceid : states.products.items[0].templateId,
+                    schema: JSON.stringify(states.template),
+                    styles: JSON.stringify(states.styles),
+                    domain: 'finaltestoftheapp.myshopify.com'
+                })
+            }).catch(err => {
+                alert('We have CORS problem, I\'d like to back later!')
+            })
+
+            const content = await rawResponse.json();
+            console.log(content);
+            
+        })();
+    }
+
     return (
         <header className="HeaderArea">
             <div className="TopBar">
@@ -148,7 +177,7 @@ function Header() {
                             <TopBarContent>
                                 <ButtonGroup>
                                     <Device />
-                                    <Button primary>Save</Button>
+                                    <Button onClick={handleSubmit} primary>Save</Button>
                                 </ButtonGroup>
                             </TopBarContent>
                         </Flex>

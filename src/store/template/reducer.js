@@ -1,6 +1,6 @@
 import {
 	BlockMinor,
-	NoteMajor,
+	SectionMajor,
 	TextAlignmentLeftMajor,
 	ProductsMajor,
 } from "@shopify/polaris-icons";
@@ -12,7 +12,7 @@ const _items = [
         ID: uuid(),
         url: '/#',
         label: 'Offer top',
-        icon: NoteMajor,
+        icon: SectionMajor,
         type: 'section',
         items: []
     },
@@ -22,7 +22,7 @@ const _items = [
         url: '/#',
         label: 'Offer Bottom',
         separator: true,
-        icon: NoteMajor,
+        icon: SectionMajor,
         type: 'section',
     }, 
     {
