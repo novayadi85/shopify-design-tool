@@ -106,7 +106,7 @@ function Header() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                mode: 'cors',
+                // mode: 'no-cors',
                 body: JSON.stringify({
                     id: sourceid ? sourceid : states.products.items[0].templateId,
                     schema: JSON.stringify(states.template),
