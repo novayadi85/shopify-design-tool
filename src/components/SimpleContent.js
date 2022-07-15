@@ -185,7 +185,7 @@ const SimpleContent = (props) => {
     const states = useSelector(state => state);
     const [fetchData, setFetchData] = useState(false)
 
-    // console.log(states)
+    console.log(states.styles)
     useEffect(() => {
         setLoading(true);
         /*

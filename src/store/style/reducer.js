@@ -1,4 +1,4 @@
-import { UPDATE_STYLE } from './action';
+import { UPDATE_STYLE, REPLACE_ITEMS } from './action';
   
   const initialState = {
     items: [],
@@ -33,7 +33,17 @@ export default function styleReducer(state = initialState, action) {
             ...state,
               loading: true,
               error: null,
-            };
+        };
+      
+      case REPLACE_ITEMS:
+          // Mark the state as "loading" so we can show a spinner or something
+          // Also, reset any errors. We're starting fresh.
+          return {
+            loading: false,
+            error: null,
+            items: action.payload.items
+          };
+      
       default:
         return state;
     }

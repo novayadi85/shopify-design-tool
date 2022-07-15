@@ -1,4 +1,5 @@
 import { updateSidebar } from "../template/action";
+import { replaceCSS } from "../style/action";
 
 export const FETCH_PRODUCTS_BEGIN   = 'FETCH_PRODUCTS_BEGIN';
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
@@ -43,8 +44,14 @@ export function fetchProducts(url) {
         return json.data;
       }).then(data => {
         let sch = data?.template?.schema ?? [];
+        let cssStyles = data?.cssStyles ?? [];
+        console.log('cssStyles', cssStyles)
         if (sch.length >= 3) {
           dispatch(updateSidebar(sch));
+        }
+
+        if (cssStyles.length > 0) {
+          dispatch(replaceCSS(cssStyles));
         }
        
       })
