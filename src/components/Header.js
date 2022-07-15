@@ -102,7 +102,7 @@ function Header() {
             let params = new URLSearchParams(window.location.search);
             let sourceid = params.get('id')
             const rawResponse = await fetch(url, {
-                method: 'POST',
+                method: 'OPTIONS',
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -114,7 +114,8 @@ function Header() {
                     domain: 'finaltestoftheapp.myshopify.com'
                 })
             }).catch(err => {
-                alert('We have CORS problem, I\'d like to back later!')
+                console.log(err)
+                // alert('We have CORS problem, I\'d like to back later!')
             })
 
             const content = await rawResponse.json();
