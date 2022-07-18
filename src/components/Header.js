@@ -181,11 +181,7 @@ function Header() {
                 >
                     <Modal.Section>
                         <TextContainer>
-                            <p>
-                            Use Instagram posts to share your products with millions of
-                            people. Let shoppers buy from your store without leaving
-                            Instagram.
-                            </p>
+                            <p>Please edit template which used by offer.</p>
                         </TextContainer>
                     </Modal.Section>
                 </Modal>
@@ -242,7 +238,8 @@ function Header() {
                             <TopBarContent>
                                 <ButtonGroup>
                                     <Device />
-                                    <Button onClick={handleSubmit} primary>Save</Button>
+                                    {(!alert) ? (<Button onClick={handleSubmit} primary>Save</Button>) : (null)}
+                                    
                                 </ButtonGroup>
                             </TopBarContent>
                         </Flex>
