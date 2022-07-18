@@ -14,6 +14,7 @@ import { ReactLiquid } from 'react-liquid'
 import { discounts, toFixedNumber } from "../helper/price";
 import { parseJSON } from "../helper/json";
 import { decodeHTML } from "../helper/html";
+import { serviceUrl } from "../helper/url";
 /*
 const jsonObject = {
     "children": {
@@ -231,7 +232,8 @@ const SimpleContent = (props) => {
     }, [styles]);
 
     const simulateFetchData = async (allowProduct) => {
-        const url = 'https://app.shopadjust-apps.com/packages/api/product?domain=finaltestoftheapp.myshopify.com';
+        // const url = 'https://app.shopadjust-apps.com/packages/api/product?domain=finaltestoftheapp.myshopify.com';
+        const url = serviceUrl('product');
         return fetch(`${url}&id=${allowProduct}`)
         .then((response) => {
             return response.json();
@@ -372,8 +374,8 @@ const SimpleContent = (props) => {
                             })
 
                             _product.featured_image = '';
-                            if (_product.images.length >= 0) {
-                                _product.featured_image = _product.images[0]['src']
+                            if (_product?.images && _product.images.length >= 0) {
+                                _product.featured_image = _product.images[0]?.src
                                 // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
                             }
 
