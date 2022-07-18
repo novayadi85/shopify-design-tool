@@ -30,10 +30,6 @@ let logged_in = false;
         }));
 
         logged_in = true;
-        console.log('login by link', {
-            store: domain,
-            template_id: sourceid
-        })
         store.dispatch(fetchProducts(`${url}?domain=${domain}&id=${sourceid}`));
     }
     else {
@@ -43,8 +39,6 @@ let logged_in = false;
             let domain = configs.store;
             let sourceid = configs.template_id;
             logged_in = true;
-            console.log('configs', configs)
-            console.log('login by local', configs)
             store.dispatch(fetchProducts(`${url}?domain=${domain}&id=${sourceid}`));
         } catch (error) {
             

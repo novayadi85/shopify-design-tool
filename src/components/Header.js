@@ -8,7 +8,9 @@ import {
     Select,
     Label,
     Button,
-    Toast
+    Toast,
+    Modal,
+    TextContainer
 } from "@shopify/polaris";
 import { ExitMajor, ExternalMinor } from "@shopify/polaris-icons";
 import { useSelector } from 'react-redux';
@@ -62,6 +64,7 @@ const ExitAction = styled.div`
   
 function Header() {
     const [selected, setSelected] = useState(null);
+    const [alert, setAlert] = useState(false);
     const [options, setOptions] = useState([]);
     // const handleSelectChange = useCallback((value) => setSelected(value), []);
     const { products: { items } } = useSelector(state => state);
@@ -87,6 +90,11 @@ function Header() {
                     value: item.id
                 }
             })
+
+            if (_options.length <= 0) {
+                setAlert(true);
+            }
+
             setOptions(_options)
             dispatch(updatePage(pageDefault))
 
@@ -105,10 +113,20 @@ function Header() {
 
     const handleSubmit = () => {
         const url = serviceUrl();
+        
          (async () => {
-            console.log(states)
+             let domain = '';
             let params = new URLSearchParams(window.location.search);
-            let sourceid = params.get('id')
+             let sourceid = params.get('id')
+             
+             let configs = localStorage.getItem('sa-config');
+            try {
+                configs = JSON.parse(configs)
+                domain = configs.store;
+            } catch (error) {
+                
+            }
+                
             const rawResponse = await fetch(url, {
                 method: 'OPTIONS',
                 headers: {
@@ -119,7 +137,7 @@ function Header() {
                     id: sourceid ? sourceid : states.products.items[0].templateId,
                     schema: JSON.stringify(states.template),
                     styles: JSON.stringify(states.styles),
-                    domain: 'finaltestoftheapp.myshopify.com'
+                    domain: domain
                 })
             }).then(() => {
                 toggleActive();
@@ -147,9 +165,31 @@ function Header() {
         }
     }
 
+    const handleChange = useCallback(() => setAlert(!alert), [alert]);
+
     return (
         <header className="HeaderArea">
             <div className="TopBar">
+                <Modal
+                    open={alert}
+                    onClose={handleChange}
+                    title="There is no offers on this template,"
+                    primaryAction={{
+                        content: "Close",
+                        onAction: handleChange,
+                    }}
+                >
+                    <Modal.Section>
+                        <TextContainer>
+                            <p>
+                            Use Instagram posts to share your products with millions of
+                            people. Let shoppers buy from your store without leaving
+                            Instagram.
+                            </p>
+                        </TextContainer>
+                    </Modal.Section>
+                </Modal>
+                    
                 <Layout>
                     {toastMarkup}
                     <Layout.Section oneThird>
