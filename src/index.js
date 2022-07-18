@@ -11,14 +11,41 @@ import "@shopify/polaris/build/esm/styles.css";
 import "./index.scss";
 import { fetchProducts } from "@store/product/action.js";
 
-const url = 'https://app.shopadjust-apps.com/packages/api?domain=finaltestoftheapp.myshopify.com';
+const url = process.env.REACT_APP_REST_URL;
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+//?store=https://finaltestoftheapp.myshopify.com&id=YXBK-9384-34d49798354d26aa03393d51fe2e8585
+
+let logged_in = false;
 
 (async () => {
     let params = new URLSearchParams(window.location.search);
-    let sourceid = params.get('id')
-    store.dispatch(fetchProducts(`${url}&id=${sourceid}`));
+   
+    if (params.get('store') && params.get('id')) {
+        let sourceid = params.get('id');
+        let domain = params.get('store');
+        localStorage.setItem('sa-config', JSON.stringify({
+            store: domain,
+            template_id: sourceid
+        }));
+
+        logged_in = true;
+        store.dispatch(fetchProducts(`${url}?domain=${domain}&id=${sourceid}`));
+    }
+    else {
+        let configs = localStorage.getItem('sa-config');
+        try {
+            configs = JSON.parse(configs)
+            let domain = configs.store;
+            let sourceid = configs.template_id;
+            logged_in = true;
+            console.log('configs', configs)
+            store.dispatch(fetchProducts(`${url}?domain=${domain}&id=${sourceid}`));
+        } catch (error) {
+            
+        }
+        
+    }
 })();
  
 const backup = console.warn;

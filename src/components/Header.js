@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import Device from "./header/device";
 import { useDispatch } from "react-redux";
 import { updatePage } from "../store/product/action";
+import { serviceUrl } from "../helper/url";
 const TopBarContent = styled.div`
     min-height: 40px;
     
@@ -103,9 +104,8 @@ function Header() {
     //console.log('offer', selected)
 
     const handleSubmit = () => {
-        const url = 'https://app.shopadjust-apps.com/packages/api?domain=finaltestoftheapp.myshopify.com';
-        // return fetch('https://app.shopadjust-apps.com/packages/api?domain=finaltestoftheapp.myshopify.com').then(data => data.json()).catch(reason => console.log(reason))
-        (async () => {
+        const url = serviceUrl();
+         (async () => {
             console.log(states)
             let params = new URLSearchParams(window.location.search);
             let sourceid = params.get('id')
@@ -136,6 +136,17 @@ function Header() {
         })();
     }
 
+    const ExitApplication = () => {
+        let configs = localStorage.getItem('sa-config');
+        try {
+            configs = JSON.parse(configs)
+            let domain = configs.store;
+            window.location.href = `https://${domain}/${process.env.REACT_APP_ADMIN_PATH}` 
+        } catch (error) {
+            
+        }
+    }
+
     return (
         <header className="HeaderArea">
             <div className="TopBar">
@@ -151,7 +162,7 @@ function Header() {
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
-                                <Link className="ExitAction">
+                                <Link className="ExitAction" onClick={ExitApplication}>
                                     <ExitAction>
                                         <Icon source={ExitMajor} color="base"/>
                                     </ExitAction>
