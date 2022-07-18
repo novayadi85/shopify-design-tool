@@ -1,7 +1,7 @@
 
 import React from 'react';
-import MainRoutes from "@routes/index";
 import styled from 'styled-components';
+import Navigation from './Navigation';
 
 const SidePanel = styled.div`
 border-right: 0.0625rem solid var(--p-divider);
@@ -57,7 +57,7 @@ function Sidebar() {
 	return (
 			<SidePanel>
 				<SidePanelArea>
-					<MainRoutes/>
+					<Navigation/>
 				</SidePanelArea>
 			</SidePanel>
 		);

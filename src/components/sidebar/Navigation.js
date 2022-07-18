@@ -24,7 +24,7 @@ const SortableContainer = sortableContainer(({children}) => {
   return <ul>{children}</ul>;
 });
 
-function Home() {
+function Navigation() {
     const { items : _items} = useSelector(state => state.template);
     const state = useSelector(state => state);
 	const [items, setItems] = useState(_items);	
@@ -176,7 +176,6 @@ function Home() {
     
     return (
         <SidePanelAreaWrapper>
-            
             {(loading) ? (
                 <Flex>
                     <Spinner
@@ -207,4 +206,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Navigation;
