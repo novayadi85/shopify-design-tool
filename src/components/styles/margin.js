@@ -1,10 +1,11 @@
 import { Button, Collapsible, ButtonGroup, RangeSlider, Label } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
+import { getNumber } from "../../helper/number";
 
-function Margin() {
+function Margin({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [topType, setTopType] = useState('auto');
 	const [leftType, setLeftType] = useState('auto');
@@ -27,6 +28,42 @@ function Margin() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+
+		if (initialValues['margin-top']) {
+			if (getNumber(initialValues['margin-top'])) {
+				let str = getNumber(initialValues['margin-top']);
+				setTop(Number(str));
+				setTopType('detail')
+			}
+		}
+
+		if (initialValues['margin-left']) {
+			if (getNumber(initialValues['margin-left'])) {
+				let str = getNumber(initialValues['margin-left']);
+				setLeft(Number(str));
+				setLeftType('detail')
+			}
+		}
+
+		if (initialValues['margin-right']) {
+			if (getNumber(initialValues['margin-right'])) {
+				let str = getNumber(initialValues['margin-right']);
+				setRight(Number(str));
+				setRightType('detail')
+			}
+		}
+
+		if (initialValues['margin-bottom']) {
+			if (getNumber(initialValues['margin-bottom'])) {
+				let str = getNumber(initialValues['margin-bottom']);
+				setBottom(Number(str));
+				setBottomType('detail')
+			}
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

@@ -45,7 +45,7 @@ export function fetchProducts(url) {
       }).then(data => {
         let sch = data?.template?.schema ?? [];
         let cssStyles = data?.cssStyles ?? [];
-        console.log('cssStyles', cssStyles)
+        // console.log('cssStyles', cssStyles)
         if (sch.length >= 3) {
           dispatch(updateSidebar(sch));
         }

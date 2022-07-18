@@ -1,10 +1,10 @@
 import { Select, Button, Collapsible, ButtonGroup, RangeSlider } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
 
-function Height() {
+function Height({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [type, setType] = useState('screen');
 	const [typeElement, setTypeElement] = useState('px');
@@ -18,6 +18,13 @@ function Height() {
 		minHeight: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+		if (initialValues['height']) {
+			setHeight(initialValues['height']);
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

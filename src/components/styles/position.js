@@ -1,10 +1,11 @@
 import { Select, Button, Collapsible, ButtonGroup, RangeSlider, Label } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
+import { getNumber } from "../../helper/number";
 
-function Position() {
+function Position({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [_position, setPosition] = useState('relative');
 	
@@ -31,6 +32,41 @@ function Position() {
 	};
 
 	const std = 'px';
+
+	useEffect(() => {
+		if (initialValues['position']) {
+			setPosition(initialValues['position']);
+		}
+
+		if (initialValues['top']) {
+			if (getNumber(initialValues['top'])) {
+				let str = getNumber(initialValues['top']);
+				setTop(Number(str));
+			}
+		}
+
+		if (initialValues['left']) {
+			if (getNumber(initialValues['left'])) {
+				let str = getNumber(initialValues['left']);
+				setLeft(Number(str));
+			}
+		}
+
+		if (initialValues['right']) {
+			if (getNumber(initialValues['right'])) {
+				let str = getNumber(initialValues['right']);
+				setRight(Number(str));
+			}
+		}
+
+		if (initialValues['bottom']) {
+			if (getNumber(initialValues['bottom'])) {
+				let str = getNumber(initialValues['bottom']);
+				setBottom(Number(str));
+			}
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

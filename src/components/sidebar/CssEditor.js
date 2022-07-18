@@ -30,7 +30,7 @@ function CssEditor({ type = false }) {
     const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [selector, setSelector] = useState(handle);
-
+    const { products: { page },} = useSelector(state => state);
     //console.log('params', params)
 
     useEffect(() => {
@@ -49,18 +49,19 @@ function CssEditor({ type = false }) {
  
     const backHandle = () => {
         if (location.pathname.includes('block')) {
-            navigate(`/block/${handle}`)
+            return navigate(`/block/${handle}`)
         }
         else if (location.pathname.includes('offer-css')) {
-            navigate(`/`)
+            return navigate(`/`)
         }
+        
         if (location.pathname.includes('-column-')) {
             let new_handle = handle.split('-column-');
            // console.log(new_handle)
-            navigate(`/product/${new_handle[0]}`)
+           return navigate(`/product/${new_handle[0]}`)
         }
         else {
-            navigate(`/section/${handle}`)
+            return navigate(`/section/${handle}`)
         }
 
         
@@ -70,7 +71,16 @@ function CssEditor({ type = false }) {
 
     const save = async lines => {
         //console.log('Saving', lines)
-        dispatch(updateStyles(`sa-${type}-${handle}`, lines))
+        
+        if (handle === 'sa-product-block-offer') {
+            dispatch(updateStyles(`sa-${type}-${page}`, lines));
+        }
+        else if(handle === 'global') {
+            dispatch(updateStyles(`sa-global-${page}`, lines));
+        }
+        else {
+            dispatch(updateStyles(`sa-${type}-${handle}`, lines));
+        }
         await sleep(2000)
     }
 
@@ -78,14 +88,34 @@ function CssEditor({ type = false }) {
 
     const InitialValues = () => {
         const initial_values_styles = (useSelector(state => state.styles));
-        if (initial_values_styles.items) {
-            let found = initial_values_styles.items.find(item => item.ID === `sa-${type}-${handle}`);
+        let initialHandle = `sa-${type}-${handle}`;
 
+        if (handle === 'sa-product-block-offer') {
+            initialHandle = `sa-${type}-${page}`;
+        }
+        else if (handle === 'global') {
+            initialHandle = `sa-global-${page}`
+        }
+        else {
+            initialHandle = `sa-${type}-${handle}`;
+        }
+        
+        if (initial_values_styles.items) {
+            let found = initial_values_styles.items.find(item => item.ID === initialHandle);
+            
             if (found) {
                 const extraCSS = found.items;
                 let newStyles = {
                     ...stdStyles,
                     ...extraCSS
+                }
+
+                if (newStyles) {
+                    console.log('newStyles', newStyles)
+                    if (newStyles['background-type'] && newStyles['background-type'] === 'color') {
+                        delete newStyles['background'];
+                    }
+
                 }
 
                 return newStyles;
@@ -129,25 +159,38 @@ function CssEditor({ type = false }) {
                                 render={({ handleSubmit, form, submitting, pristine, values }) => (
                                     <form onSubmit={handleSubmit}>
                                         <AutoSave debounce={1000} save={save} />
-                                        <Block.Background />
-                                        <Block.Font />
-                                        <Block.Text />
-                                        <Block.Shadow />
-                                        <Block.Border />
-                                        <Block.Margin />
-                                        <Block.Padding />
-                                        <Block.Position />
-                                        <Block.Width />
-                                        <Block.Height />
-                                        <Block.Extra />
+                                        <Block.Background initialValues={_initialValues}/>
+                                        <Block.Font initialValues={_initialValues}/>
+                                        <Block.Text initialValues={_initialValues}/>
+                                        <Block.Shadow initialValues={_initialValues}/>
+                                        <Block.Border initialValues={_initialValues}/>
+                                        <Block.Margin initialValues={_initialValues}/>
+                                        <Block.Padding initialValues={_initialValues}/>
+                                        <Block.Position initialValues={_initialValues}/>
+                                        <Block.Width initialValues={_initialValues}/>
+                                        <Block.Height initialValues={_initialValues}/>
+                                        <Block.Extra initialValues={_initialValues}/>
                                     </form>
                                         
                                 )}
                             />
                                
                         </ul>
-                        
+                        <pre style={{
+                            height: "400px",
+                            color: "#666",
+                            tabSize: 4,
+                            overflow: "auto",
+                            padding: "10px",
+                            border: "1px solid #e5e5e5",
+                            borderRadius: "3px",
+                            background: "#eee",
+                            display: 'none'
+                        }}>
+                            <code>{JSON.stringify(_initialValues, null, 2)}</code>
+                        </pre>
                     </Section>   
+                    
                 )};
                 
             </SidePanelArea>

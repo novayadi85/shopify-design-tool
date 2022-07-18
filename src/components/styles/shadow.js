@@ -1,10 +1,12 @@
 import { Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, hsbToRgb, rgbString } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
+import { getNumber } from "../../helper/number";
+import { RGBAToHSB } from "../../helper/color";
 
-function Shadow() {
+function Shadow({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [y, setY] = useState(0);
 	const [x, setX] = useState(0);
@@ -47,6 +49,43 @@ function Shadow() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+		if (initialValues['box-shadow-x']) {
+			if (getNumber(initialValues['box-shadow-x'])) {
+				let str = getNumber(initialValues['box-shadow-x']);
+				setX(Number(str));
+			}
+		}
+
+		if (initialValues['box-shadow-y']) {
+			if (getNumber(initialValues['box-shadow-y'])) {
+				let str = getNumber(initialValues['box-shadow-y']);
+				setX(Number(str));
+			}
+		}
+
+		if (initialValues['box-shadow-blur']) {
+			if (getNumber(initialValues['box-shadow-blur'])) {
+				let str = getNumber(initialValues['box-shadow-blur']);
+				setBlur(Number(str));
+			}
+		}
+
+		if (initialValues['box-shadow-width']) {
+			if (getNumber(initialValues['box-shadow-width'])) {
+				let str = getNumber(initialValues['box-shadow-width']);
+				setWidth(Number(str));
+			}
+		}
+
+		if (initialValues['box-shadow-color']) {
+			let rba = initialValues['color']
+			let val = RGBAToHSB(rba);
+			setColor(val);
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

@@ -1,10 +1,10 @@
 import { Select, Button, Collapsible } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
 
-function Extra() {
+function Extra({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [clear, setClear] = useState('none');
 	const [cursor, setCursor] = useState('default');
@@ -14,6 +14,28 @@ function Extra() {
 
 	const handleToggle = useCallback(() => setOpen((open) => !open), []);
 
+	useEffect(() => {
+		if (initialValues['display']) {
+			setDisplay(initialValues['display']);
+		}
+
+		if (initialValues['cursor']) {
+			setCursor(initialValues['cursor']);
+		}
+
+		if (initialValues['clear']) {
+			setClear(initialValues['clear']);
+		}
+
+		if (initialValues['float']) {
+			setFloat(initialValues['float']);
+		}
+
+		if (initialValues['overflow']) {
+			setOverflow(initialValues['overflow']);
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

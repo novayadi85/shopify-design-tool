@@ -124,7 +124,7 @@ function SectionColumn(props) {
     */
     
     return (
-        <div style={{paddingBottom: 10}}>
+        <div style={{paddingBottom: 10, marginTop: 10}}>
             <div>
                 <Header>
                     <BackAction className={ 'space-between'}  style={{justifyContent: 'space-between'}}>

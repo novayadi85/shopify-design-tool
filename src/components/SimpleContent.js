@@ -27,16 +27,16 @@ const jsonObject = {
 }
 */
 
-const convertCssItem = (items) => {
+const convertCssItem = (items, page) => {
     let jsonObject = {
         children: {}
     };
     
     Object.keys(items).forEach(key => {
         let item = items[key];
-
+        /*
         if (item.ID.includes('global')) {
-            jsonObject['children'][`.sa-offer-container`] = {
+            jsonObject['children'][`.sa-global-${page}`] = {
                 "attributes": getCssString(item.items)
             }
         }
@@ -45,6 +45,12 @@ const convertCssItem = (items) => {
                 "attributes": getCssString(item.items)
             }
         }
+        */
+        
+        jsonObject['children'][`.${item.ID}`] = {
+            "attributes": getCssString(item.items)
+        }
+        
     })
 
     
@@ -185,7 +191,7 @@ const SimpleContent = (props) => {
     const states = useSelector(state => state);
     const [fetchData, setFetchData] = useState(false)
 
-    console.log(states.styles)
+    console.log(states)
     useEffect(() => {
         setLoading(true);
         /*
@@ -239,13 +245,13 @@ const SimpleContent = (props) => {
         const element = (
             <>
             {sections.map((value, index) => (
-                <Section className={(value.handle === 'offer-product') ? '': `sa-section-${value.ID}`} key={index}>
+                <Section className={`sa-section-${value.ID}`} key={index}>
                     <>
                     <Block>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
-                                    {renderChildren(value)}
+                                    {renderChildren(value, page)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (
@@ -451,10 +457,10 @@ const SimpleContent = (props) => {
 */
 
 
-    const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}) => {
+    const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}, page) => {
         return (
             <>
-                <div className={(handle === 'offer-product') ? `sa-${handle} sa-section-${ID} sa-rows-${setting.display}`: `sa-section-${ID}`}>
+                <div className={(handle === 'offer-product') ? `sa-${handle} sa-section-${page} sa-rows-${setting.display}`: `sa-section-${ID}`}>
                     {items.map((value, index) => {
                         if (value.handle === 'product-block') {
                            // console.log("HANDLE", value.setting.values)
@@ -537,12 +543,12 @@ const SimpleContent = (props) => {
                 `
                     .all-in-one-offer-product-variants.product-variants {display: none;}
                     ${iframeStyle}
-                    ${convertCssItem(states.styles.items)}
+                    ${convertCssItem(states.styles.items, page)}
                 `
                 }
                 </style>
             </Helmet>
-            <div className="sa-offer-container">
+            <div className={`sa-global-${page}`}>
                 <div className="offer-container">
                     
                 </div>
@@ -565,7 +571,7 @@ const SimpleContent = (props) => {
                     border: "1px solid #e5e5e5",
                     borderRadius: "3px",
                     background: "#eee",
-                    display: 'block'
+                    display: 'none'
                 }}>
                     <code>{JSON.stringify(products, null, 2)}</code>
                 </pre>

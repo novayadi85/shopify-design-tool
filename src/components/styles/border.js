@@ -1,10 +1,11 @@
 import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, hsbToRgb, rgbString } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect} from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
+import { RGBAToHSB } from "../../helper/color";
 
-function Border() {
+function Border({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [selected, setSelected] = useState('all');
 	const [widthType, setWidthType] = useState('px');
@@ -38,6 +39,52 @@ function Border() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+		if (initialValues['border-type']) {
+			setSelected(initialValues['border-type']);
+		}
+
+		if (initialValues['border-color']) {
+			let rba = initialValues['border-color']
+			let val = RGBAToHSB(rba);
+			setColor(val);
+		}
+
+		if (initialValues['border-width']) {
+			setWidth(initialValues['border-width']);
+		}
+
+		if (initialValues['border-style']) {
+			setStyle(initialValues['border-style']);
+		}
+
+		if (initialValues['border-style']) {
+			setStyle(initialValues['border-style']);
+		}
+
+		/*
+		if (initialValues['border-left']) {
+			setSelected('left');
+		}
+
+		if (initialValues['border-top']) {
+			setSelected('top');
+		}
+
+		if (initialValues['border-right']) {
+			setSelected('right');
+		}
+
+		if (initialValues['border-bottom']) {
+			setSelected('bottom');
+		}
+		*/
+
+		//"border-type": "left"
+
+	}, [])
+
 
 	return (
 		<li className="has-toggle">

@@ -1,9 +1,10 @@
-import { FormLayout, Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, hsbToRgb, rgbString } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { FormLayout, Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, hsbToRgb, rgbString, rgbToHsb } from "@shopify/polaris";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
-function Background() {
+import { RGBAToHSB } from "../../helper/color";
+function Background({initialValues}) {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(null);
 	const [color, setColor] = useState({
@@ -33,6 +34,24 @@ function Background() {
     const handleTabChange = useCallback((selectedTabIndex) => setSelected(selectedTabIndex),[]);
 	const handleToggle = useCallback(() => setOpen((open) => !open), []);
 	//eslint-disable-next-line
+
+	useEffect(() => {
+		if (initialValues['background-type']) {
+			setSelected(initialValues['background-type']);
+		}
+
+		if (initialValues['background-color']) {
+			let rba = initialValues['background-color']
+			let val = RGBAToHSB(rba);
+			setColor(val);
+		}
+
+		if (initialValues['opacity']) {
+			setRangeValue(initialValues['opacity']);
+		}
+
+	}, [])
+
     return (
         <li className="has-toggle">
           	<div className="flex link border-bottom" onClick={handleToggle}>
@@ -85,6 +104,7 @@ function Background() {
 								<Field name={`background-color`}>
 									{({ input, meta, ...rest }) => (
 										<ColorPicker onChange={(val) => {
+											console.log(val)
 											input.onChange(rgbString(hsbToRgb(val)))
 											setColor(val)
 										}} name={input.name} color={color} allowAlpha />

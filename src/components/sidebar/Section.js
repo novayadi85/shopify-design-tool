@@ -139,7 +139,7 @@ function Section() {
                                                         onChange={handleSelectChange}
                                                         value={selected}
                                                     />
-                                                    <ColumnBlock/>  
+                                                    <ColumnBlock style={{marginTop: 2}} />  
                                                 </>
                                                   
                                         )}

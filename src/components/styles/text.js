@@ -1,11 +1,12 @@
 import { Button, Collapsible, ButtonGroup, RangeSlider, Label} from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { RemovePadding } from "../../styles/Sidebar";
 import { Field } from 'react-final-form';
+import { getNumber } from "../../helper/number";
 
-function Text() {
+function Text({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [lineHeight, setLineHeight] = useState('16');
 	const [lineHeightType, setLineHeightType] = useState('px');
@@ -17,8 +18,8 @@ function Text() {
 
 	const handleAlignChange = useCallback((selectedTabIndex) => setAlign(selectedTabIndex),[]);
 	const handleDecorationChange = useCallback((selectedTabIndex) => setDecoration(selectedTabIndex),[]);
-  const handleTransformChange = useCallback((selectedTabIndex) => setTransform(selectedTabIndex), []);
-  const handleLineHeightTypeChange = useCallback((selectedTabIndex) => setLineHeightType(selectedTabIndex), []);
+	const handleTransformChange = useCallback((selectedTabIndex) => setTransform(selectedTabIndex), []);
+	const handleLineHeightTypeChange = useCallback((selectedTabIndex) => setLineHeightType(selectedTabIndex), []);
   
 	const handleToggle = useCallback(() => setOpen((open) => !open), []);
 
@@ -26,6 +27,27 @@ function Text() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+		if (initialValues['line-height']) {
+			if (getNumber(initialValues['line-height'])) {
+				let str = getNumber(initialValues['line-height']);
+				setLineHeight(Number(str));
+			}
+		}
+
+		if (initialValues['text-decoration']) {
+			setDecoration(initialValues['text-decoration']);
+		}
+
+		if (initialValues['text-transform']) {
+			setTransform(initialValues['text-transform']);
+		}
+
+	}, [])
+
+
+	console.log(lineHeight)
 
 	return (
 		<li className="has-toggle">
@@ -130,7 +152,7 @@ function Text() {
 								max={100}
 								step={1}
 								value={lineHeight}
-								fontSize={lineHeight}
+								lineHeight={lineHeight}
 								onChange={(val) => {
 									input.onChange(`${val}${lineHeightType}`)
 									setLineHeight(val)

@@ -1,10 +1,10 @@
 import { Select, Button, Collapsible, ButtonGroup, RangeSlider } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
 
-function Wide() {
+function Wide({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [type, setType] = useState('screen');
 	const [typeElement, setTypeElement] = useState('px');
@@ -18,6 +18,13 @@ function Wide() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+		if (initialValues['width']) {
+			setWidth(initialValues['width']);
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

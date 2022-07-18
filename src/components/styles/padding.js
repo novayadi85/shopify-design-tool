@@ -1,10 +1,11 @@
 import { Button, Collapsible, ButtonGroup, RangeSlider, Label } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
+import { getNumber } from "../../helper/number";
 
-function Padding() {
+function Padding({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [topType, setTopType] = useState('auto');
 	const [leftType, setLeftType] = useState('auto');
@@ -27,6 +28,42 @@ function Padding() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+
+		if (initialValues['padding-top']) {
+			if (getNumber(initialValues['padding-top'])) {
+				let str = getNumber(initialValues['margin-top']);
+				setTop(Number(str));
+				setTopType('detail')
+			}
+		}
+
+		if (initialValues['padding-left']) {
+			if (getNumber(initialValues['padding-left'])) {
+				let str = getNumber(initialValues['padding-left']);
+				setLeft(Number(str));
+				setLeftType('detail')
+			}
+		}
+
+		if (initialValues['padding-right']) {
+			if (getNumber(initialValues['padding-right'])) {
+				let str = getNumber(initialValues['padding-right']);
+				setRight(Number(str));
+				setRightType('detail')
+			}
+		}
+
+		if (initialValues['padding-bottom']) {
+			if (getNumber(initialValues['padding-bottom'])) {
+				let str = getNumber(initialValues['padding-bottom']);
+				setBottom(Number(str));
+				setBottomType('detail')
+			}
+		}
+
+	}, [])
 
 	return (
 		<li className="has-toggle">

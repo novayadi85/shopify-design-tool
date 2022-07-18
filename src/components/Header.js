@@ -7,7 +7,8 @@ import {
     Link,
     Select,
     Label,
-    Button
+    Button,
+    Toast
 } from "@shopify/polaris";
 import { ExitMajor, ExternalMinor } from "@shopify/polaris-icons";
 import { useSelector } from 'react-redux';
@@ -65,6 +66,13 @@ function Header() {
     const { products: { items } } = useSelector(state => state);
     const states= useSelector(state => state);
     const dispatch = useDispatch();
+
+    const [active, setActive] = useState(false);
+    const toggleActive = useCallback(() => setActive((active) => !active), []);
+
+    const toastMarkup = active ? (
+      <Toast content="Template saved" onDismiss={toggleActive} />
+    ) : null;
     
     useEffect(() => {
         if (items.length) {
@@ -113,9 +121,13 @@ function Header() {
                     styles: JSON.stringify(states.styles),
                     domain: 'finaltestoftheapp.myshopify.com'
                 })
-            }).catch(err => {
+            }).then(() => {
+                toggleActive();
+            })  
+            .catch(err => {
                 console.log(err)
                 // alert('We have CORS problem, I\'d like to back later!')
+                toggleActive();
             })
 
             const content = await rawResponse.json();
@@ -128,6 +140,7 @@ function Header() {
         <header className="HeaderArea">
             <div className="TopBar">
                 <Layout>
+                    {toastMarkup}
                     <Layout.Section oneThird>
                         <Stack>
                             <TopBarContent style={{

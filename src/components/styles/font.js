@@ -1,11 +1,12 @@
 import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Popover, TextField, Label, hsbToRgb, rgbString } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { RemovePadding } from "../../styles/Sidebar";
 import { Field } from 'react-final-form';
+import { RGBAToHSB } from "../../helper/color";
 
-function Font() {
+function Font({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [selected, setSelected] = useState('normal');
 	const [fontFamily, setFontFamily] = useState('arial');
@@ -42,6 +43,33 @@ function Font() {
 		minWidth: "24px",
 		textAlign: "right",
 	};
+
+	useEffect(() => {
+		if (initialValues['font-family']) {
+			setFontFamily(initialValues['font-family']);
+		}
+
+		if (initialValues['font-style']) {
+			setFontStyle(initialValues['font-style']);
+		}
+
+		if (initialValues['font-size']) {
+			setFontSize(initialValues['font-size']);
+		}
+
+		if (initialValues['color']) {
+			let rba = initialValues['color']
+			let val = RGBAToHSB(rba);
+			setColor(val);
+		}
+
+		if (initialValues['font-weight']) {
+			setFontWeight(initialValues['font-weight']);
+		}
+
+	}, [])
+
+	console.log('font-size', fontSize)
 
 	return (
 		<li className="has-toggle">

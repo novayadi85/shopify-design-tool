@@ -32,11 +32,11 @@ function BlockContent(props) {
         <>
             {(!prop?.handle) ? (
                 <FormLayout>
-                    <TextField disabled label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
+                    <TextField multiline={4} disabled label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
                 </FormLayout>
             ) : (
                 <FormLayout>
-                    <TextField label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
+                    <TextField  multiline={4} label="Text" focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
                 </FormLayout>
             )}
                  
