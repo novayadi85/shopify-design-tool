@@ -54,7 +54,8 @@ const initialState = {
     section: null,
     items: _items,
     loading: false,
-    error: null
+    error: null,
+    liquid: ''
 };
 
 
@@ -73,6 +74,7 @@ const uid = function(){
 
 const templateReducer = (state = initialState, action) => {
     const { type } = action
+
     switch (type) {
         case 'UPDATE_TEMPLATE':
             return {
@@ -81,7 +83,7 @@ const templateReducer = (state = initialState, action) => {
                 error: null,
                 items: action.payload.items
             };
-        
+
         case 'ADD_TEMPLATE':
             let items = [
                 ...state.items,
@@ -181,6 +183,7 @@ const templateReducer = (state = initialState, action) => {
                 error: null,
                 items: state.items
             };
+        
 
         default:
         return state

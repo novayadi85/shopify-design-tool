@@ -126,17 +126,20 @@ function Header() {
             } catch (error) {
                 
             }
-                
+             
+             console.log('states', states)
+             
             const rawResponse = await fetch(url, {
                 method: 'OPTIONS',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                // mode: 'no-cors',
+               //  mode: 'no-cors',
                 body: JSON.stringify({
                     id: sourceid ? sourceid : states.products.items[0].templateId,
                     schema: JSON.stringify(states.template),
                     styles: JSON.stringify(states.styles),
+                    liquid: JSON.stringify(states?.products?.liquid ?? []),
                     domain: domain
                 })
             }).then(() => {

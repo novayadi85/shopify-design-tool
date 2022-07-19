@@ -2,14 +2,16 @@ import {
     FETCH_PRODUCTS_BEGIN,
     FETCH_PRODUCTS_SUCCESS,
     FETCH_PRODUCTS_FAILURE,
-    UPDATE_PAGE
+  UPDATE_PAGE,
+  UPDATE_LIQUID
   } from './action';
   
   const initialState = {
     items: [],
     loading: false,
     error: null,
-    page: null
+    page: null,
+    liquid: []
   };
   
   export default function productReducer(state = initialState, action) {
@@ -32,6 +34,16 @@ import {
             error: null,
             page: action.payload.page
           };
+      
+    case UPDATE_LIQUID:
+        // Mark the state as "loading" so we can show a spinner or something
+        // Also, reset any errors. We're starting fresh.
+        return {
+          ...state,
+          loading: false,
+          error: null,
+          liquid: action.payload.liquid
+      };
       
       case FETCH_PRODUCTS_SUCCESS:
         // All done: set loading "false".

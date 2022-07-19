@@ -5,6 +5,7 @@ export const FETCH_PRODUCTS_BEGIN   = 'FETCH_PRODUCTS_BEGIN';
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
 export const FETCH_PRODUCTS_FAILURE = 'FETCH_PRODUCTS_FAILURE';
 export const UPDATE_PAGE = 'UPDATE_PAGE';
+export const UPDATE_LIQUID = 'UPDATE_LIQUID';
 
 export const fetchProductsBegin = () => ({
   type: FETCH_PRODUCTS_BEGIN
@@ -14,6 +15,12 @@ export const updatePage = page => ({
   type: UPDATE_PAGE,
   payload: { page }
 });
+
+export const updateLiquid = liquid => ({
+  type: UPDATE_LIQUID,
+  payload: { liquid }
+});
+
 
 export const fetchProductsSuccess = products => ({
   type: FETCH_PRODUCTS_SUCCESS,
@@ -32,6 +39,13 @@ export function setPage(id) {
   };
 };
 
+export function setLiquid(liquid) {
+  return dispatch => {
+    dispatch(updateLiquid(liquid));
+  };
+};
+
+
 export function fetchProducts(url) {
   return dispatch => {
     dispatch(fetchProductsBegin());
@@ -45,9 +59,14 @@ export function fetchProducts(url) {
       }).then(data => {
         let sch = data?.template?.schema ?? [];
         let cssStyles = data?.cssStyles ?? [];
+        let liquidCode = data?.template?.liquid ?? [];
         // console.log('cssStyles', cssStyles)
         if (sch.length >= 3) {
           dispatch(updateSidebar(sch));
+        }
+
+        if (liquidCode.length > 0) {
+          // dispatch(updateLiquid(liquidCode));
         }
 
         if (cssStyles.length > 0) {

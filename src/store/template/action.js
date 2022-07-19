@@ -3,7 +3,7 @@ export const GET_TEMPLATE   = 'GET_TEMPLATE';
 export const ADD_TEMPLATE   = 'ADD_TEMPLATE';
 export const ADD_BLOCK = 'ADD_BLOCK';
 export const UPDATE_BLOCK = 'UPDATE_BLOCK';
-
+export const UPDATE_LIQUID = 'UPDATE_LIQUID';
 
 export const update = items => ({
   type: UPDATE_TEMPLATE,
@@ -59,3 +59,4 @@ export function getSidebar() {
         dispatch(get());
     };
 }
+

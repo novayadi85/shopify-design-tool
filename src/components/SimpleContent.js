@@ -1,32 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOMServer from 'react-dom/server';
 import { useSelector, useDispatch } from 'react-redux';
-import engine  from "../helper/template";
 import { Helmet } from "react-helmet";
 import { Main, Section, Block } from "@styles/Main";
-import { Label } from "@shopify/polaris";
 import { iframeStyle } from '@styles/Iframe';
 import { SaButton } from "../styles/Iframe";
-import { css } from "styled-components";
 import { toCSS, toJSON } from 'cssjson';
-import { useParams, useLocation } from "react-router-dom";
 import { ReactLiquid } from 'react-liquid'
-import { discounts, toFixedNumber } from "../helper/price";
-import { parseJSON } from "../helper/json";
-import { decodeHTML } from "../helper/html";
-import { serviceUrl } from "../helper/url";
-/*
-const jsonObject = {
-    "children": {
-      ".offer-container ": {
-        "attributes": {
-          "margin": "0 7.6%",
-          "width": "auto"
-        }
-      },
-    },
-}
-*/
+import { discounts, toFixedNumber } from "@helper/price";
+import { parseJSON } from "@helper/json";
+import { decodeHTML } from "@helper/html";
+import { serviceUrl } from "@helper/url";
+import { setLiquid } from "@store/product/action";
+
 
 const convertCssItem = (items, page) => {
     let jsonObject = {
@@ -35,27 +21,11 @@ const convertCssItem = (items, page) => {
     
     Object.keys(items).forEach(key => {
         let item = items[key];
-        /*
-        if (item.ID.includes('global')) {
-            jsonObject['children'][`.sa-global-${page}`] = {
-                "attributes": getCssString(item.items)
-            }
-        }
-        else {
-            jsonObject['children'][`.${item.ID}`] = {
-                "attributes": getCssString(item.items)
-            }
-        }
-        */
-        
         jsonObject['children'][`.${item.ID}`] = {
             "attributes": getCssString(item.items)
         }
         
     })
-
-    
-    //console.log(jsonObject)
     return toCSS(jsonObject);
 
 }
@@ -183,7 +153,7 @@ const convertCss = (string) => {
 
 const SimpleContent = (props) => {
     const { products: { items, page }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
-    
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
     const [appendCss, setAppendCss] = useState('');
@@ -191,37 +161,10 @@ const SimpleContent = (props) => {
     const [style, setStyle] = useState('');
     const states = useSelector(state => state);
     const [fetchData, setFetchData] = useState(false)
+    const [liquidCode, setLiquidCode] = useState('');
 
-    console.log(states)
     useEffect(() => {
         setLoading(true);
-        /*
-        async function renderHtml() {
-            let html = '';
-            if (items?.template?.liquid) {
-                // console.log(items.template.liquid)
-                let params = {
-                    ...items.params,
-                    headline: "Headline",
-                    description: "description",
-                }
-                
-                html = await engine.parseAndRender(items.template.liquid, params).then(html => html);
-            }
-
-            if (items?.asset) {
-                setStyle(items.asset)
-            }
-
-            setContent(html);
-            setAppendCss(__styles(styles))
-            setLoading(false);
-            // console.log(appendCss)
-        }
-
-        // renderHtml()
-        */
-        
         async function renderCSS() {
             setAppendCss(__styles(styles))
             setLoading(false);
@@ -232,7 +175,6 @@ const SimpleContent = (props) => {
     }, [styles]);
 
     const simulateFetchData = async (allowProduct) => {
-        // const url = 'https://app.shopadjust-apps.com/packages/api/product?domain=finaltestoftheapp.myshopify.com';
         const url = serviceUrl('product');
         return fetch(`${url}&id=${allowProduct}`)
         .then((response) => {
@@ -267,19 +209,19 @@ const SimpleContent = (props) => {
         )
 
         let params = products;
-
-        //console.log('params', params)
-
         const template = ReactDOMServer.renderToStaticMarkup(element);
 
         return (
-            <ReactLiquid
+            <>
+                <ReactLiquid
                 template={template}
                 data={params}
                 render={(renderedTemplate) => {
                     return <span dangerouslySetInnerHTML={renderedTemplate} />
                 }}
             />
+            </>
+            
         )
     }
 
@@ -310,6 +252,7 @@ const SimpleContent = (props) => {
                     totalOfferSave = 0;
                 
                 let _newProducts = [];
+                // console.log('template.group_type', template.group_type)
                 switch (template.group_type) {
                     case 'tier':
                         _newProducts = await Promise.all(template.childs.map(async (child) => {
@@ -349,7 +292,91 @@ const SimpleContent = (props) => {
     
                         _products = _newProducts
                         break;
+                    
+                        case 'collect_volume_off':
+                            let collections = JSON.parse(template.collections);
+                            const { product: _childs, discount,  discount_type, collection_in_products} = collections;
+                            const extra_conditions = JSON.parse(template.extra_conditions);
+                            console.log('template', collections)
+                            let _product = await simulateFetchData(collection_in_products[0]);
+                            _product.price = Number(_product.variants[0].price) * 100
+
+                            let products = [];
+                            for (const [index, child] of Object.entries(_childs)) {
+                                _product.price = Number(_product.variants[0].price) * 100
+                                let prices = await (discounts({
+                                    quantity: child,
+                                    specialPrice: discount,
+                                    priceType: template.value_type,
+                                    groupType: template.group_type,
+                                    price: _product.price
+                                }));
+
+                                console.log('prices 1', prices)
+
+                                products.push({
+                                    ..._product,
+                                    ...{
+                                        quantity: child,
+                                        specialPrice: discount,
+                                        offerPrice: prices.offerPrice,
+                                        OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
+                                        totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
+                                        selectVariants: '',
+                                        totalOfferPrice: (prices.totalOfferPrice / 100),
+                                        addToCart: '',
+                                        normalPrice: (_product.price / 100) * parseFloat(child),
+                                        imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                        image: _product?.media ? _product.media[0] : '',
+                                        productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
+                                        
+                                        
+                                    },
+                                    offerId: template.id
+                                })
+                            }
+                            
+                            for (const [index, child] of Object.entries(extra_conditions)) {
+                                if (child.quantity && child.discount) {
+                                    let prices = await (discounts({
+                                        quantity: child.quantity,
+                                        specialPrice: child.discount,
+                                        priceType: discount_type,
+                                        groupType: template.group_type,
+                                        price: _product.price
+                                    }));
+
+                                    console.log('prices 2', prices)
+
+                                    products.push({
+                                        ..._product,
+                                        ...{
+                                            quantity: child.quantity,
+                                            productQuantity: child.quantity,
+                                            specialPrice: child.discount,
+                                            totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
+                                            offerPrice: prices.totalOfferSave,
+                                            totalOfferSave: prices.totalOfferSave,
+                                            totalNormalPrice: _product.price * Number(child.quantity) / 100,
+                                            selectVariants: '',
+                                            totalOfferPrice: prices.totalOfferPrice / 100,
+                                            addToCart: '',
+                                            imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                            productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
+                                        },
+                                        offerId: offer.id
+                                    })
+                                }
+                                
+                            }
+                        
+                            console.log('products' , products)
+                            _products = products
+                        break;
+                    
+                    
                     default:
+                        console.log(template)
                         const productOffers = JSON.parse(template.products);
                         // console.log('productOffers', productOffers)
                         _products = await Promise.all(productOffers.map(async (child) => {
@@ -365,13 +392,6 @@ const SimpleContent = (props) => {
                                 price: _product.price,
                             }));
 
-                            console.log('prices', {
-                                quantity: child.qty,
-                                specialPrice: child.specialPrice,
-                                priceType: template.value_type,
-                                groupType: template.group_type,
-                                price: _product.price,
-                            })
 
                             _product.featured_image = '';
                             if (_product?.images && _product.images.length >= 0) {
@@ -437,26 +457,40 @@ const SimpleContent = (props) => {
             console.log('params', params)
             
         }
+
         renderPage();
+        setLiquidCode(true);
         
     }, [page, fetchData]);
 
-    
-    //console.log(states.template)
+    useEffect(() => {
+        // console.log('liquidCode', liquidCode)
+        const element = (
+            <>
+            {sections.map((value, index) => (
+                <Section className={`sa-section-${value.ID}`} key={index}>
+                    <>
+                    <Block>
+                            {('block-product' === value.handle || value.handle === 'offer-product') ? (
+                            <>
+                                {`{%- for product in products -%}`}
+                                    {renderChildren(value, page)}
+                                {`{%- endfor -%}`}
+                            </>
+                        ): (
+                            <>{renderChildren(value)}</>
+                        )}
+                    </Block>  
+                    </>
+                </Section>
+            ))}  
+            </>
+        )
 
-        /*
-    <Block>
-        {('block-product' === value.handle || value.handle === 'offer-product') ? (
-        <>
-            {`{%- for product in products -%}`}
-                {renderChildren(value)}
-            {`{%- endfor -%}`}
-        </>
-    ): (
-        <>{renderChildren(value)}</>
-    )}
-</Block>  
-*/
+        const template = ReactDOMServer.renderToStaticMarkup(element);
+        dispatch(setLiquid(template))
+        
+    }, [liquidCode])
 
 
     const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}, page) => {
@@ -477,7 +511,7 @@ const SimpleContent = (props) => {
                              {(value.handle === 'block-button') ? (
                                     <SaButton key={index} className={`sa-content sa-block-${value.ID}`}>{value.label}</SaButton>
                                 ): (
-                                    <div key={`child-${index}`} props={value} className={`sa-content sa-block-${value.ID} ${className}`}>
+                                    <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
                                     {('block-product' === value.handle || value.handle === 'offer-product') ? (
                                         <>
                                         
@@ -489,7 +523,7 @@ const SimpleContent = (props) => {
                                                             {(item?.contentType && item.contentType.includes('button')) ? (
                                                                 <SaButton key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>{item.content}</SaButton>
                                                             ): (
-                                                                <div props={item} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>
+                                                                <div key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>
                                                                     {item.content}
                                                                 </div>
                                                             )}
@@ -535,7 +569,7 @@ const SimpleContent = (props) => {
         return css;
     }
 
-    //console.log(states)
+    console.log(states)
 
     return (
         <Main style={{display: 'block', width: '100%'}}>
