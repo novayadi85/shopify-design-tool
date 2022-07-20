@@ -393,6 +393,61 @@ const SimpleContent = (props) => {
                             _products = products
                         break;
                     
+                    case 'crossell':
+                        //extra_free_products
+                        const { extra_free_products, upsell_data  } = template;
+                        let _extra_free_products = (parseJSON(extra_free_products));
+                        
+                        if (upsell_data) {
+                            const { statement } = upsell_data;
+                            
+                            _products = await Promise.all(statement['statement-condition-list'].slice(0, statement['statement-condition-list'].length).map(async (handle, index) => {
+                                const discs = statement['statement-condition-amount']
+                                const discount_types = statement['cross_type_discount'];
+                                let _product = await simulateFetchData(handle);
+                                _product.price = Number(_product.variants[0].price) * 100;
+                                
+                                const disc = discs[index];
+                                const disc_type = discount_types[index];
+
+                                let amount_discount = parseFloat(disc) > 0 ? parseFloat(disc) : 0;
+
+                                if (disc_type === "pct") {
+                                    amount_discount = (_product.price / 100) * disc ;
+                                }
+
+                                console.log({
+                                    disc,
+                                    amount_discount
+                                })
+
+                                let final_discount = (_product.price - amount_discount);
+                                _product.finalPrice = final_discount > 0 ? final_discount : 0;
+
+                                _product.featured_image = '';
+                                if (_product?.images && _product.images.length >= 0) {
+                                    _product.featured_image = _product.images[0]?.src
+                                }
+
+                                return {
+                                    ..._product,
+                                    quantity: 1,
+                                    specialPrice: _product.price - _product.finalPrice,
+                                    offerPrice: _product.finalPrice,
+                                    OfferSave: _product.price - _product.finalPrice,
+                                    addToCart: '',
+                                    normalPrice: (_product.price) * parseFloat(1),
+                                    imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                    image: _product?.media ? _product.media[0] : '',
+                                    productOfferSaveInProcent: `${toFixedNumber(((_product.price - _product.finalPrice) / _product.price) * 100, 2)}%`,
+                                }
+                            }))
+                        }
+                       
+                        console.log('_extra_free_products', _products)
+
+                    break;
+                    
                     case 'amount_off':
                     case 'discount_product':
                     case 'discount_product_collection':
@@ -448,49 +503,56 @@ const SimpleContent = (props) => {
                         break;
                     
                     default:
-                        const productOffers = JSON.parse(template.products);
-                        // console.log('productOffers', productOffers)
-                        _products = await Promise.all(productOffers.map(async (child) => {
-                            const { id } = child;
-                            let _product = await simulateFetchData(id);
-                            _product.price = _product.variants[0].price
-                            _product.price = parseFloat(_product.price) * 100;
-                            let prices = await (discounts({
-                                quantity: child.qty,
-                                specialPrice: child.specialPrice,
-                                priceType: template.value_type,
-                                groupType: template.group_type,
-                                price: _product.price,
-                            }));
-
-
-                            _product.featured_image = '';
-                            if (_product?.images && _product.images.length >= 0) {
-                                _product.featured_image = _product.images[0]?.src
-                                // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
-                            }
-
-                            return {
-                                ..._product,
-                                ...{
+                        try {
+                            const productOffers = JSON.parse(template.products);
+                            // console.log('productOffers', productOffers)
+                            _products = await Promise.all(productOffers.map(async (child) => {
+                                const { id } = child;
+                                let _product = await simulateFetchData(id);
+                                _product.price = _product.variants[0].price
+                                _product.price = parseFloat(_product.price) * 100;
+                                let prices = await (discounts({
                                     quantity: child.qty,
                                     specialPrice: child.specialPrice,
-                                    offerPrice: prices.offerPrice,
-                                    OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
-                                    totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
-                                    selectVariants: '',
-                                    totalOfferPrice: (prices.totalOfferPrice / 100),
-                                    addToCart: '',
-                                    normalPrice: (_product.price / 100) * parseFloat(child.qty),
-                                    imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
-                                    image: _product?.media ? _product.media[0] : '',
-                                    productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
-                                    
-                                    
-                                },
-                                offerId: template.id
-                            }
-                        }))
+                                    priceType: template.value_type,
+                                    groupType: template.group_type,
+                                    price: _product.price,
+                                }));
+
+
+                                _product.featured_image = '';
+                                if (_product?.images && _product.images.length >= 0) {
+                                    _product.featured_image = _product.images[0]?.src
+                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
+                                }
+
+                                return {
+                                    ..._product,
+                                    ...{
+                                        quantity: child.qty,
+                                        specialPrice: child.specialPrice,
+                                        offerPrice: prices.offerPrice,
+                                        OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
+                                        totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
+                                        selectVariants: '',
+                                        totalOfferPrice: (prices.totalOfferPrice / 100),
+                                        addToCart: '',
+                                        normalPrice: (_product.price / 100) * parseFloat(child.qty),
+                                        imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                        image: _product?.media ? _product.media[0] : '',
+                                        productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
+                                        
+                                        
+                                    },
+                                    offerId: template.id
+                                }
+                            }))
+                        }
+                        catch (err) {
+                            
+                        }
+                        
+                        
                             
                     break;
                 }
@@ -511,6 +573,7 @@ const SimpleContent = (props) => {
                 });
             
                 params = {
+                    ...template,
                     products: _products,
                     addToCart: "Add To cart",
                     headline: parseJSON(template[`headline_${lang}`]),
@@ -520,7 +583,33 @@ const SimpleContent = (props) => {
                     totalOfferSave: totalOfferSave,
                     BuyNow: "Buy It NOW"
                 }
+                    
+                /*
+                offer_text_cart_product_accomplished: ""
+                offer_text_cart_product_not_accomplished: ""
+                offer_text_cart_top_accomplished: ""
+                offer_text_cart_top_not_accomplished: ""
+                offer_text_collection_top: ""
+                */
+                try {
+                    params['offer_text_product_top'] = parseJSON(params['offer_text_product_top']);
+                    params['offer_text_cart_product_accomplished'] = parseJSON(params['offer_text_cart_product_accomplished']);
+                    params['offer_text_cart_product_not_accomplished'] = parseJSON(params['offer_text_cart_product_not_accomplished']);
+                    params['offer_text_cart_top_accomplished'] = parseJSON(params['offer_text_cart_top_accomplished']);
+                    params['offer_text_collection_top'] = parseJSON(params['offer_text_collection_top']);
+                    params['offer_text_cart_top_not_accomplished'] = parseJSON(params['offer_text_cart_top_not_accomplished']);
+                }
+                catch (err) {
+                    console.log(err)
+                }
 
+
+                params['offer_text_product_top'] = params['offer_text_product_top'] !== '' ? params['offer_text_product_top'] : 'Product Top Text';
+                params['offer_text_cart_product_accomplished'] = params['offer_text_cart_product_accomplished'] !== '' ? params['offer_text_cart_product_accomplished'] : 'Cart product text - offer accomplished';
+                params['offer_text_cart_product_not_accomplished'] = params['offer_text_cart_product_not_accomplished'] !== '' ? params['offer_text_cart_product_not_accomplished'] : 'Cart text - offer not accomplished';
+                params['offer_text_cart_top_accomplished'] = params['offer_text_cart_top_accomplished'] !== '' ? params['offer_text_cart_top_accomplished'] : 'Cart Top text - offer accomplished';
+                params['offer_text_cart_top_not_accomplished'] = params['offer_text_cart_top_not_accomplished'] !== '' ? params['offer_text_cart_top_not_accomplished'] : 'Cart Top text - offer not accomplished';
+                params['offer_text_collection_top'] = params['offer_text_collection_top'] !== '' ? params['offer_text_collection_top'] : 'Offer text - Top Collection';
                 
             }
 
@@ -543,8 +632,13 @@ const SimpleContent = (props) => {
                     <>
                     <Block>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
-                            <>
+                            <>  
                                 {`{%- for product in products -%}`}
+                                    {(templateId === 'upsell-product-page') ? (
+                                        <>
+                                            {'<input data-offer="{{offerid}}" type="checkbox" value="{{product.variant_id}}" data-product="{{product.id}}" />'}
+                                        </>
+                                    ) : (null)}
                                     {renderChildren(value, page)}
                                 {`{%- endfor -%}`}
                             </>

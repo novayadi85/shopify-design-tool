@@ -22,9 +22,9 @@ export const updateLiquid = liquid => ({
   payload: { liquid }
 });
 
-export const updateTemplateId = (templateId, type) => ({
+export const updateTemplateId = (templateId, type, canAddBlock) => ({
   type: UPDATE_TEMPLATE_ID,
-  payload: { templateId, type}
+  payload: { templateId, type, canAddBlock}
 });
 
 
@@ -51,9 +51,9 @@ export function setLiquid(liquid) {
   };
 };
 
-export function setTemplateId(id, type) {
+export function setTemplateId(id, type, canAddBlock) {
   return dispatch => {
-    dispatch(updateTemplateId(id, type));
+    dispatch(updateTemplateId(id, type, canAddBlock));
   };
 };
 
@@ -70,23 +70,22 @@ export function fetchProducts(url) {
         return json.data;
       }).then(data => {
         let sch = data?.template?.schema ?? [];
+        let canAddBlock = data?.template?.canAddBlock ?? true;
         let type = data?.template?.brickname ?? [];
         let templateId = data?.templateId ?? [];
         let cssStyles = data?.cssStyles ?? [];
         let liquidCode = data?.template?.liquid ?? [];
         
-        console.log('templateId', data?.templateId)
-        
-        if (sch.length >= 3) {
+        //if (sch.length >= 3) {
           dispatch(updateSidebar(sch));
-        }
+        //}
 
         if (liquidCode.length > 0) {
           // dispatch(updateLiquid(liquidCode));
         }
 
         if (templateId.length > 0) {
-           dispatch(setTemplateId(templateId, type));
+           dispatch(setTemplateId(templateId, type, canAddBlock));
         }
 
         if (cssStyles.length > 0) {

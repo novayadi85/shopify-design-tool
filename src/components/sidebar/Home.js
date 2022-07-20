@@ -26,6 +26,7 @@ const SortableContainer = sortableContainer(({children}) => {
 
 function Home() {
     const { items : _items} = useSelector(state => state.template);
+    const { canAddBlock } = useSelector(state => state.products);
     const state = useSelector(state => state);
 	const [items, setItems] = useState(_items);	
     const [loading, setLoading] = useState(false);
@@ -68,7 +69,7 @@ function Home() {
                 ))}
                 </SortableContainer>
                 <PrimaryBox>
-                    <AddBlock handle={ID} />		
+                    {(canAddBlock) ? (<AddBlock handle={ID} />) : (null)}
                 </PrimaryBox>
             </div>
         )
@@ -188,7 +189,7 @@ function Home() {
                     
             ) : (
                     <>
-                        <ParentSection/>
+                        {(canAddBlock) ? (<ParentSection/>) : (null)}
                         <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                             {items.map((value, index) => (
                                 <SortableItem child={ value.child} key={`item-${index}`} index={index} value={value} />
@@ -201,7 +202,7 @@ function Home() {
             <PrimaryBox style={{
                 marginLeft: 0
             }}>	
-                <AddSection/>
+                {(canAddBlock) ? (<AddSection/>) : (null)}
             </PrimaryBox>
         </SidePanelAreaWrapper>
     );

@@ -14,7 +14,8 @@ import {
     page: null,
     liquid: [],
     templateId: null,
-    templateType: null
+    templateType: null,
+    canAddBlock: true
   };
   
   export default function productReducer(state = initialState, action) {
@@ -56,7 +57,8 @@ import {
             loading: false,
             error: null,
             templateId: action.payload.templateId,
-            templateType: action.payload.type
+            templateType: action.payload.type,
+            canAddBlock: action.payload.canAddBlock
         };
       
       case FETCH_PRODUCTS_SUCCESS:
