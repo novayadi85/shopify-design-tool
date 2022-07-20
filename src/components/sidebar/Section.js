@@ -107,7 +107,7 @@ function Section() {
                             <Button onClick={backHandle} plain icon={ ChevronLeftMinor}></Button>
                         </ButtonWrapper>
                         <TitleWrapper>
-                            <Heading><span className='capitalize'>{(value?.setting?.heading) ? value.setting.heading : value.label}</span></Heading>
+                            <Heading><span className='capitalize truncate-text'>{(value?.setting?.heading) ? value.setting.heading : value.label}</span></Heading>
                         </TitleWrapper>
                     </BackAction>
                 </Header>
