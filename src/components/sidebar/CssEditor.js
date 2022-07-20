@@ -24,14 +24,15 @@ const style = {
 
 
 function CssEditor({ type = false }) {
-    let params, { handle } = useParams();
+    const { handle } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [selector, setSelector] = useState(handle);
-    const { products: { page },} = useSelector(state => state);
-    //console.log('params', params)
+    const { products: { page, templateId },} = useSelector(state => state);
+
+    console.log('handle', handle)
 
     useEffect(() => {
         setLoading(true);
@@ -63,20 +64,21 @@ function CssEditor({ type = false }) {
         else {
             return navigate(`/section/${handle}`)
         }
-
-        
     }
 
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const save = async lines => {
-        //console.log('Saving', lines)
+        console.log('Saving', [handle, `sa-global-${templateId}`])
         
         if (handle === 'sa-product-block-offer') {
-            dispatch(updateStyles(`sa-${type}-${page}`, lines));
+            dispatch(updateStyles(`sa-${type}-${templateId}`, lines));
         }
         else if(handle === 'global') {
-            dispatch(updateStyles(`sa-global-${page}`, lines));
+            dispatch(updateStyles(`sa-global-${templateId}`, lines));
+        }
+        else if(handle === 'offer-setting') {
+            dispatch(updateStyles(`sa-global-${templateId}`, lines));
         }
         else {
             dispatch(updateStyles(`sa-${type}-${handle}`, lines));
@@ -91,10 +93,10 @@ function CssEditor({ type = false }) {
         let initialHandle = `sa-${type}-${handle}`;
 
         if (handle === 'sa-product-block-offer') {
-            initialHandle = `sa-${type}-${page}`;
+            initialHandle = `sa-${type}-${templateId}`;
         }
         else if (handle === 'global') {
-            initialHandle = `sa-global-${page}`
+            initialHandle = `sa-global-${templateId}`
         }
         else {
             initialHandle = `sa-${type}-${handle}`;

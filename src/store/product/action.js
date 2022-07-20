@@ -6,6 +6,7 @@ export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
 export const FETCH_PRODUCTS_FAILURE = 'FETCH_PRODUCTS_FAILURE';
 export const UPDATE_PAGE = 'UPDATE_PAGE';
 export const UPDATE_LIQUID = 'UPDATE_LIQUID';
+export const UPDATE_TEMPLATE_ID = 'UPDATE_TEMPLATE_ID';
 
 export const fetchProductsBegin = () => ({
   type: FETCH_PRODUCTS_BEGIN
@@ -19,6 +20,11 @@ export const updatePage = page => ({
 export const updateLiquid = liquid => ({
   type: UPDATE_LIQUID,
   payload: { liquid }
+});
+
+export const updateTemplateId = (templateId, type) => ({
+  type: UPDATE_TEMPLATE_ID,
+  payload: { templateId, type}
 });
 
 
@@ -45,6 +51,12 @@ export function setLiquid(liquid) {
   };
 };
 
+export function setTemplateId(id, type) {
+  return dispatch => {
+    dispatch(updateTemplateId(id, type));
+  };
+};
+
 
 export function fetchProducts(url) {
   return dispatch => {
@@ -58,15 +70,23 @@ export function fetchProducts(url) {
         return json.data;
       }).then(data => {
         let sch = data?.template?.schema ?? [];
+        let type = data?.template?.brickname ?? [];
+        let templateId = data?.templateId ?? [];
         let cssStyles = data?.cssStyles ?? [];
         let liquidCode = data?.template?.liquid ?? [];
-        // console.log('cssStyles', cssStyles)
+        
+        console.log('templateId', data?.templateId)
+        
         if (sch.length >= 3) {
           dispatch(updateSidebar(sch));
         }
 
         if (liquidCode.length > 0) {
           // dispatch(updateLiquid(liquidCode));
+        }
+
+        if (templateId.length > 0) {
+           dispatch(setTemplateId(templateId, type));
         }
 
         if (cssStyles.length > 0) {

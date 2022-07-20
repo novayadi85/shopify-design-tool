@@ -19,5 +19,5 @@ export const Section = styled.section`
 `
 export const Block = styled.aside`
     padding: 0px;
-    display: inline-block;
+    display: block;
 `

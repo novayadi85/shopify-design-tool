@@ -12,7 +12,7 @@ import { parseJSON } from "@helper/json";
 import { decodeHTML } from "@helper/html";
 import { serviceUrl } from "@helper/url";
 import { setLiquid } from "@store/product/action";
-
+const { concat: _concat } = require('@s-libs/micro-dash');
 
 const convertCssItem = (items, page) => {
     let jsonObject = {
@@ -76,6 +76,15 @@ const getCssString = (string) => {
                 }
             }
 
+            if ('background-type' === key && string[key] === 'none') {
+                console.log([
+                    key,
+                    newObject
+                ])
+                newObject['background-color'] = 'none !important';
+                newObject['background'] = 'none !important';
+            }
+
         });
 
         newObject['box-shadow'] = shadow;
@@ -135,6 +144,12 @@ const convertCss = (string) => {
                 }
             }
 
+            
+            if ('background-type' === key && string[key] === 'none') {
+                console.log(string[key])
+                newObject['background-color'] = 'none;'
+            }
+
         });
 
         newObject['box-shadow'] = shadow;
@@ -152,7 +167,7 @@ const convertCss = (string) => {
 }
 
 const SimpleContent = (props) => {
-    const { products: { items, page }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
+    const { products: { items, page, templateId }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
@@ -162,6 +177,8 @@ const SimpleContent = (props) => {
     const states = useSelector(state => state);
     const [fetchData, setFetchData] = useState(false)
     const [liquidCode, setLiquidCode] = useState('');
+
+    console.log(states)
 
     useEffect(() => {
         setLoading(true);
@@ -191,11 +208,11 @@ const SimpleContent = (props) => {
             {sections.map((value, index) => (
                 <Section className={`sa-section-${value.ID}`} key={index}>
                     <>
-                    <Block>
+                    <Block className={'Block-Item'}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
-                                    {renderChildren(value, page)}
+                                    {renderChildren(value, templateId)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (
@@ -210,6 +227,8 @@ const SimpleContent = (props) => {
 
         let params = products;
         const template = ReactDOMServer.renderToStaticMarkup(element);
+
+        console.log('params', params)
 
         return (
             <>
@@ -260,7 +279,7 @@ const SimpleContent = (props) => {
                             const tierProduct = JSON.parse(_tierProduct);
                             let _product = await simulateFetchData(tierProduct.id);
                             
-                            _product.price = _product.variants[0].price
+                            _product.price = Number(_product.variants[0].price) * 100
                             let prices = await (discounts({
                                 quantity: tierProduct.qty,
                                 specialPrice: tierProduct.specialPrice,
@@ -297,7 +316,7 @@ const SimpleContent = (props) => {
                             let collections = JSON.parse(template.collections);
                             const { product: _childs, discount,  discount_type, collection_in_products} = collections;
                             const extra_conditions = JSON.parse(template.extra_conditions);
-                            console.log('template', collections)
+
                             let _product = await simulateFetchData(collection_in_products[0]);
                             _product.price = Number(_product.variants[0].price) * 100
 
@@ -374,9 +393,61 @@ const SimpleContent = (props) => {
                             _products = products
                         break;
                     
+                    case 'amount_off':
+                    case 'discount_product':
+                    case 'discount_product_collection':
+                        const { extra_config, collections: __collections } = template;
+                        let __parseCollections = (parseJSON(__collections))
+                       
+                        let _extra_config = (parseJSON(extra_config))
+                        const { collection_in_products : _collection_in_products,  discount: discs } = __parseCollections;
+                        console.log(_extra_config)
+                        let size = 4; 
+                        params['headline'] =   _extra_config?.other_offer_collections_title  ? _extra_config.other_offer_collections_title : offer['headline']
+                        params['description'] =   _extra_config?.other_offer_collections_decription  ? _extra_config.other_offer_collections_decription : offer['description']
+                        template[`headline_${lang}`] = params['headline'] ? params['headline'] : template[`headline_${lang}`]
+                        template[`description_${lang}`] = params['description'] ?  params['description'] : template[`description_${lang}`] 
+                        let __products = [];
+                        if (_extra_config?.other_offer_collections && _extra_config['other_offer_collections'].includes('true')) {
+                            __products = await Promise.all(_collection_in_products.slice(0, size).map(async handle => {
+                                let _product = await simulateFetchData(handle);
+                                _product.price = Number(_product.variants[0].price) * 100;
+                                let prices = await (discounts({
+                                    quantity: 1,
+                                    specialPrice: discs,
+                                    priceType: template.value_type,
+                                    groupType: template.group_type,
+                                    price: _product.price
+                                }));
+
+                                _product.featured_image = '';
+                                if (_product?.images && _product.images.length >= 0) {
+                                    _product.featured_image = _product.images[0]?.src
+                                }
+
+                                return {
+                                    ..._product,
+                                    quantity: 1,
+                                    specialPrice: discs,
+                                    offerPrice: prices.offerPrice,
+                                    OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
+                                    totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
+                                    selectVariants: '',
+                                    totalOfferPrice: (prices.totalOfferPrice / 100),
+                                    addToCart: '',
+                                    normalPrice: (_product.price / 100) * parseFloat(1),
+                                    imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                    image: _product?.media ? _product.media[0] : '',
+                                    productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
+                                }
+                                
+                            }))
+
+                            _products = __products
+                        }
+                        break;
                     
                     default:
-                        console.log(template)
                         const productOffers = JSON.parse(template.products);
                         // console.log('productOffers', productOffers)
                         _products = await Promise.all(productOffers.map(async (child) => {
@@ -488,15 +559,17 @@ const SimpleContent = (props) => {
         )
 
         const template = ReactDOMServer.renderToStaticMarkup(element);
-        dispatch(setLiquid(template))
+       // console.log(template)
+        const html = `<div class="sa-global-${templateId}">${template}</div>`
+        dispatch(setLiquid(html))
         
-    }, [liquidCode])
+    }, [sections])
 
 
-    const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}, page) => {
+    const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
         return (
             <>
-                <div className={(handle === 'offer-product') ? `sa-${handle} sa-section-${page} sa-rows-${setting.display}`: `sa-section-${ID}`}>
+                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${setting.display}`: `sa-section-${ID}`}>
                     {items.map((value, index) => {
                         if (value.handle === 'product-block') {
                            // console.log("HANDLE", value.setting.values)
@@ -569,7 +642,7 @@ const SimpleContent = (props) => {
         return css;
     }
 
-    console.log(states)
+    // console.log(states)
 
     return (
         <Main style={{display: 'block', width: '100%'}}>
@@ -584,10 +657,7 @@ const SimpleContent = (props) => {
                 }
                 </style>
             </Helmet>
-            <div className={`sa-global-${page}`}>
-                <div className="offer-container">
-                    
-                </div>
+            <div className={`sa-global-${templateId}`}>
                 <RenderOffer/>
                 <div style={{display: 'none'}}>
                     <p style={{marginTop: '5rem', borderTop: '1px solid #000'}}>Sample is like this :</p>
@@ -609,7 +679,7 @@ const SimpleContent = (props) => {
                     background: "#eee",
                     display: 'none'
                 }}>
-                    <code>{JSON.stringify(products, null, 2)}</code>
+                    <code>{JSON.stringify(states.styles.items, null, 2)}</code>
                 </pre>
         </Main>
     );

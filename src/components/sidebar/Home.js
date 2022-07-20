@@ -90,7 +90,7 @@ function Home() {
                                         />
                                     </div>
                                     <div className='title'>
-                                        <ReactRouterLink className="removeUnderline" to={`/offer-setting`}>Offer Setting</ReactRouterLink>  
+                                        <ReactRouterLink className="removeUnderline" to={`/setting/offer-setting`}>Offer Setting</ReactRouterLink>  
                                     </div>
                                 </ListItem>
                             </ListItemWrapper>

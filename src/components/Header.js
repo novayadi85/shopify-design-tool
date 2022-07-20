@@ -140,6 +140,8 @@ function Header() {
                     schema: JSON.stringify(states.template),
                     styles: JSON.stringify(states.styles),
                     liquid: JSON.stringify(states?.products?.liquid ?? []),
+                    templateId: states?.products?.templateId ?? null,
+                    templateType: states?.products?.templateType ?? null,
                     domain: domain
                 })
             }).then(() => {

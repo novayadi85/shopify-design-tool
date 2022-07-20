@@ -1595,6 +1595,14 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.4.tgz#0c8b74c50f29ee44f423f7416829c0bf8bb5eb27"
   integrity sha512-LwzQKA4vzIct1zNZzBmRKI9QuNpLgTQMEjsQLf3BXuGYb3QPTP4Yjf6mkdX+X1mYttZ808QpOwAzZjv28kq7DA==
 
+"@s-libs/micro-dash@^14.0.0":
+  version "14.0.0"
+  resolved "https://repo.huaweicloud.com/repository/npm/@s-libs/micro-dash/-/micro-dash-14.0.0.tgz#0944f6dd7d7e27c62e4c5b6e1952aa96ca1bb92c"
+  integrity sha512-tpq5skwP4pDyfoAIyzpxltFq3xcULPcjOm+TVtEBm+iWQMN6rBpMd8o1imP+RCJZqQX2ULFSni2C5xO52eWAaA==
+  dependencies:
+    tslib "^2.3.0"
+    utility-types "^3.10.0"
+
 "@shopify/polaris-icons@*", "@shopify/polaris-icons@latest":
   version "4.23.0"
   resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.23.0.tgz#dc1067460ff5497267990fd66debb78c512aa219"
@@ -8940,7 +8948,7 @@ tslib@^1.8.1:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3:
+tslib@^2.0.3, tslib@^2.3.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
@@ -9119,6 +9127,11 @@ utila@~0.4:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/utila/-/utila-0.4.0.tgz#8a16a05d445657a3aea5eecc5b12a4fa5379772c"
   integrity sha512-Z0DbgELS9/L/75wZbro8xAnT50pBVFQZ+hUEueGDU5FN51YSCYM+jdxsfCiHjwNP/4LCDD0i/graKpeBnOXKRA==
+
+utility-types@^3.10.0:
+  version "3.10.0"
+  resolved "https://repo.huaweicloud.com/repository/npm/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
+  integrity sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==
 
 utils-merge@1.0.1:
   version "1.0.1"

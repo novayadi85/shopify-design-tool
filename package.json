@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
+    "@s-libs/micro-dash": "^14.0.0",
     "@shopify/polaris": "latest",
     "@shopify/polaris-icons": "latest",
     "@testing-library/jest-dom": "^5.16.4",
