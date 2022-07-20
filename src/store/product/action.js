@@ -76,9 +76,9 @@ export function fetchProducts(url) {
         let cssStyles = data?.cssStyles ?? [];
         let liquidCode = data?.template?.liquid ?? [];
         
-        //if (sch.length >= 3) {
+        if (sch.length >= 1) {
           dispatch(updateSidebar(sch));
-        //}
+        }
 
         if (liquidCode.length > 0) {
           // dispatch(updateLiquid(liquidCode));
