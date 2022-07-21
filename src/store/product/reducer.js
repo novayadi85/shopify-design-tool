@@ -15,7 +15,8 @@ import {
     liquid: [],
     templateId: null,
     templateType: null,
-    canAddBlock: true
+    canAddBlock: true,
+    store: []
   };
   
   export default function productReducer(state = initialState, action) {
@@ -58,7 +59,8 @@ import {
             error: null,
             templateId: action.payload.templateId,
             templateType: action.payload.type,
-            canAddBlock: action.payload.canAddBlock
+            canAddBlock: action.payload.canAddBlock,
+            store: action.payload.format
         };
       
       case FETCH_PRODUCTS_SUCCESS:

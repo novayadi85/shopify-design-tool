@@ -37,13 +37,27 @@ export const iframeStyle = `
     }
 
     .sa-display-columns {
-        float: left;
+        
     }
 
-    .sa-rows-columns {
-        CLEAR: both;
+
+    [class^=shopadjust-product-offer-add-cart-]{
+        color: inherit;
+        text-decoration: inherit;
+  
+        }
+    
+     .sa-rows-columns {
         position: relative;
+        float: left !important;
+      }
+    
+    .aside-block-item-offer:after {
+        content: "";
+        CLEAR: both;
+    
     }
+
 `
 
 export const SaButton = styled.button``;

@@ -6,12 +6,15 @@ import { Main, Section, Block } from "@styles/Main";
 import { iframeStyle } from '@styles/Iframe';
 import { SaButton } from "../styles/Iframe";
 import { toCSS, toJSON } from 'cssjson';
-import { ReactLiquid } from 'react-liquid'
+import { ReactLiquid, liquidEngine, useLiquid  } from 'react-liquid'
 import { discounts, toFixedNumber } from "@helper/price";
 import { parseJSON } from "@helper/json";
 import { decodeHTML } from "@helper/html";
 import { serviceUrl } from "@helper/url";
 import { setLiquid } from "@store/product/action";
+import { formatMoney } from "@helper/price";
+import engine from "../helper/template";
+import { dropdownHTML } from "../helper/html";
 const { concat: _concat } = require('@s-libs/micro-dash');
 
 const convertCssItem = (items, page) => {
@@ -167,7 +170,7 @@ const convertCss = (string) => {
 }
 
 const SimpleContent = (props) => {
-    const { products: { items, page, templateId }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
+    const { products: { items, page, templateId, store: currency }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
@@ -177,7 +180,7 @@ const SimpleContent = (props) => {
     const states = useSelector(state => state);
     const [fetchData, setFetchData] = useState(false)
     const [liquidCode, setLiquidCode] = useState('');
-
+    const liquid = useLiquid();
     console.log(states)
 
     useEffect(() => {
@@ -200,6 +203,22 @@ const SimpleContent = (props) => {
         .then((response) => {
             return response
         });
+    }
+
+    const renderButton = (offer) => {
+        const { group_type } = offer;
+        let btn = `<a href="" data-component="addToCart" data-id="${offer.id}" class="shopadjust-product-offer-add-cart-${group_type}\">{{'Add to cart' | translate}}</a>`;
+        if (group_type === "tier") {
+            btn = `<a href="" data-component="addToCart" data-id="${offer.id}" class="shopadjust-product-offer-add-cart-${group_type}\">{{'Add $quantity to cart' | translate }}</a>`;
+        }
+        
+        return engine.parseAndRender(btn);
+    }
+
+    const renderTemplate = async(html, params) => {
+        let source = decodeHTML(html);
+        engine.params = params;
+        return engine.parseAndRender(source, params);
     }
 
     const RenderOffer = () => {
@@ -228,7 +247,26 @@ const SimpleContent = (props) => {
         let params = products;
         const template = ReactDOMServer.renderToStaticMarkup(element);
 
-        console.log('params', params)
+        liquidEngine.registerFilter('money', (initial, args) => {
+            let price = formatMoney(initial, currency?.money_format)
+            return price
+        })
+
+        liquidEngine.registerFilter('money_with_currency', (initial, args) => {
+            let price = formatMoney(initial, currency?.money_with_currency_format)
+            return price
+        })
+
+        liquidEngine.registerFilter('money_without_currency', (initial, args) => {
+            let price = formatMoney(initial, currency?.money_without_currency_format)
+            return price
+        })
+
+        liquidEngine.registerFilter('link_to', (initial, args) => {
+            return `<a href='${args}' title="${initial}">${initial}</a>`
+        })
+
+        console.log('params', {params, liquid})
 
         return (
             <>
@@ -288,7 +326,43 @@ const SimpleContent = (props) => {
                                 price: _product.price
                             }));
     
+                            _product.variantBlock = '';
+                            _product.selectVariants = '';
+                            _product.addToCart = '';
+                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
+                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                                        {{product.variantBlock}}
+                                        <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                    </div>
+                                </div>`, {
+                                    product: _product
+                            }).then(html => html);
+
+                            let dropdown = '';
                             
+                            if(_product.variants.length > 0){
+                                dropdown = await renderTemplate(dropdownHTML, {
+                                    product: _product,
+                                    name: "product-variants",
+                                    quantity: tierProduct.qty,
+                                    type: template.group_type
+                                });
+                            }
+                            
+                            
+                            let renderButtonHtml = await renderTemplate(await renderButton({
+                                ...template,
+                                ...{
+                                    group_type: template.group_type,
+                                    id: template.id
+                                }
+                            }), {
+                                BuyNow: "Buy It NOW"
+                            }).then(html => {
+                                return html + dropdown;
+
+                            });
+                        
                             return {
                                 ..._product,
                                 ...{
@@ -298,10 +372,10 @@ const SimpleContent = (props) => {
                                     totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
                                     totalOfferSave: prices.totalOfferSave,
                                     offerPrice: child.specialPrice,
-                                    selectVariants: '',
+                                    selectVariants: dropdown,
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     totalNormalPrice: _product.price * Number(tierProduct.qty) / 100,
-                                    addToCart: '',
+                                    addToCart: renderButtonHtml,
                                     imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                 },
@@ -331,7 +405,42 @@ const SimpleContent = (props) => {
                                     price: _product.price
                                 }));
 
-                                console.log('prices 1', prices)
+                                _product.variantBlock = '';
+                                _product.selectVariants = '';
+                                _product.addToCart = '';
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
+                                        <div class="shopadjust_drawer-modal_product_add_toCart">
+                                            {{product.variantBlock}}
+                                            <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                        </div>
+                                    </div>`, {
+                                        product: _product
+                                }).then(html => html);
+
+                                let dropdown = '';
+                                
+                                if(_product.variants.length > 0){
+                                    dropdown = await renderTemplate(dropdownHTML, {
+                                        product: _product,
+                                        name: "product-variants",
+                                        quantity: child,
+                                        type: template.group_type
+                                    });
+                                }
+                                
+                                
+                                let renderButtonHtml = await renderTemplate(await renderButton({
+                                    ...template,
+                                    ...{
+                                        group_type: template.group_type,
+                                        id: template.id
+                                    }
+                                }), {
+                                    BuyNow: "Buy It NOW"
+                                }).then(html => {
+                                    return html + dropdown;
+
+                                });
 
                                 products.push({
                                     ..._product,
@@ -341,9 +450,9 @@ const SimpleContent = (props) => {
                                         offerPrice: prices.offerPrice,
                                         OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
                                         totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
-                                        selectVariants: '',
+                                        selectVariants: dropdown,
                                         totalOfferPrice: (prices.totalOfferPrice / 100),
-                                        addToCart: '',
+                                        addToCart: renderButtonHtml,
                                         normalPrice: (_product.price / 100) * parseFloat(child),
                                         imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
                                         image: _product?.media ? _product.media[0] : '',
@@ -365,7 +474,42 @@ const SimpleContent = (props) => {
                                         price: _product.price
                                     }));
 
-                                    console.log('prices 2', prices)
+                                    _product.variantBlock = '';
+                                    _product.selectVariants = '';
+                                    _product.addToCart = '';
+                                    template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
+                                            <div class="shopadjust_drawer-modal_product_add_toCart">
+                                                {{product.variantBlock}}
+                                                <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                            </div>
+                                        </div>`, {
+                                            product: _product
+                                    }).then(html => html);
+
+                                    let dropdown = '';
+                                    
+                                    if(_product.variants.length > 0){
+                                        dropdown = await renderTemplate(dropdownHTML, {
+                                            product: _product,
+                                            name: "product-variants",
+                                            quantity: child.quantity,
+                                            type: template.group_type
+                                        });
+                                    }
+                                    
+                                    
+                                    let renderButtonHtml = await renderTemplate(await renderButton({
+                                        ...template,
+                                        ...{
+                                            group_type: template.group_type,
+                                            id: template.id
+                                        }
+                                    }), {
+                                        BuyNow: "Buy It NOW"
+                                    }).then(html => {
+                                        return html + dropdown;
+
+                                    });
 
                                     products.push({
                                         ..._product,
@@ -377,9 +521,9 @@ const SimpleContent = (props) => {
                                             offerPrice: prices.totalOfferSave,
                                             totalOfferSave: prices.totalOfferSave,
                                             totalNormalPrice: _product.price * Number(child.quantity) / 100,
-                                            selectVariants: '',
+                                            selectVariants: dropdown,
                                             totalOfferPrice: prices.totalOfferPrice / 100,
-                                            addToCart: '',
+                                            addToCart: renderButtonHtml,
                                             imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
                                             productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                         },
@@ -429,13 +573,50 @@ const SimpleContent = (props) => {
                                     _product.featured_image = _product.images[0]?.src
                                 }
 
+                                _product.variantBlock = '';
+                                _product.selectVariants = '';
+                                _product.addToCart = '';
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
+                                        <div class="shopadjust_drawer-modal_product_add_toCart">
+                                            {{product.variantBlock}}
+                                            <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                        </div>
+                                    </div>`, {
+                                        product: _product
+                                }).then(html => html);
+
+                                let dropdown = '';
+                                
+                                if(_product.variants.length > 0){
+                                    dropdown = await renderTemplate(dropdownHTML, {
+                                        product: _product,
+                                        name: "product-variants",
+                                        quantity: 1,
+                                        type: template.group_type
+                                    });
+                                }
+                                
+                                
+                                let renderButtonHtml = await renderTemplate(await renderButton({
+                                    ...template,
+                                    ...{
+                                        group_type: template.group_type,
+                                        id: template.id
+                                    }
+                                }), {
+                                    BuyNow: "Buy It NOW"
+                                }).then(html => {
+                                    return html + dropdown;
+
+                                });
+
                                 return {
                                     ..._product,
                                     quantity: 1,
                                     specialPrice: _product.price - _product.finalPrice,
                                     offerPrice: _product.finalPrice,
                                     OfferSave: _product.price - _product.finalPrice,
-                                    addToCart: '',
+                                    addToCart: renderButtonHtml,
                                     normalPrice: (_product.price) * parseFloat(1),
                                     imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
                                     image: _product?.media ? _product.media[0] : '',
@@ -453,15 +634,18 @@ const SimpleContent = (props) => {
                     case 'discount_product_collection':
                         const { extra_config, collections: __collections } = template;
                         let __parseCollections = (parseJSON(__collections))
-                       
                         let _extra_config = (parseJSON(extra_config))
                         const { collection_in_products : _collection_in_products,  discount: discs } = __parseCollections;
-                        console.log(_extra_config)
+                        
                         let size = 4; 
                         params['headline'] =   _extra_config?.other_offer_collections_title  ? _extra_config.other_offer_collections_title : offer['headline']
                         params['description'] =   _extra_config?.other_offer_collections_decription  ? _extra_config.other_offer_collections_decription : offer['description']
                         template[`headline_${lang}`] = params['headline'] ? params['headline'] : template[`headline_${lang}`]
                         template[`description_${lang}`] = params['description'] ?  params['description'] : template[`description_${lang}`] 
+                        
+                        template.link = `/collections/${__parseCollections?.handle}`;
+                        template.textButton = _extra_config?.other_offer_collections_button_text && _extra_config.other_offer_collections_button_text !=='' ? _extra_config.other_offer_collections_button_text : 'See collection'
+
                         let __products = [];
                         if (_extra_config?.other_offer_collections && _extra_config['other_offer_collections'].includes('true')) {
                             __products = await Promise.all(_collection_in_products.slice(0, size).map(async handle => {
@@ -480,6 +664,43 @@ const SimpleContent = (props) => {
                                     _product.featured_image = _product.images[0]?.src
                                 }
 
+                                _product.variantBlock = '';
+                                _product.selectVariants = '';
+                                _product.addToCart = '';
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
+                                        <div class="shopadjust_drawer-modal_product_add_toCart">
+                                            {{product.variantBlock}}
+                                            <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                        </div>
+                                    </div>`, {
+                                        product: _product
+                                }).then(html => html);
+
+                                let dropdown = '';
+                                
+                                if(_product.variants.length > 0){
+                                    dropdown = await renderTemplate(dropdownHTML, {
+                                        product: _product,
+                                        name: "product-variants",
+                                        quantity: 1,
+                                        type: template.group_type
+                                    });
+                                }
+                                
+                                
+                                let renderButtonHtml = await renderTemplate(await renderButton({
+                                    ...template,
+                                    ...{
+                                        group_type: template.group_type,
+                                        id: template.id
+                                    }
+                                }), {
+                                    BuyNow: "Buy It NOW"
+                                }).then(html => {
+                                    return html + dropdown;
+
+                                });
+
                                 return {
                                     ..._product,
                                     quantity: 1,
@@ -489,7 +710,7 @@ const SimpleContent = (props) => {
                                     totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
                                     selectVariants: '',
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
-                                    addToCart: '',
+                                    addToCart: renderButtonHtml,
                                     normalPrice: (_product.price / 100) * parseFloat(1),
                                     imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
                                     image: _product?.media ? _product.media[0] : '',
@@ -526,6 +747,48 @@ const SimpleContent = (props) => {
                                     // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
                                 }
 
+                                _product.variantBlock = '';
+                                _product.selectVariants = '';
+                                _product.addToCart = '';
+
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust-item-${template.group_type}-1-buy-button">
+                                        <a style='color: inherit;text-decoration: none;' href="#" data-component="addToCart" class="shopadjust-product-offer-add-cart-tier all-in-one-offer-button-${template.group_type}-1-all">
+                                            <div class="all-in-one-offer-button-${template.group_type}-1">
+                                                <div class="all-in-one-offer-${template.group_type}-1-top-button">Add to cart</div>
+                                            </div>
+                                        </a>
+                                    </div>`, {
+                                        product: _product
+                                }).then(html => html);
+
+                                
+
+                                let dropdown = '';
+                                
+                                if(_product.variants.length > 0){
+                                    dropdown = await renderTemplate(dropdownHTML, {
+                                        product: _product,
+                                        name: "product-variants",
+                                        quantity: 1,
+                                        type: template.group_type
+                                    });
+                                }
+                                
+                                
+                                let renderButtonHtml = await renderTemplate(await renderButton({
+                                    ...template,
+                                    ...{
+                                        group_type: template.group_type,
+                                        id: template.id
+                                    }
+                                }), {
+                                    BuyNow: "Buy It NOW"
+                                }).then(html => {
+                                    return html + dropdown;
+
+                                });
+
+
                                 return {
                                     ..._product,
                                     ...{
@@ -534,9 +797,9 @@ const SimpleContent = (props) => {
                                         offerPrice: prices.offerPrice,
                                         OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
                                         totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
-                                        selectVariants: '',
+                                        selectVariants: dropdown,
                                         totalOfferPrice: (prices.totalOfferPrice / 100),
-                                        addToCart: '',
+                                        addToCart: renderButtonHtml,
                                         normalPrice: (_product.price / 100) * parseFloat(child.qty),
                                         imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
                                         image: _product?.media ? _product.media[0] : '',
@@ -575,13 +838,14 @@ const SimpleContent = (props) => {
                 params = {
                     ...template,
                     products: _products,
-                    addToCart: "Add To cart",
+                    addToCart: template?.addToCart ?? "Add To cart",
                     headline: parseJSON(template[`headline_${lang}`]),
                     description: decodeHTML(parseJSON(template[`description_${lang}`])),
                     totalNormalPrice: totalNormalPrice,
                     totalOfferPrice: totalOfferPrice,
                     totalOfferSave: totalOfferSave,
-                    BuyNow: "Buy It NOW"
+                    BuyNow: "Buy It NOW",
+                    link: template?.link 
                 }
                     
                 /*
@@ -628,36 +892,93 @@ const SimpleContent = (props) => {
         const element = (
             <>
             {sections.map((value, index) => (
-                <Section className={`sa-section-${value.ID}`} key={index}>
-                    <>
-                    <Block>
+                <div className={`sa-section-${value.ID}`} key={index}>
+                    <div className={'aside-block-item-offer'}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
-                            <>  
+                            <>
                                 {`{%- for product in products -%}`}
-                                    {(templateId === 'upsell-product-page') ? (
-                                        <>
-                                            {'<input data-offer="{{offerid}}" type="checkbox" value="{{product.variant_id}}" data-product="{{product.id}}" />'}
-                                        </>
-                                    ) : (null)}
-                                    {renderChildren(value, page)}
+                                    {renderChildrenLIQUID(value, templateId)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (
-                            <>{renderChildren(value)}</>
+                            <>{renderChildrenLIQUID(value)}</>
                         )}
-                    </Block>  
-                    </>
-                </Section>
+                    </div>  
+                </div>
             ))}  
             </>
         )
 
         const template = ReactDOMServer.renderToStaticMarkup(element);
-       // console.log(template)
-        const html = `<div class="sa-global-${templateId}">${template}</div>`
+        const html = `<div class="sa-global-${templateId}">${template}</div>`;
+        console.log(html)
         dispatch(setLiquid(html))
         
     }, [sections])
+
+    const renderChildrenLIQUID = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
+        return (
+            <>
+                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${setting.display}`: `sa-section-${ID}`}>
+                    {items.map((value, index) => {
+                        if (value.handle === 'product-block') {
+                           // console.log("HANDLE", value.setting.values)
+                        }
+
+                        let className = '';
+                        if (setting?.display) {
+                            className = `sa-display-${setting.display}`
+                        }
+                        return (
+                            <>
+                             {(value.handle === 'block-button') ? (
+                                    <div style={{ display: 'inline-block'}} key={index} className={`sa-content sa-block-${value.ID}`}>{value.label}</div>
+                                ): (
+                                    <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
+                                    {('block-product' === value.handle || value.handle === 'offer-product') ? (
+                                        <>
+                                        
+                                        <div className={`sa-row`}>
+                                            {(value?.setting?.values) ? (
+                                                value.setting.values.filter(item => item.content !== '' ).map((item, idx) => {
+                                                    return (
+                                                        <>
+                                                            {(item?.contentType && item.contentType.includes('button')) ? (
+                                                                <div style={{ display: 'inline-block'}} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>{item.content}</div>
+                                                            ): (
+                                                                <div key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>
+                                                                    {item.content}
+                                                                </div>
+                                                            )}
+                                                            
+                                                        </>
+                                                        
+                                                    )
+                                                })
+                                            
+                                            ): (
+                                                <></>    
+                                            )}
+                                            
+                                        </div>
+                                        </>
+                                    ) : ( 
+                                        <div key={index}>{value.label}</div>
+                                        
+                                    )}
+                                    
+                                </div>    
+                            )}
+                            </>
+                            
+                        )
+                    })}
+
+                        
+                </div>
+            </>
+        )
+	}
 
 
     const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
