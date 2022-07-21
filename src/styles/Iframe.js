@@ -58,6 +58,35 @@ export const iframeStyle = `
     
     }
 
+    .sa-rows-volume-rows{
+        float: nonw !important;
+        display: block !important;
+    }
+
+    .sa-rows-volume-columns {
+        display: flex !important;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .aside-display-bundle-columns {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    .aside-display-tier-columns {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
 `
 
 export const SaButton = styled.button``;

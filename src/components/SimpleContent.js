@@ -170,7 +170,7 @@ const convertCss = (string) => {
 }
 
 const SimpleContent = (props) => {
-    const { products: { items, page, templateId, store: currency }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
+    const { products: { items, page, templateId, store: currency, template:templateActive }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState('');
@@ -180,6 +180,8 @@ const SimpleContent = (props) => {
     const states = useSelector(state => state);
     const [fetchData, setFetchData] = useState(false)
     const [liquidCode, setLiquidCode] = useState('');
+    const [templateOffer, setTemplate] = useState(templateActive);
+    
     const liquid = useLiquid();
     console.log(states)
 
@@ -227,15 +229,18 @@ const SimpleContent = (props) => {
             {sections.map((value, index) => (
                 <Section className={`sa-section-${value.ID}`} key={index}>
                     <>
-                    <Block className={'Block-Item'}>
+                    <Block className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display}`}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
-                                {`{%- for product in products -%}`}
-                                    {renderChildren(value, templateId)}
+                                    {`{%- for product in products -%}`}
+                                    <div className="shopadjust---item">
+                                        {renderChildrenLIQUID(value, templateId)}
+                                        
+                                    </div>
                                 {`{%- endfor -%}`}
                             </>
                         ): (
-                            <>{renderChildren(value)}</>
+                            <>{renderChildrenLIQUID(value)}</>
                         )}
                     </Block>  
                     </>
@@ -285,14 +290,17 @@ const SimpleContent = (props) => {
     useEffect(() => {        
         async function renderPage() {
             setFetchData(true)
+            
             let _products = [];
             let lang = 'en';
             let params = {};
             if (items.length) {
-                const { offer = {} } = items[0];
+                const { offer = {}, template: templateActive} = items[0];
                 let template = Object.values(offer).find(item => {
                     return item.id === page
                 })
+
+                setTemplate(templateActive);
                 /*
                 let allowProducts = template?.allowProducts ?? [];
                 if (allowProducts.length) {
@@ -752,7 +760,7 @@ const SimpleContent = (props) => {
                                 _product.addToCart = '';
 
                                 template.addToCart = await engine.parseAndRender(`<div class="shopadjust-item-${template.group_type}-1-buy-button">
-                                        <a style='color: inherit;text-decoration: none;' href="#" data-component="addToCart" class="shopadjust-product-offer-add-cart-tier all-in-one-offer-button-${template.group_type}-1-all">
+                                        <a data-id="{{id}}" style='color: inherit;text-decoration: none;' href="#" data-component="addToCart" class="shopadjust-product-offer-add-cart-tier all-in-one-offer-button-${template.group_type}-1-all">
                                             <div class="all-in-one-offer-button-${template.group_type}-1">
                                                 <div class="all-in-one-offer-${template.group_type}-1-top-button">Add to cart</div>
                                             </div>
@@ -889,15 +897,23 @@ const SimpleContent = (props) => {
 
     useEffect(() => {
         // console.log('liquidCode', liquidCode)
+        
         const element = (
             <>
             {sections.map((value, index) => (
                 <div className={`sa-section-${value.ID}`} key={index}>
-                    <div className={'aside-block-item-offer'}>
+                    <div className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display}`}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
+                                    <div className="shopadjust---item">
                                     {renderChildrenLIQUID(value, templateId)}
+                                    {`<div class="all-in-one-offer-bundle-1-item_center" {% if product.variants.size==1 %} style="display: none; " {% endif%}>
+                                            <div class="all-in-one-offer-bundle-1-item_vartiants">
+                                                {{product.selectVariants}}
+                                            </div>
+                                        </div>`}
+                                    </div>
                                 {`{%- endfor -%}`}
                             </>
                         ): (
@@ -919,7 +935,7 @@ const SimpleContent = (props) => {
     const renderChildrenLIQUID = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
         return (
             <>
-                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${setting.display}`: `sa-section-${ID}`}>
+                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${templateOffer?.type_offer && templateOffer.type_offer === 'tier' ? `volume-${setting.display}` : setting.display}`: `sa-section-${ID}`}>
                     {items.map((value, index) => {
                         if (value.handle === 'product-block') {
                            // console.log("HANDLE", value.setting.values)
@@ -928,6 +944,10 @@ const SimpleContent = (props) => {
                         let className = '';
                         if (setting?.display) {
                             className = `sa-display-${setting.display}`
+
+                            if (templateOffer?.type_offer && templateOffer.type_offer === 'tier') {
+                                className = `sa-display-volume-${setting.display}`
+                            }
                         }
                         return (
                             <>
@@ -981,10 +1001,10 @@ const SimpleContent = (props) => {
 	}
 
 
-    const renderChildren = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
+    const renderChildren = ({ setting = { display: '' }, ID, items = [], handle }, templateId) => {
         return (
             <>
-                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${setting.display}`: `sa-section-${ID}`}>
+                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${templateOffer?.type_offer && templateOffer.type_offer === 'tier' ? `volume-${setting.display}` : setting.display}`: `sa-section-${ID}`}>
                     {items.map((value, index) => {
                         if (value.handle === 'product-block') {
                            // console.log("HANDLE", value.setting.values)
@@ -993,7 +1013,14 @@ const SimpleContent = (props) => {
                         let className = '';
                         if (setting?.display) {
                             className = `sa-display-${setting.display}`
+
+                            if (templateOffer?.type_offer && templateOffer.type_offer === 'tier') {
+                                className = `sa-display-volume-${setting.display}`
+                            }
                         }
+
+
+
                         return (
                             <>
                              {(value.handle === 'block-button') ? (
