@@ -271,7 +271,7 @@ const SimpleContent = (props) => {
             return `<a href='${args}' title="${initial}">${initial}</a>`
         })
 
-        console.log('params', {params, liquid})
+        localStorage.setItem('params', JSON.stringify(params))
 
         return (
             <>

@@ -78,6 +78,8 @@ function Block() {
         </div>
     );
 
+    console.log(value)
+
     return (
         <SidePanel>
             <SidePanelArea>
