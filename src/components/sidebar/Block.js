@@ -9,6 +9,7 @@ import {
 
 import { Button, Heading, FormLayout, TextField, Spinner, Modal, TextContainer} from '@shopify/polaris';
 import { useSelector, useDispatch } from 'react-redux';
+
 import BlockContent from './BlockContent';
 import { updateSidebar } from '@store/template/action';
 

@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback} from 'react';
 import { useDispatch } from 'react-redux';
-import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable} from '@shopify/polaris';
+import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable, Toast, Link} from '@shopify/polaris';
 import { editBlock } from "@store/template/action";
-import { AddCodeMajor } from '@shopify/polaris-icons';
-  
+import { ClipboardMinor } from '@shopify/polaris-icons';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
 function BlockContent(props) {
     const  { value: prop } = props
     const dispatch = useDispatch();
@@ -12,9 +13,10 @@ function BlockContent(props) {
     const [content, setContent] = useState(prop?.label);
     const [focused, setFocused] = useState(prop?.label);
     const [sortedRows, setSortedRows] = useState(null);
-    const [initiallySortedRows, setInitiallySortedRows] = useState(null);
+    const [selected, setSelected] = useState(null);
     const [active, setActive] = useState(false);
-    
+    const [status, setStatus] = useState(false);
+
     const handleChange = useCallback(() => setActive(!active), [active]);
 
     const handleContentChange = (val) => {
@@ -133,12 +135,18 @@ function BlockContent(props) {
             } 
         }
 
+        
+
         const _initiallySortedRows = codes.map(co => {
             let example = (co.type === 'object') ? `{{${co.key}[0].fieldName}}` : `{{${co.key}}}`
             return [
                 co.key,
                 co.type,
-                example
+                <CopyToClipboard
+                    text={example}
+                    onCopy={() => alert('copied')}>
+                    <>{example}</>
+                </CopyToClipboard>
             ]
         })
 
@@ -156,7 +164,7 @@ function BlockContent(props) {
                 headings={[
                     "Shortcode",
                     "Type",
-                    "Example",
+                    "How to use?",
                 ]}
                 rows={rows}
                 //sortable={[true, false, false]}
@@ -167,8 +175,16 @@ function BlockContent(props) {
         )
     }
 
+    const toggleActive = useCallback(() => setStatus((status) => !status), []);
+
+    const toastMarkup = status ? (
+        <Toast content="Copied" onDismiss={toggleActive} />
+    ) : null;
+
+
     return (
         <>
+            {toastMarkup}
             {(!prop?.handle) ? (
                 <FormLayout>
                     <TextField labelAction={{ content: <CodeAction/> }} multiline={4} disabled label="Text" showCharacterCount={true} focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
