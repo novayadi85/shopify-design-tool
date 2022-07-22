@@ -87,6 +87,15 @@ export const iframeStyle = `
         align-items: center;
         flex-direction: column;
     }
+
+    .aside-display-banner-columns {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+    }
+
 `
 
 export const SaButton = styled.button``;

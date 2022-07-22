@@ -94,11 +94,13 @@ function BlockContent(props) {
             "variants",
             "vendor",
             "compare_at_price",
+            "textButton",
+            "link"
         ];
         if (localStorage.getItem('params')) {
             const items = JSON.parse(localStorage.getItem('params'));
             for (const property in items) {
-                if (whiteList.includes(property)) {
+                if (whiteList.includes(property) && property !== 'quantity') {
                     if (!used.includes(`${property}`)) {
                         // codes.push({ [property]: items[property] })
                         used.push(property)
@@ -138,7 +140,16 @@ function BlockContent(props) {
         
 
         const _initiallySortedRows = codes.map(co => {
-            let example = (co.type === 'object') ? `{{${co.key}[0].fieldName}}` : `{{${co.key}}}`
+            let example = (co.type === 'object') ? `{{${co.key}[0].fieldName}}` : `{{${co.key}}}`;
+
+            if (co.type === 'object' && co.key.includes('images')) {
+                example = `{{${co.key}[0].src}}`
+            }
+
+            if (co.type === 'object' && co.key.includes('variants')) {
+                example = `{{${co.key}[0].title}}`
+            }
+
             return [
                 co.key,
                 co.type,

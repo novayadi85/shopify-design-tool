@@ -294,6 +294,7 @@ const SimpleContent = (props) => {
             let _products = [];
             let lang = 'en';
             let params = {};
+            console.log('items', items)
             if (items.length) {
                 const { offer = {}, template: templateActive} = items[0];
                 let template = Object.values(offer).find(item => {
@@ -319,6 +320,45 @@ const SimpleContent = (props) => {
                 let _newProducts = [];
                 // console.log('template.group_type', template.group_type)
                 switch (template.group_type) {
+                    case 'free-product':
+                        const lists = JSON.parse(template.freeProducts);
+                        _newProducts = await Promise.all(Object.values(lists).map(async (prod) => {
+                            const { handle: list, qty } = prod;
+                            let _product = await simulateFetchData(prod.id);
+                            _product.price = Number(_product.variants[0].price) * 100
+                            _product.variantBlock = '';
+                            _product.selectVariants = '';
+                            _product.addToCart = '';
+                            
+                            _product.featured_image = '';
+                            if (_product?.images && _product.images.length >= 0) {
+                                _product.featured_image = _product.images[0]?.src
+                            }
+
+                            return {
+                                ..._product,
+                                ...{
+                                    quantity: qty,
+                                    productQuantity: qty,
+                                    specialPrice: _product.price,
+                                    totalOfferSaveInProcent: toFixedNumber(100, 2),
+                                    totalOfferSave: _product.price * qty,
+                                    offerPrice: _product.price,
+                                    selectVariants: '',
+                                    totalOfferPrice: ((_product.price * qty) / 100),
+                                    totalNormalPrice: _product.price * Number(qty) / 100,
+                                    addToCart: '',
+                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    productOfferSaveInProcent: `${toFixedNumber(100, 2)}%`
+                                },
+                                offerId: template.id
+                            };
+                        }));
+
+                        _products = _newProducts;
+
+                    break;
+                    
                     case 'tier':
                         _newProducts = await Promise.all(template.childs.map(async (child) => {
                             const { products: _tierProduct } = child;
@@ -927,7 +967,7 @@ const SimpleContent = (props) => {
 
         const template = ReactDOMServer.renderToStaticMarkup(element);
         const html = `<div class="sa-global-${templateId}">${template}</div>`;
-        console.log(html)
+        // console.log(html)
         dispatch(setLiquid(html))
         
     }, [sections])

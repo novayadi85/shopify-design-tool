@@ -86,6 +86,7 @@ function Background({initialValues}) {
 									}}>Image</Button>
 									<Button size="slim" pressed={(selected === null || selected=== 'none')? true: false} onClick={() => {
 										handleTabChange('none')
+										// setColor(null);
 										input.onChange('none')
 									}}>None</Button>
 								</ButtonGroup>
