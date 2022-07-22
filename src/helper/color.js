@@ -7,11 +7,13 @@ const RGBToHSB = (r, g, b, a) => {
     const h =
       n === 0 ? 0 : n && v === r ? (g - b) / n : v === g ? 2 + (b - r) / n : 4 + (r - g) / n;
     // return [60 * (h < 0 ? h + 6 : h), v && (n / v), v ];
+  let hue = 60 * (h < 0 ? h + 6 : h);
+  let sat = v && (n / v)
     return {
-        alpha: a,
-        brightness: v,
-        hue: 60 * (h < 0 ? h + 6 : h),
-        saturation: v && (n / v),
+        alpha: isNaN(a) ? 0: a,
+        brightness: isNaN(v) ? 0 : v,
+        hue: isNaN(hue) ? 0 : hue,
+        saturation: isNaN(sat) ? 0 : sat,
     }
 };
   
