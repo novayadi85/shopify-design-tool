@@ -22,6 +22,22 @@ function Height({initialValues}) {
 	useEffect(() => {
 		if (initialValues['height']) {
 			setHeight(initialValues['height']);
+
+			if (initialValues['height'].includes('px')) {
+				setTypeElement('px');
+			}
+
+			if (initialValues['height'].includes('vh')) {
+				setTypeElement('vh');
+			}
+
+			if (initialValues['height'].includes('em')) {
+				setTypeElement('em');
+			}
+		}
+
+		if (initialValues['height'] === 'auto') {
+			setType('auto');
 		}
 
 	}, [])

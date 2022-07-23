@@ -3,12 +3,15 @@ import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
+import { includes } from "@s-libs/micro-dash";
 
 function Wide({initialValues}) {
 	const [open, setOpen] = useState(false);
 	const [type, setType] = useState('screen');
 	const [typeElement, setTypeElement] = useState('px');
 	const [width, setWidth] = useState(100);
+	const [maxWidth, setMaxWidth] = useState(1440);
+	
 	const [widthFormat, setWidthFormat] = useState(`${width}${typeElement}`);
 
 	const handleTypeChange = useCallback((selectedTabIndex) => setTypeElement(selectedTabIndex),[]);
@@ -22,7 +25,29 @@ function Wide({initialValues}) {
 	useEffect(() => {
 		if (initialValues['width']) {
 			setWidth(initialValues['width']);
+
+			if (initialValues['width'].includes('px')) {
+				setTypeElement('px');
+			}
+
+			if (initialValues['width'].includes('vh')) {
+				setTypeElement('vh');
+			}
+
+			if (initialValues['width'].includes('em')) {
+				setTypeElement('em');
+			}
 		}
+
+		if (initialValues['max-width']) {
+			setMaxWidth(initialValues['max-width']);
+		}
+
+		if (initialValues['width'] === 'auto') {
+			setType('auto');
+		}
+
+		
 
 	}, [])
 
@@ -112,6 +137,30 @@ function Wide({initialValues}) {
 								)}
 							</Field>
 							
+							
+							
+						</div>
+						<div style={{ marginTop: 10, marginBottom: 10 }}>
+							<Field name={`max-width`}>
+								{({ input, meta, ...rest }) => (
+									<RangeSlider
+										output
+										label="Max width"
+										step={1}
+										value={maxWidth}
+										width={maxWidth}
+										min={0}
+										max={1440}
+										onChange={(val) => {
+											setMaxWidth(val);
+											input.onChange(`${maxWidth}${typeElement}`)
+										}}
+										suffix={<p style={suffixStyles}>{`${maxWidth}`}</p>}
+									/>
+								)}
+							</Field>
+						</div>
+						<div style={{ marginTop: 10, marginBottom: 10 }}>
 							<Field name={`width`}>
 								{({ input, meta, ...rest }) => (
 									<ButtonGroup segmented>
@@ -159,7 +208,7 @@ function Wide({initialValues}) {
 										}}>em</Button>
 									</ButtonGroup>
 								)}
-							</Field>
+							</Field>		
 						</div>
 					</div>
 				</Wrapper>

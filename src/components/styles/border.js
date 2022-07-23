@@ -108,28 +108,25 @@ function Border({initialValues}) {
 				<Wrapper className="container-fields" BorderBottom={true}>
 					<Field name={`border-type`}>
 						{({ input, meta, ...rest }) => (
-							<ButtonGroup segmented>
-								<Button size="slim" pressed={(selected === 'all') ? true : false} onClick={() => {
-									handleTabChange('all')
-									input.onChange('all');
-								}}>All</Button>
-								<Button size="slim" pressed={(selected === 'left')? true: false} onClick={() => {
-									handleTabChange('left')
-									input.onChange('left');
-								}}>Left</Button>
-								<Button size="slim" pressed={(selected === 'top')? true: false} onClick={() => {
-									handleTabChange('top')
-									input.onChange('top');
-								}}>Top</Button>
-								<Button size="slim" pressed={(selected === 'right')? true: false} onClick={() => {
-									handleTabChange('right')
-									input.onChange('right');
-								}}>Right</Button>
-								<Button size="slim" pressed={(selected === 'bottom')? true: false} onClick={() => {
-									handleTabChange('bottom')
-									input.onChange('bottom');
-								}}>Bottom</Button>
-							</ButtonGroup>
+							<Select
+								label="Border Type"
+								options={
+								[
+								{ value: "all", label: "All" },
+								{ value: "left", label: "Left" },
+								{ value: "right", label: "Right" },
+								{ value: "top", label: "Top" },
+								{ value: "bottom", label: "Bottom" },
+								{ value: "none", label: "None" },
+								]
+								}
+								value={selected}
+								onChange={(val) => {
+									setSelected(val)
+									input.onChange(val)
+								}}
+							/>
+							
 						)}
 					</Field>
 
@@ -189,7 +186,7 @@ function Border({initialValues}) {
 						</Field>
                      
 						</div>
-                  	<Popover
+                  		<Popover
 							active={popoverActive}
 							activator={activator}
 							autofocusTarget="first-node"

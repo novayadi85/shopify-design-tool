@@ -73,7 +73,12 @@ const getCssString = (string) => {
                         newObject['border-left'] = 'none !important';
                         newObject['border-bottom'] = 'none !important';
                         break;
-                
+                    case 'none':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
                     default:
                         break;
                 }

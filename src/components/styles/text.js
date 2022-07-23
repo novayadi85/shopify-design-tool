@@ -44,6 +44,10 @@ function Text({initialValues}) {
 			setTransform(initialValues['text-transform']);
 		}
 
+		if (initialValues['text-align']) {
+			setAlign(initialValues['text-align']);
+		}
+
 	}, [])
 
 

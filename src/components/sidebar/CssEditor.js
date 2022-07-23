@@ -100,26 +100,29 @@ function CssEditor({ type = false }) {
         else if (handle === 'global') {
             initialHandle = `sa-global-${templateId}`
         }
+        else if (handle === 'offer-setting') {
+            initialHandle = `sa-global-${templateId}`
+        }
         else {
             initialHandle = `sa-${type}-${handle}`;
         }
-        
+
         if (initial_values_styles.items) {
             let found = initial_values_styles.items.find(item => item.ID === initialHandle);
             
             if (found) {
                 const extraCSS = found.items;
                 let newStyles = {
-                    ...stdStyles,
+                    // ...stdStyles,
                     ...extraCSS
                 }
 
+                // console.log('newStyles', extraCSS)
+
                 if (newStyles) {
-                    console.log('newStyles', newStyles)
                     if (newStyles['background-type'] && newStyles['background-type'] === 'color') {
                         delete newStyles['background'];
                     }
-
                 }
 
                 return newStyles;
@@ -131,7 +134,7 @@ function CssEditor({ type = false }) {
 
     const _initialValues = InitialValues(); 
     
-    //console.log(_initialValues)
+   // console.log(_initialValues)
 
     return (
         <SidePanel>
@@ -189,7 +192,7 @@ function CssEditor({ type = false }) {
                             border: "1px solid #e5e5e5",
                             borderRadius: "3px",
                             background: "#eee",
-                            display: 'none'
+                            display: 'block'
                         }}>
                             <code>{JSON.stringify(_initialValues, null, 2)}</code>
                         </pre>
