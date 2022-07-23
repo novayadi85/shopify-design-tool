@@ -52,9 +52,11 @@ function CssEditor({ type = false }) {
         if (location.pathname.includes('block')) {
             return navigate(`/block/${handle}`)
         }
-        else if (location.pathname.includes('offer-css')) {
+        else if (location.pathname.includes('offer-css') || location.pathname.includes('offer-setting')) {
             return navigate(`/`)
         }
+
+        
         
         if (location.pathname.includes('-column-')) {
             let new_handle = handle.split('-column-');

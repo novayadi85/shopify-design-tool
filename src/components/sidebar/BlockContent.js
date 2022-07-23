@@ -123,12 +123,15 @@ function BlockContent(props) {
                                         [`product.${key}`]: products[index][key]
                                     })
                                     */
-                                    used.push(`product.${key}`)
-
-                                    codes.push({
-                                        key: `product.${key}`,
-                                        type: typeof products[index][key]
-                                    })
+                                    
+                                    if (products[index] !== '') {
+                                        codes.push({
+                                            key: `product.${key}`,
+                                            type: typeof products[index][key]
+                                        })
+                                        used.push(`product.${key}`)
+                                    }
+                                    
                                 }
                             }
                         }
@@ -148,6 +151,15 @@ function BlockContent(props) {
 
             if (co.type === 'object' && co.key.includes('variants')) {
                 example = `{{${co.key}[0].title}}`
+            }
+
+            if (co.type === 'string' && co.key === 'product.image') {
+                co.type = 'object';
+                example = `{{${co.key}.src}}`
+            }
+
+            if (co.key.includes('price') || co.key.includes('Price')) {
+                example = `{{${co.key} | money}}`
             }
 
             return [

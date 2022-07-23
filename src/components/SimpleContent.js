@@ -14,7 +14,7 @@ import { serviceUrl } from "@helper/url";
 import { setLiquid } from "@store/product/action";
 import { formatMoney } from "@helper/price";
 import engine from "../helper/template";
-import { dropdownHTML } from "../helper/html";
+import { convertToPlain, dropdownHTML, htmlDecode, htmlToText, stringToHTML } from "../helper/html";
 const { concat: _concat } = require('@s-libs/micro-dash');
 
 const convertCssItem = (items, page) => {
@@ -232,7 +232,7 @@ const SimpleContent = (props) => {
                     <Block className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display}`}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
-                                    {`{%- for product in products -%}`}
+                                {`{%- for product in products -%}`}
                                     <div className="shopadjust---item">
                                         {renderChildrenLIQUID(value, templateId)}
                                         
@@ -250,7 +250,7 @@ const SimpleContent = (props) => {
         )
 
         let params = products;
-        const template = ReactDOMServer.renderToStaticMarkup(element);
+        const template = decodeHTML(ReactDOMServer.renderToString(element));
 
         liquidEngine.registerFilter('money', (initial, args) => {
             let price = formatMoney(initial, currency?.money_format)
@@ -270,6 +270,17 @@ const SimpleContent = (props) => {
         liquidEngine.registerFilter('link_to', (initial, args) => {
             return `<a href='${args}' title="${initial}">${initial}</a>`
         })
+
+        liquidEngine.registerFilter('label', (initial, arg1, arg2) => {
+            let html = stringToHTML(initial);
+            if (html.querySelector('span.label')) {
+                html.querySelector('span.label').innerHTML = arg1;
+                return `<div>${html.innerHTML}</div>`
+            }
+
+            return initial
+        })
+
 
         localStorage.setItem('params', JSON.stringify(params))
 
@@ -380,7 +391,7 @@ const SimpleContent = (props) => {
                             template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
                                     <div class="shopadjust_drawer-modal_product_add_toCart">
                                         {{product.variantBlock}}
-                                        <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                        <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
                                 </div>`, {
                                     product: _product
@@ -459,7 +470,7 @@ const SimpleContent = (props) => {
                                 template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
                                         <div class="shopadjust_drawer-modal_product_add_toCart">
                                             {{product.variantBlock}}
-                                            <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                            <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                         </div>
                                     </div>`, {
                                         product: _product
@@ -528,7 +539,7 @@ const SimpleContent = (props) => {
                                     template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
                                             <div class="shopadjust_drawer-modal_product_add_toCart">
                                                 {{product.variantBlock}}
-                                                <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                                <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                             </div>
                                         </div>`, {
                                             product: _product
@@ -627,7 +638,7 @@ const SimpleContent = (props) => {
                                 template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
                                         <div class="shopadjust_drawer-modal_product_add_toCart">
                                             {{product.variantBlock}}
-                                            <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                            <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                         </div>
                                     </div>`, {
                                         product: _product
@@ -718,7 +729,7 @@ const SimpleContent = (props) => {
                                 template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
                                         <div class="shopadjust_drawer-modal_product_add_toCart">
                                             {{product.variantBlock}}
-                                            <a class="shopadjust-btn-add-offer-${template.group_type}">{{product.addToCart}}</a>
+                                            <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                         </div>
                                     </div>`, {
                                         product: _product
@@ -802,7 +813,7 @@ const SimpleContent = (props) => {
                                 template.addToCart = await engine.parseAndRender(`<div class="shopadjust-item-${template.group_type}-1-buy-button">
                                         <a data-id="{{id}}" style='color: inherit;text-decoration: none;' href="#" data-component="addToCart" class="shopadjust-product-offer-add-cart-tier all-in-one-offer-button-${template.group_type}-1-all">
                                             <div class="all-in-one-offer-button-${template.group_type}-1">
-                                                <div class="all-in-one-offer-${template.group_type}-1-top-button">Add to cart</div>
+                                                <div class="all-in-one-offer-${template.group_type}-1-top-button"><span class="label">%label%</span></div>
                                             </div>
                                         </a>
                                     </div>`, {
@@ -883,6 +894,7 @@ const SimpleContent = (props) => {
                     totalOfferSave += t?.OfferSave ? parseFloat(t.OfferSave) : 0;
                 });
             
+
                 params = {
                     ...template,
                     products: _products,
@@ -894,6 +906,13 @@ const SimpleContent = (props) => {
                     totalOfferSave: totalOfferSave,
                     BuyNow: "Buy It NOW",
                     link: template?.link 
+                }
+
+                if (params?.totalNormalPrice && params?.totalOfferSave) {
+                    let _totalOfferSaveInProcent = parseFloat(params.totalOfferSave) / parseFloat(params.totalNormalPrice);
+                    if (_totalOfferSaveInProcent > 0) {
+                        params.totalOfferSaveInProcent = `${toFixedNumber(parseInt(_totalOfferSaveInProcent * 100), 2)}%`
+                    }
                 }
                     
                 /*
@@ -992,7 +1011,7 @@ const SimpleContent = (props) => {
                         return (
                             <>
                              {(value.handle === 'block-button') ? (
-                                    <div style={{ display: 'inline-block'}} key={index} className={`sa-content sa-block-${value.ID}`}>{value.label}</div>
+                                    <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value.label}"}} ` }</div>
                                 ): (
                                     <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
                                     {('block-product' === value.handle || value.handle === 'offer-product') ? (

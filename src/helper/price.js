@@ -87,6 +87,7 @@ export function cents(num) {
 
 // eslint-disable-next-line no-template-curly-in-string
 export function formatMoney(cents, format = '{{amount}}') {
+  cents = cents * 100
   if (typeof cents === 'string') {
       cents = cents.replace('.', '')
   }

@@ -1,3 +1,5 @@
+const { htmlToText: convertToString } = require('html-to-text');
+
 export const decodeHTML = function (html) {
 	var txt = document.createElement('textarea');
     txt.innerHTML = html;
@@ -6,6 +8,26 @@ export const decodeHTML = function (html) {
     val = val.replace("<p><br></p>", "");
 	return val;
 };
+
+export function htmlDecode(input) {
+    var doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent;
+}
+  
+export function stringToHTML(str) {
+	var parser = new DOMParser();
+	var doc = parser.parseFromString(str, 'text/html');
+	return doc.body;
+};
+
+export function htmlToText(input, args = {}) {
+    return convertToString(input, args);
+}
+
+export function convertToPlain(html) {
+    return html.documentElement.innerHTML;
+}
+
 
 export const dropdownHTML = `{% assign hidden = '' %}
 {% assign firstOption = '' %}

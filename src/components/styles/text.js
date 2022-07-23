@@ -105,9 +105,9 @@ function Text({initialValues}) {
 										input.onChange('overline')
 									}} size="slim" pressed={(decoration === 'overline') ? true : false}>Overline</Button>
 									<Button onClick={() => {
-										handleDecorationChange('through')
-										input.onChange('through')
-									}} size="slim" pressed={(decoration === 'through') ? true : false}>Through</Button>
+										handleDecorationChange('line-through')
+										input.onChange('line-through')
+									}} size="slim" pressed={(decoration === 'line-through') ? true : false}>Through</Button>
 									<Button onClick={() => {
 										handleDecorationChange('underline')
 										input.onChange('underline')
