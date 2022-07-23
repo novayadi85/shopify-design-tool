@@ -102,10 +102,14 @@ export const iframeStyle = `
     .items-separator .shopadjust---item:after {
         content: "+";
         display: inline-block;
-        width: 100px;
-        height: 100%;
+        width: 20px;
+        height: 20px;
         position: relative;
-        padding-top: 25%;
+        margin: 30% 20px;
+        border-radius: 50%;
+        background: #fbfbfb;
+        border: 1px solid #000;
+        color: #0e0e0e;
     }
 
 `

@@ -84,7 +84,7 @@ function Header() {
             let pageDefault = null;
             
             let _options = Object.values(offer).map(item => {
-                pageDefault = item.id;
+                if(!pageDefault) pageDefault = item.id;
                 return {
                     label: item.title,
                     value: item.id

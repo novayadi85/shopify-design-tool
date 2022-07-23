@@ -966,7 +966,7 @@ const SimpleContent = (props) => {
             <>
             {sections.map((value, index) => (
                 <div className={`sa-section-${value.ID}`} key={index}>
-                    <div className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display}`}>
+                    <div className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display} items-${value?.setting?.separator ? 'separator' : 'no-separator'}`}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
