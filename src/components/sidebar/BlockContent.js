@@ -124,6 +124,8 @@ function BlockContent(props) {
                                     })
                                     */
                                     
+                                    if (key === 'image') continue;
+                                    
                                     if (products[index] !== '') {
                                         codes.push({
                                             key: `product.${key}`,
@@ -161,6 +163,12 @@ function BlockContent(props) {
             if (co.key.includes('price') || co.key.includes('Price')) {
                 example = `{{${co.key} | money}}`
             }
+        
+            if (co.key.includes('addToCart')) {
+                example = `{{addToCart | label: "Add To Cart"}}`
+            }
+
+            
 
             return [
                 co.key,
