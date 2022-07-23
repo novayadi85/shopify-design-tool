@@ -96,6 +96,18 @@ export const iframeStyle = `
         flex-direction: row;
     }
 
+    .items-separator .shopadjust---item:last-child:after {
+        display: none;
+    }
+    .items-separator .shopadjust---item:after {
+        content: "+";
+        display: inline-block;
+        width: 100px;
+        height: 100%;
+        position: relative;
+        padding-top: 25%;
+    }
+
 `
 
 export const SaButton = styled.button``;

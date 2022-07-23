@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { ActionList, Button, Icon, Popover, Select, TextField } from "@shopify/polaris";
+import { ActionList, Button, Icon, Popover, Select, TextField, Checkbox } from "@shopify/polaris";
 import { TextAlignmentLeftMajor, CirclePlusOutlineMinor, BlockMinor } from "@shopify/polaris-icons";
 import { useSelector, useDispatch } from 'react-redux';
 import { getSidebar, addNewBlock } from "../../store/template/action";
@@ -36,6 +36,7 @@ export default function SectionSetting({props}) {
     const save = async lines => {
         let setting = prop?.setting ?? {};
         lines.label = lines?.heading ?? prop.label
+
         dispatch(editBlock(prop, {
             ...setting,
             ...lines
@@ -47,7 +48,8 @@ export default function SectionSetting({props}) {
     const InitialValues = () => {
         return prop?.setting ?? {
             label: prop.label,
-            columns: 'row'
+            columns: 'row',
+            separator: false
         };
     }
 
@@ -84,6 +86,21 @@ export default function SectionSetting({props}) {
                                         }}
                                     />
 								)}
+                            </Field>
+                        </FieldGroup>
+                        <FieldGroup>
+                            <Field name={`separator`}>
+                                    {({input}) => (
+                                    <Checkbox
+                                        label="Show (+) in between products"
+                                        checked={_initialValues['separator'] ? true : false}
+                                        onChange={(value) => {
+                                            handleFieldChange('separator', value)
+                                            console.log('separator', value)
+                                            input.onChange(value)
+                                        }}
+                                    />
+                                )}
                             </Field>
                         </FieldGroup>
                     </div>
