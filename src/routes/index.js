@@ -7,9 +7,10 @@ import {
 import Block from '@sidebar/Block';
 import Section from '@sidebar/Section';
 import Product from '@sidebar/Product';
-import ProductBlock from '@sidebar/ProductBlock'; 
+
 import Home from '@sidebar/Home';
 import CssEditor from '@sidebar/CssEditor';
+import CssManual from '@sidebar/CssManual';
 
 const MainRoutes = () => {
     return <Routes>
@@ -19,6 +20,7 @@ const MainRoutes = () => {
         <Route path="/product/:handle" element={<Product/>} />
         <Route path="/block/css/:handle" element={<CssEditor type={'block'}/>} />
         <Route path="/section/css/:handle" element={<CssEditor type={'section'}/>} />
+        <Route path="/edit_css/:type/:handle" element={<CssManual/>} />
         <Route path="/setting/:handle" element={<CssEditor type={'global'} />} />
     </Routes>
 }

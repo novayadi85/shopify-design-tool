@@ -131,7 +131,7 @@ function Home() {
 
 	const SortableItem = sortableElement(({value}) => (
 		<li className={`nav nav-sidebar has-subnav`} parent={value.ID}>
-			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? 'separator' : ''}`}>
+			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? '' : ''}`}>
                 {(!value?.child || value.child === false) ? (
                 <CollapseToggle value={value} className={`visible ${(value.type === 'section' && (value.child !== false)) ? 'visible' : 'hidden'} ${(value.open) ? '' : 'collapsed'}`}>
                     <Button onClick={() => collapseHandler(value)} icon={DropdownMinor}/>

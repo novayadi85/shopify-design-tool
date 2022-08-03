@@ -14,7 +14,6 @@ export const SidePanel = styled.div`
 
 export const SidePanelArea = styled.div`
     grid-area: primary-sidebar;
-    overflow: hidden;
     position: relative;
     z-index: 10;
     background-color: #fff;
@@ -23,7 +22,6 @@ export const SidePanelArea = styled.div`
     padding-left: 1rem;
     padding-right: 1rem;
     height: 100%;
-    overflow-y: scroll;
 `
 
 export const Header = styled.div`
@@ -64,7 +62,13 @@ export const FieldGroup = styled.div`
 
 export const SidePanelBottom = styled.div`
     padding: 0.7rem 10px 0.7rem;
-    border-top: 0.0625rem solid var(--p-divider);
+    border: 0.0625rem solid var(--p-divider);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 19999;
+    background: var(--p-surface);
     .Polaris-Button__Content{
         font-weight: var(--p-font-weight-semibold);
     }

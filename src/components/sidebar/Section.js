@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, Flex, Section as SectionElement, SidePanelBottom} from "@styles/Sidebar";
-
+import { useTranslation } from 'react-i18next';
 import {
 	DeleteMinor,
 	ChevronLeftMinor
@@ -14,6 +14,7 @@ import { updateSidebar } from '@store/template/action';
 
 function Section() {
     let { handle } = useParams();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const {items} = useSelector(state => state.template);
@@ -94,7 +95,7 @@ function Section() {
 
     const activator = (
         <div ref={buttonRef}>
-            <Button props={value} onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Section</Button>
+            <Button props={value} onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>{t('Remove')} Section</Button>
         </div>
       );
 

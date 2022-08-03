@@ -1,5 +1,5 @@
 import { updateSidebar } from "../template/action";
-import { replaceCSS } from "../style/action";
+import { replaceCSS, replaceMobileCSS } from "../style/action";
 
 export const FETCH_PRODUCTS_BEGIN   = 'FETCH_PRODUCTS_BEGIN';
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
@@ -74,6 +74,7 @@ export function fetchProducts(url) {
         let type = data?.template?.brickname ?? [];
         let templateId = data?.templateId ?? [];
         let cssStyles = data?.cssStyles ?? [];
+        let mobileStyles = data?.mobileStyles ?? [];
         let storeFormat = data?.store ?? [];
         let liquidCode = data?.template?.liquid ?? [];
         
@@ -91,6 +92,10 @@ export function fetchProducts(url) {
 
         if (cssStyles.length > 0) {
           dispatch(replaceCSS(cssStyles));
+        }
+
+        if (mobileStyles.length >= 0) {
+          dispatch(replaceMobileCSS(mobileStyles));
         }
        
       })

@@ -4,6 +4,7 @@ import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable, T
 import { editBlock } from "@store/template/action";
 import { ClipboardMinor } from '@shopify/polaris-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ResourceIcon from '@icons/Resource';
 
 function BlockContent(props) {
     const  { value: prop } = props
@@ -39,7 +40,7 @@ function BlockContent(props) {
     const CodeAction = () => {
         return (
             <Button plain size="slim" onClick={handleChange}>
-                Shortcode
+                <ResourceIcon/>
             </Button>
             
         );

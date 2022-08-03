@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOMServer from 'react-dom/server';
+import { matchPath } from 'react-router'
+import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from "react-helmet";
 import { Main, Section, Block } from "@styles/Main";
 import { iframeStyle } from '@styles/Iframe';
+import Editor from "./Editor";
 import { SaButton } from "../styles/Iframe";
 import { toCSS, toJSON } from 'cssjson';
 import { ReactLiquid, liquidEngine, useLiquid  } from 'react-liquid'
@@ -15,7 +18,6 @@ import { setLiquid } from "@store/product/action";
 import { formatMoney } from "@helper/price";
 import engine from "../helper/template";
 import { convertToPlain, dropdownHTML, htmlDecode, htmlToText, stringToHTML } from "../helper/html";
-const { concat: _concat } = require('@s-libs/micro-dash');
 
 const convertCssItem = (items, page) => {
     let jsonObject = {
@@ -175,6 +177,7 @@ const convertCss = (string) => {
 }
 
 const SimpleContent = (props) => {
+    const urlParams = useParams();
     const { products: { items, page, templateId, store: currency, template:templateActive }, template: { items: sections }, styles: { items: styles } } = useSelector(state => state);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
@@ -956,12 +959,10 @@ const SimpleContent = (props) => {
 
         renderPage();
         setLiquidCode(true);
-        
     }, [page, fetchData]);
 
     useEffect(() => {
         // console.log('liquidCode', liquidCode)
-        
         const element = (
             <>
             {sections.map((value, index) => (
@@ -995,6 +996,11 @@ const SimpleContent = (props) => {
         dispatch(setLiquid(html))
         
     }, [sections])
+
+    useEffect(() => {
+        console.log('PROPS', urlParams)
+        console.log('PROPS', props)
+    }, [urlParams])
 
     const renderChildrenLIQUID = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
         return (
@@ -1148,10 +1154,9 @@ const SimpleContent = (props) => {
         return css;
     }
 
-    // console.log(states)
 
     return (
-        <Main style={{display: 'block', width: '100%'}}>
+        <Main style={{display: 'block', width: '100%', marginLeft: 10}}>
             <Helmet>
                 <link rel="stylesheet" href={style} />
                 <style type="text/css">{ 
@@ -1172,6 +1177,10 @@ const SimpleContent = (props) => {
                     />
                 </div>
                 
+            </div>
+
+            <div id="cssEditor">
+                <Editor/>
             </div>
 
             <pre style={{

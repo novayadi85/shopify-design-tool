@@ -9,7 +9,7 @@ import {
 
 import { Button, Heading, FormLayout, TextField, Spinner, Modal, TextContainer} from '@shopify/polaris';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { useTranslation } from 'react-i18next';
 import BlockContent from './BlockContent';
 import { updateSidebar } from '@store/template/action';
 
@@ -17,7 +17,7 @@ function Block() {
     let { handle } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const {items} = useSelector(state => state.template);
     let value = [];
@@ -34,14 +34,14 @@ function Block() {
 
     const handleDelete = useCallback(() => {
         let _items = items.map(({ ...item }) => {
-            item.items = item.items.filter(t => t.ID !== value.ID);
+            item.items = item?.items ? item.items.filter(t => t.ID !== value.ID) : [];
             return item;
         })
 
-        //console.log(_items)
         dispatch(updateSidebar(_items));
         setActive(false);
         navigate('/');
+        
     }, []);
         
     items.forEach(item => {
@@ -75,11 +75,9 @@ function Block() {
 
     const activator = (
         <div ref={buttonRef}>
-            <Button props={value} onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>Delete Block</Button>
+            <Button props={value} onClick={handleOpen} plain monochrome removeUnderline icon={DeleteMinor}>{t('Remove')} Block</Button>
         </div>
     );
-
-    console.log(value)
 
     return (
         <SidePanel>

@@ -4,14 +4,14 @@ import MainRoutes from "@routes/index";
 import styled from 'styled-components';
 
 const SidePanel = styled.div`
-border-right: 0.0625rem solid var(--p-divider);
-grid-area: primary-sidebar;
-overflow: hidden;
-position: relative;
-z-index: 10;
-background-color: var(--p-surface);
-margin-top: 5px;
-padding-top: 5px;
+    border-right: 0.0625rem solid var(--p-divider);
+    grid-area: primary-sidebar;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    background-color: var(--p-surface);
+    margin-top: 5px;
+    padding-top: 5px;
 `
 
 const SidePanelArea = styled.div`
@@ -19,12 +19,13 @@ height: 100%;
 position: relative;
 width: 100%;
 min-width: 18.75rem;
+overflow-y: scroll;
 ul {
     background-color: var(--p-surface);
     display: flex;
     flex-direction: column;
     list-style: none;
-    margin: 0;
+    margin: 0 10px;
     padding: 0;
 }
 

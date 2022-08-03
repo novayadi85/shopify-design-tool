@@ -10,6 +10,7 @@ module.exports = function (config, env) {
     '@routes': resolve("src/routes"),
     '@sidebar': resolve("src/components/sidebar"),
     '@styles': resolve("src/styles"),
+    '@icons': resolve("src/components/icons"),
   });
 
   return config;
