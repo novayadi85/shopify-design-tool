@@ -1,16 +1,14 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, Section, SidePanelBottom, Flex} from "@styles/Sidebar";
-import { DeleteMinor, ChevronLeftMinor, ToolsMajor } from "@shopify/polaris-icons";
-import { Form, Field } from 'react-final-form';
+import { SidePanel, SidePanelArea,  Header, BackAction, ButtonWrapper, TitleWrapper, Section, Flex} from "@styles/Sidebar";
+import {  ChevronLeftMinor } from "@shopify/polaris-icons";
 import { Button, Heading, Spinner } from '@shopify/polaris';
-import * as Block from '../styles';
-import { setCssEditor, updateStyles } from '../../store/style/action';
+import { updateStyles } from '../../store/style/action';
 import { useDispatch, useSelector } from 'react-redux';
-import AutoSave from '../actions/AutoSaveStyle';
 import { stdStyles } from '../../helper/style';
 import Editor from "@components/Editor";
+import colorcolor from 'colorcolor';
 
 function CssManual() {
     const { type, handle } = useParams();
@@ -92,12 +90,14 @@ function CssManual() {
                     ...extraCSS
                 }
 
-                // console.log('newStyles', extraCSS)
-
                 if (newStyles) {
                     if (newStyles['background-type'] && newStyles['background-type'] === 'color') {
                         delete newStyles['background'];
                     }
+
+                    if(newStyles['background-color']) newStyles['background-color'] = colorcolor( newStyles['background-color'], "hex" );
+                    if (newStyles['color']) newStyles['color'] = colorcolor(newStyles['color'], "hex");
+                    
                 }
 
                 return newStyles;
@@ -109,8 +109,6 @@ function CssManual() {
 
     const _initialValues = InitialValues(); 
     
-   // console.log(_initialValues)
-
     return (
         <SidePanel>
             <SidePanelArea style={{padding: 0}}>

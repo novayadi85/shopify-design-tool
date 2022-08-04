@@ -21,7 +21,7 @@ import { updatePage } from "../store/product/action";
 import { serviceUrl } from "../helper/url";
 import { useNavigate } from "react-router-dom";
 const TopBarContent = styled.div`
-    min-height: 40px;
+    min-height: 3.3rem;
     
 `
 const Flex = styled.div`
@@ -344,7 +344,7 @@ function Header() {
                     <Layout.Section oneThird>
                         <div style={{display: (hasOffer) ? "block" : "none"}}>
                             <Stack>
-                                <TopBarContent className="flex" style={{ margin: 10}}>
+                                <TopBarContent className="flex" style={{ margin: '0px 10px'}}>
                                     <Label>
                                         <PaddingRight>Select offer:</PaddingRight>
                                     </Label>
@@ -364,8 +364,8 @@ function Header() {
                         </div>
                     </Layout.Section>
                     <Layout.Section oneThird>
-                        <Flex content="flex-end" style={{'paddingRight': 10, margin: 10}}>
-                            <TopBarContent>
+                        <Flex content="flex-end" style={{'paddingRight': 10, margin: 0}}>
+                            <TopBarContent style={{paddingTop: '7px'}}>
                                 <ButtonGroup>
                                     <Device />
                                     {(!alert) ? (<Button onClick={handleSubmit} primary>Save</Button>) : (null)}

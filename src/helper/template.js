@@ -117,5 +117,24 @@ engine.registerFilter('save', (initial, arg1) => {
 
 })
 
+/*
+
+engine.registerFilter('label', (initial, arg1, arg2) => {
+  let html = stringToHTML(initial);
+  if (html.querySelector('span.label')) {
+    html.querySelector('span.label').innerHTML = arg1;
+    return `<div>${html.innerHTML}</div>`
+  }
+
+  return initial
+})
+
+var stringToHTML = function (str) {
+	var parser = new DOMParser();
+	var doc = parser.parseFromString(str, 'text/html');
+	return doc.body;
+};
+*/
+
 
 export default engine

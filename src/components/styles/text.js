@@ -1,8 +1,7 @@
 import { Button, Collapsible, ButtonGroup, RangeSlider, Label} from "@shopify/polaris";
 import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
-import { Wrapper } from "@styles/Sidebar";
-import { RemovePadding } from "../../styles/Sidebar";
+import { Wrapper, RemovePadding } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
 import { getNumber } from "../../helper/number";
 

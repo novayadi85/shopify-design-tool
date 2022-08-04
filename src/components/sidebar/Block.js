@@ -87,7 +87,7 @@ function Block() {
                         <ButtonWrapper>
                             <Button onClick={backHandle} plain icon={ ChevronLeftMinor}></Button>
                         </ButtonWrapper>
-                        <TitleWrapper>
+                        <TitleWrapper style={{maxWidth: 100}}>
                             <Heading><span className='capitalize truncate-text'>{ value.label }</span></Heading>
                         </TitleWrapper>
                         <ButtonRightWrapper>
@@ -106,7 +106,10 @@ function Block() {
                         </Flex>
                     
                     ) : (
-                        <BlockContent type={'block'} value={value}/>    
+                            <>
+                                <BlockContent type={'block'} value={value} />    
+                            </>
+                          
                     )}
 
                     

@@ -50,17 +50,17 @@ export default function ActionListWithSuffixExample() {
 
     return (
         <div className="add-section">
-        <Popover
-            active={active}
-            activator={activator}
-            autofocusTarget="first-node"
-            onClose={toggleActive}
-        >
-            <ActionList
-            actionRole ="menuitem"
-            items = {lists}
-            />
-        </Popover>
+            <Popover
+                active={active}
+                activator={activator}
+                autofocusTarget="first-node"
+                onClose={toggleActive}
+            >
+                <ActionList
+                actionRole ="menuitem"
+                items = {lists}
+                />
+            </Popover>
         </div>
     );
 }

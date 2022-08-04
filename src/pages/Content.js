@@ -875,10 +875,14 @@ const SimpleContent = (props) => {
                                 className = `sa-display-volume-${setting.display}`
                             }
                         }
+
+                        /*
+                        <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value.label}"}} ` }</div>
+                        */
                         return (
                             <>
                              {(value.handle === 'block-button') ? (
-                                    <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value.label}"}} ` }</div>
+                                    <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value?.setting?.content + value?.setting?.content2}", product}}` }</div>
                                 ): (
                                     <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
                                     {('block-product' === value.handle || value.handle === 'offer-product') ? (
@@ -974,19 +978,32 @@ const SimpleContent = (props) => {
             return `<a href='${args}' title="${initial}">${initial}</a>`
         })
 
-        liquidEngine.registerFilter('label', (initial, arg1, arg2) => {
+        liquidEngine.registerFilter('label', (initial, arg1, arg2, arg3) => {
+            //let params = liquidEngine?.params ? liquidEngine.params : {};
             let html = stringToHTML(initial);
             if (html.querySelector('span.label')) {
                 html.querySelector('span.label').innerHTML = arg1;
-                return `<div>${html.innerHTML}</div>`
             }
 
-            return initial
+            let contentHtml = `<div>${html.innerHTML}</div>`;
+            contentHtml = contentHtml.replace(/\[/g, "{{");
+            contentHtml = contentHtml.replace(/\]/g, "}}");
+            /*
+            contentHtml = contentHtml.replace(/totalNormalPrice/g, "{{totalNormalPrice}}");
+            contentHtml = contentHtml.replace(/totalOfferSave/g, "{{totalOfferSave | money}}");
+            contentHtml = contentHtml.replace(/totalOfferPrice/g, "{{totalOfferPrice | money}}");
+            contentHtml = contentHtml.replace(/totalOfferSaveInProcent/g, "{{totalOfferSaveInProcent}}");
+            contentHtml = contentHtml.replace(/productOfferSaveInProcent/g, "{{productOfferSaveInProcent}}");
+            contentHtml = contentHtml.replace(/price/g, "{{price  | money}}");
+            contentHtml = contentHtml.replace(/productQuantity/g, "{{productQuantity}}");
+            */
+            
+            return engine.parseAndRenderSync(contentHtml, arg2);
         })
 
-
         localStorage.setItem('params', JSON.stringify(params))
-
+        //let renderedTemplate = Promise.all([engine.parseAndRender(template, params).then(html => html)])
+        //console.log('renderedTemplate', renderedTemplate)
         setLoading(false)
 
         return (

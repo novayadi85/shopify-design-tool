@@ -112,6 +112,11 @@ export const iframeStyle = `
         color: #0e0e0e;
     }
 
+    hr {
+        margin: 0;
+        background-color: #999;
+    }
+
 `
 
 export const SaButton = styled.button``;

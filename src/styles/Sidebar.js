@@ -112,7 +112,7 @@ export const Wrapper = styled.div(props => ({
 export const SidePanelAreaWrapper = styled.div``
 
 export const ListItemWrapper = styled.div`
-    margin-left: 2rem;
+    margin-left: 1.7rem;
 `
 export const ListItemWrapperContainer = styled.div`
     align-items: center;

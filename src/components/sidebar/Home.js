@@ -21,7 +21,7 @@ const DragHandle = sortableHandle(() =>
 
 
 const SortableContainer = sortableContainer(({children}) => {
-  return <ul>{children}</ul>;
+  return <ul style={{margin:' 0 0px', padding: '0 4px'}}>{children}</ul>;
 });
 
 function Home() {
@@ -62,7 +62,7 @@ function Home() {
 	
     const renderChildren = ({ ID, items = [], open = false }) => {
         return (
-            <div className={`collapse ${(open) ? 'visible': 'hidden'}`}>
+            <div className={`collapse ${(open) ? 'visible': 'hidden'}`} style={{marginLeft: '1.2rem'}}>
                 <SortableContainer props={{ id: ID}}  onSortEnd={onSortChildEnd} useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
                     <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
@@ -77,12 +77,12 @@ function Home() {
     
     const ParentSection = () => {
         return (
-            <div className={`visible'}`}>
+            <div className={`visible`}>
                 <SortableContainer style={{marginLeft: '10px'}}>
                 <li className={`nav nav-sidebar has-subnav`}>
                     <ListItemWrapperContainer className={`ListItemWrapperContainer separator`}>
                         <ListItemContent>
-                            <ListItemWrapper>
+                            <ListItemWrapper style={{paddingTop: '4px', paddingBottom: '2px'}}>
                                 <ListItem>
                                     <div className='prefixIcon'>
                                         <Icon
@@ -199,9 +199,7 @@ function Home() {
                 
             )}
 
-            <PrimaryBox style={{
-                marginLeft: 0
-            }}>	
+            <PrimaryBox>	
                 {(canAddBlock) ? (<AddSection/>) : (null)}
             </PrimaryBox>
         </SidePanelAreaWrapper>

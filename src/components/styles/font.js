@@ -2,9 +2,9 @@ import { Select, Button, Collapsible, ButtonGroup, ColorPicker, RangeSlider, Pop
 import { useState, useCallback, useEffect } from "react";
 import { ChevronRightMinor, ChevronDownMinor } from "@shopify/polaris-icons";
 import { Wrapper } from "@styles/Sidebar";
-import { RemovePadding } from "../../styles/Sidebar";
+import { RemovePadding } from "@styles/Sidebar";
 import { Field } from 'react-final-form';
-import { RGBAToHSB } from "../../helper/color";
+import { RGBAToHSB } from "@helper/color";
 
 function Font({initialValues}) {
 	const [open, setOpen] = useState(false);
