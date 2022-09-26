@@ -140,7 +140,7 @@ function Header() {
             })
 
             if (_options.length <= 0) {
-                setAlert(true);
+                // setAlert(true);
                 setHasOffer(false) 
             }
             else {

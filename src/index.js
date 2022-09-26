@@ -9,7 +9,7 @@ import en from '@shopify/polaris/locales/en.json';
 import "@shopify/polaris/build/esm/styles.css";
 import "./index.scss";
 import { fetchProducts } from "@store/product/action.js";
-const url =  process.env.NODE_ENV === "development" ? process.env.REACT_APP_REST_URL : 'https://app.shopadjust-apps.com/packages/api' ; 
+const url =  process.env.NODE_ENV === "development" ? process.env.REACT_APP_REST_URL : 'https://app.dev.shopadjust-apps.com/packages/api' ; 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
@@ -31,6 +31,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
     if (params.get('prev')) {
         localStorage.setItem('sa-prev-url', params.get('prev'));
         localStorage.setItem('sa-products', JSON.stringify({}));
+    }
+
+    if (params.get('sa-apps')) {
+        localStorage.setItem('sa-apps', params.get('sa-apps'));
     }
 
     if (params.get('store') && params.get('id')) {

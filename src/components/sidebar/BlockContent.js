@@ -1,15 +1,16 @@
 import { useEffect, useState, useCallback} from 'react';
-import { useDispatch } from 'react-redux';
-import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable, Toast, Link} from '@shopify/polaris';
+import { useDispatch, useSelector } from 'react-redux';
+import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable, Toast, Select} from '@shopify/polaris';
 import { editBlock } from "@store/template/action";
 import { ToolsMajor } from '@shopify/polaris-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ResourceIcon from '@icons/Resource';
 import BlockCss from './BlockCss';
+import { Form, Field } from 'react-final-form';
+import AutoSave from '../actions/AutoSaveStyle';
 
 function BlockContent(props) {
     const { value: prop } = props;
-    console.log(prop)
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [value, setValue] = useState(prop);
@@ -19,7 +20,12 @@ function BlockContent(props) {
     const [sortedRows, setSortedRows] = useState(null);
     const [selected, setSelected] = useState(null);
     const [active, setActive] = useState(false);
+    const [formLabel, setFormLabel] = useState(prop?.setting?.content?.formLabel);
+    const [formName, setFormName] = useState(prop?.setting?.content?.formName);
+    const [formType, setFormType] = useState(prop?.setting?.content?.formType);
+    const [formValue, setFormValue] = useState(prop?.setting?.content?.defaultValue);
     const [status, setStatus] = useState(false);
+    
 
     const handleChange = useCallback(() => setActive(!active), [active]);
     const handleChangeCSS = () => {
@@ -301,6 +307,24 @@ function BlockContent(props) {
         <Toast content="Copied" onDismiss={toggleActive} />
     ) : null;
 
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+    const save = async lines => {
+        console.log('Saving', [lines])
+        if (!lines?.formType) lines.formType = 'input';
+        dispatch(editBlock(value, {
+            content: lines,
+            headline: lines?.formLabel
+        })) 
+
+        await sleep(2000)
+    }
+
+    const InitialValues = () => {
+        return prop?.setting?.content ? prop.setting.content : {}
+    }
+
+    const _initialValues = InitialValues(); 
 
     return (
         <>
@@ -323,8 +347,99 @@ function BlockContent(props) {
                                 
                             </>
                             
-                        ): (
-                            <TextField labelAction={{ content: <CodeAction/> }} multiline={4} label="Text" showCharacterCount={true}  focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
+                        ) : (
+                            (value.handle === 'block-form') ? (
+                                <Form onSubmit={save}
+                                    initialValues={_initialValues}
+                                    render={({ handleSubmit, form, submitting, pristine, values }) => (
+                                        <form onSubmit={handleSubmit}>
+                                            <AutoSave debounce={1000} save={save} />
+                                            <div style={{marginTop:10}}>
+                                                <Field name={`formLabel`}>
+                                                    {({ input, meta, ...rest }) => (
+                                                        <TextField
+                                                            label="Label"
+                                                            value={formLabel}
+                                                            onChange={(val) => {
+                                                                input.onChange(`${val}`)
+                                                                setFormLabel(val)
+                                                            }}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            </div>
+                                            <div style={{marginTop:10}}>
+                                                <Field name={`formName`}>
+                                                    {({ input, meta, ...rest }) => (
+                                                        <Select
+                                                        label="Form type"
+                                                        options={
+                                                        [
+                                                            { value: "first_name", label: "Firtname" },
+                                                            { value: "last_name", label: "Lastname" },
+                                                            { value: "email", label: "Email" },
+                                                            { value: "submit", label: "Submit" },
+                                                            { value: "agreement", label: "Agreement" },
+                                                        ]
+                                                        }
+                                                        placeholder={'Choose type: '}
+                                                            
+                                                        value={formName}
+                                                        onChange={(val) => {
+                                                            input.onChange(`${val}`)
+                                                            setFormName(val)
+                                                        }}
+                                                        name={input.name}
+                                                    />
+                                                    )}
+                                                </Field>
+                                            </div>
+                                            { /* <div style={{marginTop:10}}>
+                                                <Field name={`formType`}>
+                                                    {({ input, meta, ...rest }) => (
+                                                        <Select
+                                                        label="Form type"
+                                                        options={
+                                                        [
+                                                            { value: "input", label: "Input" },
+                                                            { value: "checkbox", label: "Checkbox" },
+                                                            { value: "button", label: "Button" },
+                                                        ]
+                                                        }
+                                                        placeholder={'Choose type: '}
+                                                            
+                                                        value={formType}
+                                                        onChange={(val) => {
+                                                            input.onChange(`${val}`)
+                                                            setFormType(val)
+                                                        }}
+                                                        name={input.name}
+                                                    />
+                                                    )}
+                                                </Field>
+                                            </div>
+                                            */ }
+                                            <div style={{ marginTop: 10 }}>
+                                                <Field name={`defaultValue`}>
+                                                    {({ input, meta, ...rest }) => (
+                                                        <TextField
+                                                            label="DefaultValue"
+                                                            value={formValue}
+                                                            onChange={(val) => {
+                                                                input.onChange(`${val}`)
+                                                                setFormValue(val)
+                                                            }}
+                                                            multiline={2}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            </div>
+                                        </form>
+                                        )}
+                                    />
+                            ) : (
+                                <TextField labelAction={{ content: <CodeAction/> }} multiline={4} label="Text" showCharacterCount={true}  focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />     
+                            )
                         )}
                     
                 </FormLayout>

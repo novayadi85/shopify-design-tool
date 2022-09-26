@@ -761,23 +761,26 @@ const SimpleContent = (props) => {
             }
             else {
                 template = sample;
-                _products = sample['products'];
+                _products = sample?.products;
             }
 
-            _products.forEach(t => {
-                totalNormalPrice += t?.normalPrice ? parseFloat(t.normalPrice) : 0;
-            });
-
+            if (_products.length > 0) {
+                _products.forEach(t => {
+                    totalNormalPrice += t?.normalPrice ? parseFloat(t.normalPrice) : 0;
+                });
+    
+                
+                _products.forEach(t => {
+                    totalOfferPrice += t?.offerPrice ? parseFloat(t.offerPrice) : 0;
+                });
+    
+                
+                _products.forEach(t => {
+                    totalOfferSave += t?.OfferSave ? parseFloat(t.OfferSave) : 0;
+                });
             
-            _products.forEach(t => {
-                totalOfferPrice += t?.offerPrice ? parseFloat(t.offerPrice) : 0;
-            });
-
+            }
             
-            _products.forEach(t => {
-                totalOfferSave += t?.OfferSave ? parseFloat(t.OfferSave) : 0;
-            });
-        
 
             params = {
                 ...template,
@@ -858,15 +861,55 @@ const SimpleContent = (props) => {
             });
     }
 
+    const RenderForm = props => {
+        const { props: prop, classProps } = props;
+        let Text;
+
+        if (prop?.setting.content?.formName && prop.setting.content.formName === 'agreement') {
+            Text = (
+                <>
+                    <input name={prop?.setting.content?.formName} className="form-control shopAdjustCustomersConditions" type={'checkbox'} value={true} />
+                    {prop?.setting?.content?.defaultValue}
+                </>
+            )
+        }
+        else if (prop?.setting.content?.formName && prop.setting.content.formName === 'email') {
+            Text = (<input className="form-control" name={prop?.setting.content?.formName} type={'email'} size={50} placeholder={prop?.setting?.content?.defaultValue} />)
+        }
+        else if (prop?.setting.content?.formName && prop.setting.content.formName === 'first_name') {
+            Text = (<input className="form-control" name={prop?.setting.content?.formName} type={'text'} size={50} placeholder={prop?.setting?.content?.defaultValue} />)
+        }
+        else if (prop?.setting.content?.formName && prop.setting.content.formName === 'last_name') {
+            Text = (<input className="form-control" name={prop?.setting.content?.formName} type={'text'} size={50} placeholder={prop?.setting?.content?.defaultValue} />)
+        }
+        else if (prop?.setting.content?.formName && prop.setting.content.formName === 'submit') {
+            // Text = (<button className="btn btn-primary" type="submit">{prop?.setting?.content?.defaultValue}</button>)
+            Text = (<input className={`${classProps} btn btn-primary`} value={prop?.setting?.content?.defaultValue} type="submit"/>)
+
+            return (
+                <>
+                    {Text}
+                </>
+            )
+        }
+
+        return (
+            <>
+                <div className={`${classProps} form-fields`}>
+                    <label>{prop?.setting?.content?.formLabel}</label>
+                    <div className="form-controls">
+                        {Text}
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     const renderChildrenLIQUID = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
         return (
             <>
                 <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${templateOffer?.type_offer && templateOffer.type_offer === 'tier' ? `volume-${setting.display}` : setting.display}`: `sa-section-${ID}`}>
                     {items.map((value, index) => {
-                        if (value.handle === 'product-block') {
-                           // console.log("HANDLE", value.setting.values)
-                        }
-
                         let className = '';
                         if (setting?.display) {
                             className = `sa-display-${setting.display}`
@@ -875,18 +918,14 @@ const SimpleContent = (props) => {
                                 className = `sa-display-volume-${setting.display}`
                             }
                         }
-
-                        /*
-                        <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value.label}"}} ` }</div>
-                        */
                         return (
                             <>
                              {(value.handle === 'block-button') ? (
                                     <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value?.setting?.content + value?.setting?.content2}", product}}` }</div>
                                 ): (
-                                    <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
+                                <>    
                                     {('block-product' === value.handle || value.handle === 'offer-product') ? (
-                                        <>
+                                        <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
                                         
                                         <div className={`sa-row`}>
                                             {(value?.setting?.values) ? (
@@ -911,13 +950,11 @@ const SimpleContent = (props) => {
                                             )}
                                             
                                         </div>
-                                        </>
+                                        </div>
                                     ) : ( 
-                                        <div key={index}>{value.label}</div>
-                                        
+                                                    ('block-form' === value.handle) ? (<><RenderForm classProps={`sa-content sa-block-${value.ID} ${className}`} props={ value }/></>) : (<div className={`sa-content sa-block-${value.ID} ${className}`} key={index}>{value.label}</div>)
                                     )}
-                                    
-                                </div>    
+                                </>       
                             )}
                             </>
                             

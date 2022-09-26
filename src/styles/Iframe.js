@@ -117,6 +117,10 @@ export const iframeStyle = `
         background-color: #999;
     }
 
+    .form-controls input {
+        padding: 7px 5px; 
+        border: 1px solid #999;
+    }
 `
 
 export const SaButton = styled.button``;

@@ -49,15 +49,14 @@ const _items = [
     }
 ];
 
-
+let params = new URLSearchParams(window.location.search);
 const initialState = {
     section: null,
-    items: _items,
+    items: localStorage.getItem('sa-apps') || params.get('sa-apps')  ? [] : _items,
     loading: false,
     error: null,
     liquid: ''
 };
-
 
 function uuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -156,6 +155,8 @@ const templateReducer = (state = initialState, action) => {
         case 'UPDATE_BLOCK':
             const { block, setting } = action.payload
             const { headline } = setting;
+
+            console.log('action.payload', action.payload)
 
             state.items = state.items.map(({...item}) => {
                 if (block.ID === item.ID) {

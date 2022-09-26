@@ -10,36 +10,6 @@ import {
   
   const initialState = {
     items: [
-        /*
-        {
-            handle: 'offer-top',
-            url: '/#',
-            label: 'Offer top',
-            icon: NoteMajor,
-            type: 'section',
-            helpText: 'Insert headline / description',
-            setting: {}
-        },
-        {
-            handle: 'offer-product',
-            url: '/#',
-            label: 'Offer Products',
-            icon: NoteMajor,
-            type: 'section',
-            helpText: 'Insert products section',
-            setting: {}
-        },
-        {
-            handle: 'offer-footer',
-            url: '/#',
-            label: 'Offer Footer',
-            separator: true,
-            icon: NoteMajor,
-            type: 'section',
-            helpText: '',
-            setting: {}
-        },
-        */
         {
             handle: 'section',
             url: '/#',
@@ -49,18 +19,7 @@ import {
             type: 'section',
             helpText: 'Insert new section into content',
             setting: {}
-          },
-          /*{
-            handle: 'product-section',
-            url: '/#',
-            label: 'Product Section ',
-            separator: true,
-            icon: NoteMajor,
-            type: 'section',
-            helpText: 'Insert new product section',
-            setting: {}
-        },
-        */
+        }, 
     ],
     loading: false,
     error: null

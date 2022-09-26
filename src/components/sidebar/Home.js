@@ -157,7 +157,7 @@ function Home() {
                                         {(value.label) ? value.label :  '...'}
                                     </ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? value.label : (value.handle === 'offer-product') ? "Offer Products" : '...'}</ReactRouterLink>  
+                                    <ReactRouterLink className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label).trim() ? value.label : (value.handle === 'offer-product') ? "Offer Products" : '...'}</ReactRouterLink>  
                                 )}
 							</div>
 							

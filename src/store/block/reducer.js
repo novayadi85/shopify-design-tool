@@ -8,10 +8,21 @@ import {
     FETCH_BLOCK_BEGIN,
     FETCH_BLOCK_SUCCESS,
     FETCH_BLOCK_FAILURE
-  } from './action';
+} from './action';
   
-  const initialState = {
-    items: [
+let params = new URLSearchParams(window.location.search);
+  
+const initialState = {
+      items: localStorage.getItem('sa-apps') || params.get('sa-apps')  ? [
+        {
+            handle: 'block-form',
+            url: '/#',
+            label: 'Form Input',
+            icon: TextAlignmentLeftMajor,
+            type: 'block',
+            helpText: 'Insert form input',
+            setting: {}
+        },
         {
             handle: 'block-editor',
             url: '/#',
@@ -21,17 +32,16 @@ import {
             helpText: 'Insert Text',
             setting: {}
         },
-        /*
+        ] : [
         {
-            handle: 'block-content',
+            handle: 'block-editor',
             url: '/#',
-            label: 'Content',
+            label: 'Editor',
             icon: TextAlignmentLeftMajor,
             type: 'block',
-            helpText: 'Insert content type',
+            helpText: 'Insert Text',
             setting: {}
         },
-        */
         {
             handle: 'block-button',
             url: '/#',
@@ -41,23 +51,15 @@ import {
             helpText: 'Insert Button type',
             setting: {}
         },
-        /*
         {
-            handle: 'block-product',
+            handle: 'block-form',
             url: '/#',
-            label: 'Products',
-            icon: ProductsMinor,
+            label: 'Form Input',
+            icon: TextAlignmentLeftMajor,
             type: 'block',
-            helpText: 'Insert product type',
-            setting: {
-                content: [],
-                values:[],
-                headline: 'Products',
-                icon: ProductsMinor,
-                contentType: []
-            }
+            helpText: 'Insert form input',
+            setting: {}
         },
-        */
     ],
     loading: false,
     error: null
