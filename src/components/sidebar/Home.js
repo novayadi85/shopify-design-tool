@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import {sortableContainer,sortableElement, sortableHandle } from 'react-sortable-hoc';
@@ -11,6 +11,7 @@ import { updateSidebar } from "@store/template/action";
 import AddSection from "@components/actions/AddSection";
 import AddBlock from "@components/actions/AddBlock";
 import { getSidebar } from "../../store/template/action";
+import { ThemeContent } from "../../Context";
 
 const DragHandle = sortableHandle(() =>
 	<Icon
@@ -25,6 +26,8 @@ const SortableContainer = sortableContainer(({children}) => {
 });
 
 function Home() {
+    const theme = useContext(ThemeContent) 
+    console.log('theme', theme)
     const { items : _items} = useSelector(state => state.template);
     const { canAddBlock } = useSelector(state => state.products);
     const state = useSelector(state => state);
@@ -129,7 +132,7 @@ function Home() {
         return Icons[value.handle] ? Icons[value.handle] : SectionMajor
     }
 
-	const SortableItem = sortableElement(({value}) => (
+    const SortableItem = sortableElement(({ value }) => (
 		<li className={`nav nav-sidebar has-subnav`} parent={value.ID}>
 			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? '' : ''}`}>
                 {(!value?.child || value.child === false) ? (
@@ -154,10 +157,10 @@ function Home() {
                                         pathname: `/product/${value.ID}`,
                                         state: value
                                     }}>
-                                        {(value.label) ? value.label :  '...'}
+                                        {(value.label) ? <>{value.label} { (value?.setting?.column) ? `, ${value?.setting?.column}` : ''}</> :  '...'}
                                     </ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? value.label : (value.handle === 'offer-product') ? "Offer Products" : '...'}</ReactRouterLink>  
+                                    <ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? <>{value.label} { (value?.setting?.column) ? `, ${value?.setting?.column}` : ''}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  
                                 )}
 							</div>
 							

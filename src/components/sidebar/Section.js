@@ -17,7 +17,8 @@ function Section() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {items} = useSelector(state => state.template);
+    const { items } = useSelector(state => state.template);
+    const { products }  = useSelector(state => state);
     let value = [];
 
     const [selected, setSelected] = useState(1);
@@ -75,6 +76,11 @@ function Section() {
             return setLoading(false);
         }, 500)
         
+        if (products?.items && handle === 'sa-product-block-offer') {
+            value.label = products.items[0]?.template?.label
+        }
+
+        
 
     }, [handle])
 
@@ -82,13 +88,6 @@ function Section() {
         navigate('/')
     }
 
-    /*
-    const ColumnBlocks = () => {
-        return [...Array(selected - 1 + 1).keys()].map(x => x + 1).map((n) => {
-            return <SectionColumn key={n} type={'section'} value={value} setting={(value?.setting?.content[n - 1]) ? value.setting.content[n - 1]: []} column={n} handle={handle}/>
-        })
-    }
-    */
     const ColumnBlock = () => {
         return <SectionColumn type={'section'} value={value} setting={(value?.setting) ? value.setting: []} column={selected} handle={handle}/>
     }
@@ -133,15 +132,9 @@ function Section() {
                                                 <ColumnBlock/>  
                                             </>
                                         ): (
-                                                <>
-                                                    <Select
-                                                        label="Number of columns"
-                                                        options={columns}
-                                                        onChange={handleSelectChange}
-                                                        value={selected}
-                                                    />
-                                                    <ColumnBlock style={{marginTop: 2}} />  
-                                                </>
+                                            <>
+                                                <ColumnBlock style={{marginTop: 2}} />  
+                                            </>
                                                   
                                         )}
                                           

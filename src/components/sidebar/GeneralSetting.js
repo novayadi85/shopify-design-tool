@@ -1,19 +1,19 @@
 import { useEffect, useState, useCallback} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable, Toast, Link, RadioButton, Label} from '@shopify/polaris';
+import { useDispatch } from 'react-redux';
+import { FormLayout, TextField, Icon, Button, Modal, TextContainer, DataTable, Toast, Link} from '@shopify/polaris';
 import { editBlock } from "@store/template/action";
 import { ToolsMajor } from '@shopify/polaris-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ResourceIcon from '@icons/Resource';
 import BlockCss from './BlockCss';
-import { FieldGroup } from '../../styles/Sidebar';
 
-function BlockContent(props) {
+function GeneralSetting(props) {
     const { value: prop } = props;
+    console.log(prop)
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [value, setValue] = useState(prop);
-    const [content, setContent] = useState(prop?.setting?.content ?? prop?.label );
+    const [content, setContent] = useState(prop?.setting?.content);
     const [content2, setContent2] = useState(prop?.setting?.content2);
     const [focused, setFocused] = useState(prop?.label);
     const [sortedRows, setSortedRows] = useState(null);
@@ -21,27 +21,9 @@ function BlockContent(props) {
     const [active, setActive] = useState(false);
     const [status, setStatus] = useState(false);
 
-    const { products }  = useSelector(state => state);
-    const [template_type, setTemplateType] = useState(null)
-    
     const handleChange = useCallback(() => setActive(!active), [active]);
     const handleChangeCSS = () => {
 
-    }
-
-    const [column, setColumn] = useState(prop?.setting?.column ?? 'column3');
-
-    const handleChangeColumn = (val) => {
-        console.log('column', content)
-        setColumn(val);
-        dispatch(editBlock(value, {
-            ...value.setting,
-            column: val,
-            headline: content,
-            content: content
-        }))   
-
-        setFocused(true);
     }
 
     const handleContentChange = (val) => {
@@ -49,8 +31,7 @@ function BlockContent(props) {
         dispatch(editBlock(value, {
             content: val,
             content2: content2,
-            headline: val,
-            column: column
+            headline: val
         }))   
         setFocused(true);
     }
@@ -60,7 +41,6 @@ function BlockContent(props) {
         dispatch(editBlock(value, {
             ...value.setting,
             content2: val,
-            column: column
         }))   
         setFocused(true);
     }
@@ -70,10 +50,6 @@ function BlockContent(props) {
         setTimeout(() => {
             return setLoading(false);
         }, 500)
-
-        if (products?.items) {
-            setTemplateType(products.items[0]?.template?.type_offer)
-        }
 
     }, []);
 
@@ -329,132 +305,9 @@ function BlockContent(props) {
     return (
         <>
             {toastMarkup}
-            {(!prop?.handle) ? (
-                <FormLayout>
-                    <TextField labelAction={{ content: <CodeAction/> }} multiline={4} disabled label="Text" showCharacterCount={true} focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
-                </FormLayout>
-            ) : (
-                    <FormLayout>
-                        {(value.handle === "block-button") ? (
-                            <>
-                                <div style={{marginBottom: 10}}>
-                                    <TextField labelAction={{ content: <LineCSSAction /> }} multiline={4} label="Text 1" showCharacterCount={true} onChange={handleContentChange} value={content} autoComplete="off" />
-                                
-                                </div>
-                                <div style={{marginBottom: 0}}>
-                                    <TextField labelAction={{ content: <LineCSSAction /> }} multiline={4} label="Text 2" showCharacterCount={true} onChange={handleContentChange2} value={content2} autoComplete="off" />
-                                </div>
-
-                                <FieldGroup style={{display: `${template_type === 'bannerText' ? 'none': 'block'}`}}>
-                                    <Label>Column</Label>
-                                    <FieldGroup style={{margin:0}}>
-                                        <RadioButton
-                                            label={`Column Left`} 
-                                            id="column1"
-                                            name="column"
-                                            checked={column === 'column1'}
-                                            onChange={(value) => {
-                                                handleChangeColumn('column1')
-                                            }}
-                                        />   
-                                    </FieldGroup>
-                                        
-                                    <FieldGroup style={{margin:0}}>
-                                        <RadioButton
-                                            label={`Column Right`} 
-                                            id="column2"
-                                            name="column"
-                                            checked={column === 'column2'}
-                                            onChange={(value) => {
-                                                handleChangeColumn('column2')
-                                            }}
-                                        />      
-                                    </FieldGroup>
-                                    <FieldGroup style={{margin:0}}>
-                                        <RadioButton
-                                            label={`Full Column`} 
-                                            id="column3"
-                                            checked={column === 'column3'}
-                                            name="column"
-                                            onChange={(value) => {
-                                                handleChangeColumn('column3')
-                                            }}
-                                        />
-                                    </FieldGroup> 
-                                </FieldGroup>  
-                            </>
-                            
-                        ) : (
-                                <>  
-                                    <div style={{display: `${template_type === 'bannerText' ? 'none': 'block'}`}}>
-                                        <TextField labelAction={{ content: <CodeAction/> }} multiline={4} label="Text" showCharacterCount={true}  focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
-                                    </div>
-                                    <FieldGroup style={{ display: `${template_type === 'bannerText' ? 'none' : 'block'}` }}>
-                                        <Label>Column</Label>
-                                        <FieldGroup style={{margin:0}}>
-                                            <RadioButton
-                                                label={`Column Left`} 
-                                                id="column1"
-                                                name="column"
-                                                checked={column === 'column1'}
-                                                onChange={(value) => {
-                                                    handleChangeColumn('column1')
-                                                }}
-                                            />   
-                                        </FieldGroup>
-                                            
-                                        <FieldGroup style={{margin:0}}>
-                                            <RadioButton
-                                                label={`Column Right`} 
-                                                id="column2"
-                                                name="column"
-                                                checked={column === 'column2'}
-                                                onChange={(value) => {
-                                                    handleChangeColumn('column2')
-                                                }}
-                                            />      
-                                        </FieldGroup>
-                                        <FieldGroup style={{margin:0}}>
-                                            <RadioButton
-                                                label={`Full Column`} 
-                                                id="column3"
-                                                checked={column === 'column3'}
-                                                name="column"
-                                                onChange={(value) => {
-                                                    handleChangeColumn('column3')
-                                                }}
-                                            />
-                                        </FieldGroup> 
-                                    </FieldGroup>    
-                                </>
-                            
-                        )}
-                    
-                </FormLayout>
-            )}
-
-            <BlockCss type={'block'}/>          
-            <div style={{ height: "300px" }}>
-                <Modal
-                    open={active}
-                    onClose={handleChange}
-                    title="Copy and paste code below to insert in textfield"
-                    primaryAction={{
-                    content: "Close",
-                    onAction: handleChange,
-                    
-                    }}
-                    large
-                >
-                    <Modal.Section>
-                        <TextContainer>
-                            <ShortCodes/>
-                        </TextContainer>
-                    </Modal.Section>
-                </Modal>
-            </div>         
+            <BlockCss type={'block'} />                  
         </>
     )
 }
 
-export default BlockContent;
+export default GeneralSetting;

@@ -8,15 +8,17 @@ import SectionSetting from '../actions/SectionSetting';
 
 let contents = [];
 function SectionColumn(props) {
-    const  { column, handle, type, value: prop, setting } = props
+    const { column, handle, type, value: prop, setting } = props
+    const { products }  = useSelector(state => state);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [textFieldValue, setTextFieldValue] = useState(prop.label);
     const [content, setContent] = useState(prop?.setting?.content);
     const [text, setText] = useState('');
     const [focused, setFocused] = useState(prop?.label);
+    const [headline, setHeadline] = useState('Section');
     const searchInput = useRef(null);
-
+    
     //console.log(setting);
 
     useEffect(() => {
@@ -24,6 +26,10 @@ function SectionColumn(props) {
         setTimeout(() => {
             return setLoading(false);
         }, 500)
+
+        if (products?.items) {
+            setHeadline(products.items[0]?.template?.label)
+        }
         
     }, [column]);
 
@@ -59,69 +65,10 @@ function SectionColumn(props) {
             values: update,
         }))  
 
-        /*
-        
-        let update = props.value.setting.values.map(({ ...t }) => {
-            if (t.key === props.setting.key) {
-                t.value = value;
-            }
-            return t;
-        })
-
-        dispatch(editBlock(prop, {
-            ...prop.setting,
-            values: update,
-        }))  
-
-        console.log(update)
-        searchInput.current.focus();
-        /*
-        if (contents.find(find => find.name === name)) {
-            contents = contents.map(({ ...test }) => {
-                if (test.name === name) test.value = value;
-                return test
-            })
-        }
-        else {
-            contents.push({
-                name,
-                value
-            })
-        }
-
-        console.log(setting);
-
-        /*
-        dispatch(editBlock(prop, {
-            content: contents,
-            contentType: [],
-            column: column,
-            headline: prop.label
-        }))   
-        */
         
         setFocused(true);
 
     }
-    /*
-    const handleContentChange = (value) => {
-        setContent(value);
-        console.log(prop)
-        dispatch(editBlock(prop, {
-            content: [
-                ...prop.setting.content,
-                content
-            ],
-            contentType: [
-                ...prop.setting.contentType,
-                value
-            ],
-            column: column,
-            headline: prop.label
-        }))   
-        setFocused(true);
-    }
-    */
     
     return (
         <div style={{paddingBottom: 10, marginTop: 10}}>

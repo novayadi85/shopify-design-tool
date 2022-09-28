@@ -702,7 +702,6 @@ const SimpleContent = (props) => {
                                 }).then(html => html);
 
                             
-                                console.log('__products', _product)
 
                                 let dropdown = '';
                             
@@ -859,136 +858,76 @@ const SimpleContent = (props) => {
             });
     }
 
-    const renderChildrenLIQUID = (section, templateId) => {
-        const { ID, items = [] , setting: sectionSetting } = section;
-        console.log('sectionSetting', sectionSetting)
-        
-        if (items.length) {
-            const rows = {};
-            let set = 0;
-            items.forEach((item) => {
-                const { setting } = item;
-                if (setting?.column) {
-                    if (setting.column === 'column3') {
-                        set = set + 1;
-                        if (!rows[set]) rows[set] = {}
-                        if (!rows[set][0]) rows[set][0] = []
-                        item.className = 'fullWidth';
-                        rows[set][0].push(item);
-                        set = set + 1;
-                    }
-                    else {
-                        if (!rows[set]) {
-                            rows[set] = {}
-                            rows[set][0] = [];
-                            rows[set][1] = [];
-                        }
-                        
-                        let colNumber = 0;
-                        if (setting.column === 'column1') {
-                            item.className = 'columnLeft';
-                            colNumber = 0;
-                        }
- 
-                        if (setting.column === 'column2') {
-                            item.className = 'columnRight';
-                            colNumber = 1;
-                        }
-                        
-                        if (!rows[set][colNumber]) rows[set][colNumber] = []
-                        rows[set][colNumber].push(item);
-                    }
-                    
-
-                }
-            })
-
-            // console.log('ROW', rows)
-
-            return (
-                <>
-                    <div className={`grid-display sa-section-${templateId} sa-section-${ID}`} style={{marginTop: "10px"}}>
-                        {Object.keys(rows).map((index) => {
-                            let rootClass = "";
-                            if (Object.values(rows[index]).length === 1) rootClass = 'root-columnFullWidth';
-                            let styles = { gridTemplateColumns : `${sectionSetting?.widthColumn1 ?? '50%'} ${sectionSetting?.widthColumn2 ?? '50%'}` };    
-
-                            if(rootClass === 'root-columnFullWidth') styles = {}
-
-                            return (<div className={`grid-row ${rootClass}`} style={styles}>
-                                {
-                                    Object.keys(rows[index]).map(columnIndex => {
-                                        let columns = rows[index][columnIndex];
-                                        // console.log('columns', Object.values(rows[index]).length)
-                                        let className = (columnIndex === "0") ? "root-columnLeft" : "root-columnRight";
-                                        if(Object.values(rows[index]).length === 1) className = 'root-columnFullWidth'
-                                        return <div className={`grid-column column-${className}`}>
-                                            {columns.map((col, colIndex) => {
-                                                
-
-                                                return (
-                                                    <div className={`grid-column-rows rows-index${colIndex } ${col?.className}`}>
-                                                        {(col.handle === 'block-button') ? (
-                                                            <div style={{ display: 'inline-block' }} key={columnIndex} className={`sa-content sa-block-${col.ID}`}>{ `{{addToCart | label: "${col?.setting?.content + col?.setting?.content2}", product}}` }</div>
-                                                        ) : (
-                                                            <div key={`child-${colIndex}`} className={`sa-content sa-block-${col.ID}`}>
-                                                                {('block-product' === col.handle || col.handle === 'offer-product') ? (
-                                                                    <>
-                                                                        <div className={`sa-row`}>
-                                                                            {(col?.setting?.values) ? (
-                                                                                col.setting.values.filter(item => item.content !== '' ).map((item, idx) => {
-                                                                                    return (
-                                                                                        <>
-                                                                                            {(item?.contentType && item.contentType.includes('button')) ? (
-                                                                                                <div style={{ display: 'inline-block'}} key={`${colIndex}-${idx}`} className={`sa-block-${col.ID}-column-${item.key} sa-columns-${col.setting.values.length } column-id-${item.key}`}>{item.content}</div>
-                                                                                            ): (
-                                                                                                <div key={`${colIndex}-${idx}`} className={`sa-block-${col.ID}-column-${item.key} sa-columns-${col.setting.values.length } column-id-${item.key}`}>
-                                                                                                    {item.content}
-                                                                                                </div>
-                                                                                            )}
-                                                                                            
-                                                                                        </>
-                                                                                        
-                                                                                    )
-                                                                                })
-                                                                            
-                                                                            ): (
-                                                                                <></>    
-                                                                            )}
-                                                                            
-                                                                        </div>
-                                                                    </>
-                                                                    ) : ( 
-                                                                        <div key={colIndex}>{col.label}</div>
-                                                                    )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                        
-                                    })
-                                }
-                            </div>) 
-                        })}
-                    </div>
-                </>
-            )
-        }
-
-        /*
+    const renderChildrenLIQUID = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {
         return (
             <>
-                <div className="grid-display" style={{border: "1px solid red", margin: "10px 0", padding: 10}}>
-                    {Object.keys(rows).map((item, index) => {
-                        return (<div></div>)
+                <div className={(handle === 'offer-product' || 'sa-product-block-offer' === handle) ? `sa-${handle} sa-section-${templateId} sa-rows-${templateOffer?.type_offer && templateOffer.type_offer === 'tier' ? `volume-${setting.display}` : setting.display}`: `sa-section-${ID}`}>
+                    {items.map((value, index) => {
+                        if (value.handle === 'product-block') {
+                           // console.log("HANDLE", value.setting.values)
+                        }
+
+                        let className = '';
+                        if (setting?.display) {
+                            className = `sa-display-${setting.display}`
+
+                            if (templateOffer?.type_offer && templateOffer.type_offer === 'tier') {
+                                className = `sa-display-volume-${setting.display}`
+                            }
+                        }
+
+                        /*
+                        <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value.label}"}} ` }</div>
+                        */
+                        return (
+                            <>
+                             {(value.handle === 'block-button') ? (
+                                    <div style={{ display: 'inline-block' }} key={index} className={`sa-content sa-block-${value.ID}`}>{ `{{addToCart | label: "${value?.setting?.content + value?.setting?.content2}", product}}` }</div>
+                                ): (
+                                    <div key={`child-${index}`} className={`sa-content sa-block-${value.ID} ${className}`}>
+                                    {('block-product' === value.handle || value.handle === 'offer-product') ? (
+                                        <>
+                                        
+                                        <div className={`sa-row`}>
+                                            {(value?.setting?.values) ? (
+                                                value.setting.values.filter(item => item.content !== '' ).map((item, idx) => {
+                                                    return (
+                                                        <>
+                                                            {(item?.contentType && item.contentType.includes('button')) ? (
+                                                                <div style={{ display: 'inline-block'}} key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>{item.content}</div>
+                                                            ): (
+                                                                <div key={`${index}-${idx}`} className={`sa-block-${value.ID}-column-${item.key} sa-columns-${value.setting.values.length } column-id-${item.key}`}>
+                                                                    {item.content}
+                                                                </div>
+                                                            )}
+                                                            
+                                                        </>
+                                                        
+                                                    )
+                                                })
+                                            
+                                            ): (
+                                                <></>    
+                                            )}
+                                            
+                                        </div>
+                                        </>
+                                    ) : ( 
+                                        <div key={index}>{value.label}</div>
+                                        
+                                    )}
+                                    
+                                </div>    
+                            )}
+                            </>
+                            
+                        )
                     })}
+
+                        
                 </div>
             </>
         )
-        */
-        
 	}
 
     const RenderOffer = () => {
@@ -997,14 +936,14 @@ const SimpleContent = (props) => {
             {sections.map((value, index) => (
                 <Section className={`sa-section-${value.ID}`} key={`${value.handle}-${index}`}>
                     <>
-                    <Block className={`aside-block-item-offer aside-display-${value?.setting?.display}`}>
-                        {('block-product' === value.handle || value.handle === 'offer-product') ? (
+                    <Block className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display} items-${value?.setting?.separator ? 'separator' : 'no-separator'}`}>
+                            {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
                                     <div className="shopadjust---item">
                                         {renderChildrenLIQUID(value, templateId)}
+                                        
                                     </div>
-                                    {value?.setting?.separator ? (<div className="loop-separator"></div>) : (null)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (
@@ -1127,19 +1066,18 @@ const SimpleContent = (props) => {
             <>
             {sections.map((value, index) => (
                 <div className={`sa-section-${value.ID}`} key={index}>
-                    <div className={`aside-block-item-offer aside-display-${value?.setting?.display}`}>
+                    <div className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display} items-${value?.setting?.separator ? 'separator' : 'no-separator'}`}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
                                     <div className="shopadjust---item">
-                                        {renderChildrenLIQUID(value, templateId)}
-                                        {`<div class="all-in-one-offer-bundle-1-item_center" {% if product.variants.size==1 %} style="display: none; " {% endif%}>
-                                                <div class="all-in-one-offer-bundle-1-item_vartiants">
-                                                    {{product.selectVariants}}
-                                                </div>
+                                    {renderChildrenLIQUID(value, templateId)}
+                                    {`<div class="all-in-one-offer-bundle-1-item_center" {% if product.variants.size==1 %} style="display: none; " {% endif%}>
+                                            <div class="all-in-one-offer-bundle-1-item_vartiants">
+                                                {{product.selectVariants}}
+                                            </div>
                                         </div>`}
                                     </div>
-                                {value?.setting?.separator ? (`<div class="loop-separator"></div>`) : (null)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (

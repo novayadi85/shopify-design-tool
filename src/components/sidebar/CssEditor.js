@@ -56,7 +56,7 @@ function CssEditor({ type = false }) {
             return navigate(`/block/${handle}`)
         }
         else if (location.pathname.includes('offer-css') || location.pathname.includes('offer-setting')) {
-            return navigate(`/`)
+            return navigate(`/setting/${handle}`)
         }
 
         if (location.pathname.includes('-column-')) {

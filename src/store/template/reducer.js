@@ -11,7 +11,7 @@ const _items = [
         handle: 'offer-top',
         ID: uuid(),
         url: '/#',
-        label: 'Offer top',
+        label: 'List top',
         icon: SectionMajor,
         type: 'section',
         items: []
@@ -20,7 +20,7 @@ const _items = [
         ID: uuid(),
         handle: 'offer-bottom',
         url: '/#',
-        label: 'Offer Bottom',
+        label: 'List Bottom',
         separator: true,
         icon: SectionMajor,
         type: 'section',
@@ -29,7 +29,7 @@ const _items = [
         ID: 'sa-product-block-offer',
         handle: 'offer-product',
         url: '/#',
-        label: 'Offer Products',
+        label: 'Products in list',
         icon: ProductsMajor,
         type: 'section',
         /*

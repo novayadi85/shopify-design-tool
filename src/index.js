@@ -9,7 +9,8 @@ import en from '@shopify/polaris/locales/en.json';
 import "@shopify/polaris/build/esm/styles.css";
 import "./index.scss";
 import { fetchProducts } from "@store/product/action.js";
-const url =  process.env.NODE_ENV === "development" ? process.env.REACT_APP_REST_URL : 'https://app.shopadjust-apps.com/packages/api' ; 
+import { ThemeContent } from "./Context";
+const url =  process.env.NODE_ENV === "development" ? process.env.REACT_APP_REST_URL : 'https://app.dev.shopadjust-apps.com/packages/api' ; 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
@@ -69,7 +70,9 @@ console.warn = function filterWarnings(msg) {
 root.render(
     <AppProvider i18n={en}> 
         <Provider store={store}>
-            <App />
+            <ThemeContent.Provider value={{background: 'red'}}>
+                <App />
+            </ThemeContent.Provider>
         </Provider>
     </AppProvider>
 );

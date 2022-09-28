@@ -263,6 +263,7 @@ function Header() {
     }
 
     const ExitApplication = () => {
+        /*
         let configs = localStorage.getItem('sa-config');
         let previous = localStorage.getItem('sa-prev-url');
         //const REACT_APP_ADMIN_PATH = process.env.NODE_ENV === "development" ? process.env.REACT_APP_ADMIN_PATH : 'admin/apps/the-sales-suite/redirect-builder/offerPricesTemplate/RCCG-4631-445dac54d8db4a295a954b61f85386d3';
@@ -276,6 +277,15 @@ function Header() {
         } catch (error) {
             
         }
+        */
+        // Called from the iframe
+
+        const message = JSON.stringify({
+            message: 'CloseMe',
+        });
+        
+        window.parent.postMessage(message, '*');
+
     }
     
     //https://shopxaucci.myshopify.com/admin/apps/090f1e91ea9b6d5b0744bd556b357a18/editor/NVEO-7166-7e7add1b913b2b06a81fb8ee2650c8c1/bWJqeFNFdDBzcDI2a3dQVlhDUEpmZVU3ZDNXeU9GREtFeXltZGFXbjA1enBNekcxeFVxUHhqWXoxT3ZRUEltYVZRNC8vblArVG81cDE3UkQrM3VKdGRQbWdJWlZNY3JxclhrUUd4RVRjR0lIUE5lQS8yZGRlNC9IK01CbFMxUzl0aWthS0tnWVovdy9yNzRTdFJ6ZGU5RnEvNE1mK3ZLSGZuV2hPcVlQc09JYzFIYnppelQrUmxPcm5LWURUdXFGOU9rNlRJeTBrdTIzbSt0UnFzcW9Ja09ZdGx4Y29aN2p1aUk3dHVlbG12cTdSSkVuRTJMdWFrc1k3MnBObGpTRTEwRFYrdy85STB1YVIrTjZ6SWI3aGRGUjFPMXZCT3JmMVp4V1pSb1ZHUTRpeHFmN2dlUnk2UTRvMUxYb0w2WUorbmJPS3grUk5hRjVZM0drd3RORzgyK2Z6SkN6VjdCZ2oxUGYrbGdTRlFYQ3ZDbVd0aEdPRGNDR2t2OWdOTUlFM0ViMDRXMTgvMVFKclBmei9IU0NoVk5yZkcyRklhRkxuVFVBME40cU9CVFFyQkVhQXNYSmFQS3RnU3pERUEraXZvNVpndDVVUVJyTW5QYkwxMlhwK3VSYjMrUE5hNHJEZ3dCMU44OFV4czRUNGo1VUxLdDdzRGgyWmMwMmtMaHI4aURXZjc3YTVkK2psZGd5ZkJvVCtBPT0=

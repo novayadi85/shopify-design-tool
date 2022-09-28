@@ -65,6 +65,7 @@ function BlockCss({type}) {
     const [fontSize, setFontSize] = useState(12);
     const [fontWeight, setFontWeight] = useState(400);
     const [popoverActive, setPopoverActive] = useState(false);
+    const [maxWidth, setMaxWidth] = useState('1024px');
     const [align, setAlign] = useState('left');
     const [top, setTop] = useState(0);
 	const [bottom, setBottom] = useState(0);
@@ -193,6 +194,25 @@ function BlockCss({type}) {
                 render={({ handleSubmit, form, submitting, pristine, values }) => (
                     <form onSubmit={handleSubmit}>
                         <AutoSave debounce={1000} save={save} />
+                        {handle === 'offer-setting' ? (
+                            <div style={{ marginTop: 10 }}>
+                                <Field name={`max-width`}>
+                                    {({ input, meta, ...rest }) => (
+                                        <TextField
+                                            output
+                                            label="Max Width"
+                                            value={maxWidth}
+                                            onChange={(val) => {
+                                                input.onChange(`${maxWidth}px`)
+                                                setMaxWidth(val)
+                                            }}
+                                            suffix={<p>px</p>}
+                                        />
+                                    )}
+                                </Field>
+                            </div>
+                        ) : null}
+                        
                         <div style={{marginTop:10}}>
                             <Field name={`font-size`}>
                                 {({ input, meta, ...rest }) => (
