@@ -26,13 +26,14 @@ const SortableContainer = sortableContainer(({children}) => {
 });
 
 function Home() {
-    const theme = useContext(ThemeContent) 
-    console.log('theme', theme)
-    const { items : _items} = useSelector(state => state.template);
-    const { canAddBlock } = useSelector(state => state.products);
+    const [context, setContext] = useContext(ThemeContent);
+    // console.log('useContext', context)
+    const { items : _items } = useSelector(state => state.template);
+    const { canAddBlock , canAddSection} = useSelector(state => state.products);
     const state = useSelector(state => state);
+	const [loaded, setLoaded] = useState(false);	
 	const [items, setItems] = useState(_items);	
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
 	const onSortEnd = ({ oldIndex, newIndex }) => {
         setItems(arrayMoveImmutable(items, oldIndex, newIndex));
@@ -50,16 +51,22 @@ function Home() {
 
         setItems(updates);
 
-	};
+    };
+    
     
     useEffect(() => {
-        setLoading(false);
+        setLoading(!context.ready ? true : false);
         dispatch(updateSidebar(items))
-
+        //setLoaded(true);
     }, [items])
 
     useEffect(() => {
         dispatch(getSidebar())
+        // if(!loaded) setLoading(true);
+        console.log('context', context)
+        if (!context.ready) {
+            setLoading(true);
+        }
         setItems(state.template.items);
     }, [_items])
 	
@@ -157,10 +164,10 @@ function Home() {
                                         pathname: `/product/${value.ID}`,
                                         state: value
                                     }}>
-                                        {(value.label) ? <>{value.label} { (value?.setting?.column) ? `, ${value?.setting?.column}` : ''}</> :  '...'}
+                                        {(value.label) ? <>{value.label}</> :  '...'}
                                     </ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? <>{value.label} { (value?.setting?.column) ? `, ${value?.setting?.column}` : ''}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  
+                                    <ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  
                                 )}
 							</div>
 							
@@ -180,7 +187,6 @@ function Home() {
     
     return (
         <SidePanelAreaWrapper>
-            
             {(loading) ? (
                 <Flex>
                     <Spinner
@@ -192,7 +198,7 @@ function Home() {
                     
             ) : (
                     <>
-                        {(canAddBlock) ? (<ParentSection/>) : (null)}
+                        {(canAddBlock && canAddSection) ? (<ParentSection/>) : (null)}
                         <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                             {items.map((value, index) => (
                                 <SortableItem child={ value.child} key={`item-${index}`} index={index} value={value} />
@@ -203,7 +209,7 @@ function Home() {
             )}
 
             <PrimaryBox>	
-                {(canAddBlock) ? (<AddSection/>) : (null)}
+                {(canAddSection) ? (<AddSection/>) : (null)}
             </PrimaryBox>
         </SidePanelAreaWrapper>
     );

@@ -100,6 +100,12 @@ export const iframeStyle = `
         display: flex;
         flex-direction: row;
         gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .aside-display-columns > * {
+        flex: 1 1 180px;
+        max-width: calc( 50% - 10px);
     }
 
     .aside-display-rows {
@@ -127,6 +133,30 @@ export const iframeStyle = `
     .aside-display-columns .loop-separator:last-child {
         display: none !important;
     }
+
+    .aside-block-item-offer > .shopadjust---item.item-separator:after {
+        content: "+";
+        position: absolute;
+        right: 0px;
+        top: 25%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fbfbfb;
+        border: 1px solid #000;
+        color: #000;
+        text-align: center;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .aside-block-item-offer > .shopadjust---item.item-separator:last-child:after{
+        content: "";
+        display: none !important;
+    }
+
     .aside-display-columns .loop-separator:before {
         content: "";
         display: inline-block;
@@ -200,6 +230,7 @@ export const iframeStyle = `
         display: grid;
         grid-template-columns: 50% 50%;
         grid-gap: 5px;
+        align-items: center;
     }
 
     .grid-column{
@@ -207,22 +238,16 @@ export const iframeStyle = `
     }
 
     .grid-column.column-root-columnLeft {
-        border: 1px solid;
-        padding: 10px;
+        
     }
 
     .grid-column.column-root-columnRight {
         width: calc( 100% - 5px);
-        background: none;
-        border: 1px solid;
-        padding: 10px;
     }
  
     .column-root-columnFullWidth {
         width: 100%;
         float: none;
-        
-        margin: 5px 0;
     }
 
     .grid-column-rows{
@@ -240,9 +265,15 @@ export const iframeStyle = `
 
     .grid-row.root-columnFullWidth {
         display: block;
+        width: 100%;
     }
 
     .shopadjust---item{
+        width: 100%;
+        position: relative;
+    }
+
+    .shopadjust---item img{
         width: 100%;
     }
 

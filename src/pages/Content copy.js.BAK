@@ -245,7 +245,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: ((_product.price * qty) / 100),
                                     totalNormalPrice: _product.price * Number(qty) / 100,
                                     addToCart: '',
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     productOfferSaveInProcent: `${toFixedNumber(100, 2)}%`
                                 },
                                 offerId: template.id
@@ -321,7 +321,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     totalNormalPrice: _product.price * Number(tierProduct.qty) / 100,
                                     addToCart: renderButtonHtml,
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                 },
                                 offerId: template.id
@@ -399,7 +399,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price / 100) * parseFloat(child),
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                     
@@ -469,7 +469,7 @@ const SimpleContent = (props) => {
                                         selectVariants: dropdown,
                                         totalOfferPrice: prices.totalOfferPrice / 100,
                                         addToCart: renderButtonHtml,
-                                        imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                        imageHtml: "<img src='" + _product.featured_image + "'>",
                                         productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                     },
                                     offerId: offer.id
@@ -558,7 +558,7 @@ const SimpleContent = (props) => {
                                     OfferSave: _product.price - _product.finalPrice,
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price) * parseFloat(1),
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(((_product.price - _product.finalPrice) / _product.price) * 100, 2)}%`,
                                 }
@@ -652,7 +652,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price / 100) * parseFloat(1),
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                 }
@@ -684,7 +684,7 @@ const SimpleContent = (props) => {
                                 _product.featured_image = '';
                                 if (_product?.images && _product.images.length >= 0) {
                                     _product.featured_image = _product.images[0]?.src
-                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
+                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "'>",
                                 }
 
                                 _product.variantBlock = '';
@@ -741,7 +741,7 @@ const SimpleContent = (props) => {
                                         totalOfferPrice: (prices.totalOfferPrice / 100),
                                         addToCart: renderButtonHtml,
                                         normalPrice: (_product.price / 100) * parseFloat(child.qty),
-                                        imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                        imageHtml: "<img src='" + _product.featured_image + "'>",
                                         image: _product?.media ? _product.media[0] : '',
                                         productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                     

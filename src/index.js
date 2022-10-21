@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from 'react-redux';
 import App from "./App.js";
@@ -8,11 +8,12 @@ import reportWebVitals from './reportWebVitals';
 import en from '@shopify/polaris/locales/en.json';
 import "@shopify/polaris/build/esm/styles.css";
 import "./index.scss";
+import { ThemeContent } from "./Context.js";
 import { fetchProducts } from "@store/product/action.js";
-import { ThemeContent } from "./Context";
 const url =  process.env.NODE_ENV === "development" ? process.env.REACT_APP_REST_URL : 'https://app.dev.shopadjust-apps.com/packages/api' ; 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+let loaded = false;
 
 (async () => {
     let params = new URLSearchParams(window.location.search);
@@ -55,8 +56,14 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
         } catch (error) {
             
         }
-        
     }
+
+    const message = JSON.stringify({
+        message: 'Ready',
+    });
+    
+    window.parent.postMessage(message, '*');
+
 })();
  
 const backup = console.warn;
@@ -67,13 +74,24 @@ console.warn = function filterWarnings(msg) {
     }
 };
 
+
+const Main = () => {
+    const [context, setContext] = useState({
+		ready: false
+    });
+    
+    return (
+        <ThemeContent.Provider value={[context, setContext]}>
+            <Provider store={store}>
+                <App />
+            </Provider>
+        </ThemeContent.Provider>
+    )
+}
+
 root.render(
     <AppProvider i18n={en}> 
-        <Provider store={store}>
-            <ThemeContent.Provider value={{background: 'red'}}>
-                <App />
-            </ThemeContent.Provider>
-        </Provider>
+        <Main/>
     </AppProvider>
 );
 

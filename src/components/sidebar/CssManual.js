@@ -44,7 +44,7 @@ function CssManual() {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const save = async lines => {
-        console.log('Saving', [handle, `sa-global-${templateId}`])
+        //console.log('Saving', [handle, `sa-global-${templateId}`])
         
         if (handle === 'sa-product-block-offer') {
             dispatch(updateStyles(`sa-${type}-${templateId}`, lines));

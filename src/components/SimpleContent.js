@@ -87,10 +87,7 @@ const getCssString = (string) => {
             }
 
             if ('background-type' === key && string[key] === 'none') {
-                console.log([
-                    key,
-                    newObject
-                ])
+                
                 newObject['background-color'] = 'none !important';
                 newObject['background'] = 'none !important';
             }
@@ -156,7 +153,7 @@ const convertCss = (string) => {
 
             
             if ('background-type' === key && string[key] === 'none') {
-                console.log(string[key])
+                //console.log(string[key])
                 newObject['background-color'] = 'none;'
             }
 
@@ -191,7 +188,7 @@ const SimpleContent = (props) => {
     const [templateOffer, setTemplate] = useState(templateActive);
     
     const liquid = useLiquid();
-    console.log(states)
+    //console.log(states)
 
     useEffect(() => {
         setLoading(true);
@@ -313,7 +310,7 @@ const SimpleContent = (props) => {
             let _products = [];
             let lang = 'en';
             let params = {};
-            console.log('items', items)
+            //console.log('items', items)
             if (items.length) {
                 const { offer = {}, template: templateActive} = items[0];
                 let template = Object.values(offer).find(item => {
@@ -367,7 +364,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: ((_product.price * qty) / 100),
                                     totalNormalPrice: _product.price * Number(qty) / 100,
                                     addToCart: '',
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     productOfferSaveInProcent: `${toFixedNumber(100, 2)}%`
                                 },
                                 offerId: template.id
@@ -443,7 +440,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     totalNormalPrice: _product.price * Number(tierProduct.qty) / 100,
                                     addToCart: renderButtonHtml,
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                 },
                                 offerId: template.id
@@ -521,7 +518,7 @@ const SimpleContent = (props) => {
                                         totalOfferPrice: (prices.totalOfferPrice / 100),
                                         addToCart: renderButtonHtml,
                                         normalPrice: (_product.price / 100) * parseFloat(child),
-                                        imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                        imageHtml: "<img src='" +_product.featured_image + "'>",
                                         image: _product?.media ? _product.media[0] : '',
                                         productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                         
@@ -591,7 +588,7 @@ const SimpleContent = (props) => {
                                             selectVariants: dropdown,
                                             totalOfferPrice: prices.totalOfferPrice / 100,
                                             addToCart: renderButtonHtml,
-                                            imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                            imageHtml: "<img src='" + _product.featured_image + "'>",
                                             productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                         },
                                         offerId: offer.id
@@ -600,7 +597,7 @@ const SimpleContent = (props) => {
                                 
                             }
                         
-                            console.log('products' , products)
+                            //console.log('products' , products)
                             _products = products
                         break;
                     
@@ -626,11 +623,6 @@ const SimpleContent = (props) => {
                                 if (disc_type === "pct") {
                                     amount_discount = (_product.price / 100) * disc ;
                                 }
-
-                                console.log({
-                                    disc,
-                                    amount_discount
-                                })
 
                                 let final_discount = (_product.price - amount_discount);
                                 _product.finalPrice = final_discount > 0 ? final_discount : 0;
@@ -685,14 +677,14 @@ const SimpleContent = (props) => {
                                     OfferSave: _product.price - _product.finalPrice,
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price) * parseFloat(1),
-                                    imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" +_product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(((_product.price - _product.finalPrice) / _product.price) * 100, 2)}%`,
                                 }
                             }))
                         }
                        
-                        console.log('_extra_free_products', _products)
+                        //console.log('_extra_free_products', _products)
 
                     break;
                     
@@ -779,7 +771,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price / 100) * parseFloat(1),
-                                    imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" +_product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                 }
@@ -811,7 +803,7 @@ const SimpleContent = (props) => {
                                 _product.featured_image = '';
                                 if (_product?.images && _product.images.length >= 0) {
                                     _product.featured_image = _product.images[0]?.src
-                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
+                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "'>",
                                 }
 
                                 _product.variantBlock = '';
@@ -868,7 +860,7 @@ const SimpleContent = (props) => {
                                         totalOfferPrice: (prices.totalOfferPrice / 100),
                                         addToCart: renderButtonHtml,
                                         normalPrice: (_product.price / 100) * parseFloat(child.qty),
-                                        imageHtml: "<img src='" +_product.featured_image + "' width='100px'>",
+                                        imageHtml: "<img src='" +_product.featured_image + "'>",
                                         image: _product?.media ? _product.media[0] : '',
                                         productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                         
@@ -939,7 +931,7 @@ const SimpleContent = (props) => {
                     params['offer_text_cart_top_not_accomplished'] = parseJSON(params['offer_text_cart_top_not_accomplished']);
                 }
                 catch (err) {
-                    console.log(err)
+                    //console.log(err)
                 }
 
 
@@ -953,7 +945,7 @@ const SimpleContent = (props) => {
             }
 
             setProducts(params)
-            console.log('params', params)
+            // console.log('params', params)
             
         }
 
@@ -998,8 +990,8 @@ const SimpleContent = (props) => {
     }, [sections])
 
     useEffect(() => {
-        console.log('PROPS', urlParams)
-        console.log('PROPS', props)
+        //console.log('PROPS', urlParams)
+        //console.log('PROPS', props)
     }, [urlParams])
 
     const renderChildrenLIQUID = ({ setting = { display: ''}, ID, items = [] , handle}, templateId) => {

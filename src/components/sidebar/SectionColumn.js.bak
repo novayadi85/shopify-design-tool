@@ -1,0 +1,396 @@
+import { useEffect, useCallback, useState, useRef } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
+import { Header, BackAction, TitleWrapper, ButtonRightWrapper, Section as SectionElement, RadioGroup, RemovePadding, Flex, Wrapper} from "@styles/Sidebar";
+import { Button, Heading, FormLayout, TextField, ChoiceList, Spinner, Select, hsbToRgb, rgbString, ColorPicker, Popover, RangeSlider } from '@shopify/polaris';
+import { editBlock } from "@store/template/action";
+import SectionSetting from '../actions/SectionSetting';
+import { Form, Field } from 'react-final-form';
+import { setCssEditor, updateStyles } from '@store/style/action';
+import AutoSave from '../actions/AutoSaveStyle';
+import { stdStyles } from '@helper/style';
+import { RGBAToHSB } from "@helper/color";
+
+
+const BgColorSelector = ({defaultValues}) => {
+    const [popoverBgActive, setPopoverBgActive] = useState(false);
+    const [bgColor, setBgColor] = useState({
+		hue: 0,
+		brightness: 1,
+		saturation: 0
+    });
+
+    const rgbaBgColor = rgbString(hsbToRgb(bgColor));
+
+    const togglePopoverBgActive = useCallback(
+	    () => setPopoverBgActive((popoverBgActive) => !popoverBgActive),[]
+    );
+
+    const bgActivator = (
+        <Wrapper BorderBottom={false} BorderTop={false} rem={true}>
+            <TextField onFocus={togglePopoverBgActive} value={rgbaBgColor} label="Background Color" autoComplete="off" />
+        </Wrapper>
+    );
+
+    useEffect(() => {
+        if (defaultValues['background-color']) {
+            let rba = defaultValues['background-color']
+            let val = RGBAToHSB(rba);
+            setBgColor(val);
+        }
+    }, []);
+
+    return (
+        <div style={{marginTop:10}}>
+            <Popover
+                active={popoverBgActive}
+                activator={bgActivator}
+                autofocusTarget="bg-node"
+                onClose={togglePopoverBgActive}
+            >	
+                <Field name={`background-color`}>
+                    {({ input, meta, ...rest }) => (
+                        <ColorPicker onChange={(val) => {
+                            input.onChange(rgbString(hsbToRgb(val)))
+                            setBgColor(val)
+                        }} name={input.name} color={bgColor} allowAlpha />
+                    )}
+                </Field>
+            </Popover>
+        </div>
+    )
+}
+
+let contents = [];
+function SectionColumn(props) {
+    const { column, handle, type, value: prop, setting } = props
+    const { products }  = useSelector(state => state);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [textFieldValue, setTextFieldValue] = useState(prop.label);
+    const [content, setContent] = useState(prop?.setting?.content);
+    const [text, setText] = useState('');
+    const [focused, setFocused] = useState(prop?.label);
+    const [headline, setHeadline] = useState('Section');
+    const searchInput = useRef(null);
+
+    const initial_values_styles = (useSelector(state => state.styles));
+    const [posLeft, setPosLeft] = useState(0);
+	const [posTop, setPosTop] = useState(0);
+	const [width, setWidth] = useState('100');
+	const [height, setHeight] = useState('100');
+	const [backgroundImage, setBackgroundImage] = useState(null);
+    
+    //console.log(setting);
+
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+    useEffect(() => {
+        setLoading(false);
+        setTimeout(() => {
+            return setLoading(false);
+        }, 500)
+
+        if (products?.items) {
+            setHeadline(products.items[0]?.template?.label)
+        }
+
+        const defaultValues = InitialValues(); 
+
+        if (defaultValues['background-image']) {
+			setBackgroundImage(defaultValues['background-image']);
+		}
+
+        if (defaultValues['left']) {
+			setPosLeft(defaultValues['left']);
+		}
+
+        if (defaultValues['top']) {
+			setPosTop(defaultValues['top']);
+		}
+
+        if (defaultValues['width']) {
+			setWidth(defaultValues['width']);
+		}
+
+        if (defaultValues['height']) {
+			setHeight(defaultValues['height']);
+		}
+        
+    }, [column]);
+
+    const [value, setValue] = useState('text');
+    const [loading, setLoading] = useState(false);
+    const handleChange = useCallback((value) => setValue(value), []);
+
+    const editCSSHandle = () => {
+        navigate(`/section/css/${handle}`);
+    }
+
+    const handleTextFieldChange = (value) => {
+        setTextFieldValue(value);
+        dispatch(editBlock(prop, {
+            headline: value,
+        }))   
+        setFocused(true);
+    }
+
+    const save = async lines => {
+        /*
+        lines.width = `${lines.width}px`
+        lines.height = `${lines.height}px`
+        lines.left = `${lines.left}px`
+        lines.top = `${lines.top}px`
+        */
+        dispatch(updateStyles(`sa-${type}-${handle}`, lines));
+        await sleep(2000)
+    }
+
+    const handleContentChange = (e) => {
+        let value = e.target.value;
+        setText(value)
+
+        let update = props.value.setting.values.map(({ ...t }) => {
+            if (t.key === props.setting.key) {
+                t.value = value;
+            }
+            return t;
+        })
+
+        dispatch(editBlock(prop, {
+            ...prop.setting,
+            values: update,
+        }))  
+
+        
+        setFocused(true);
+
+    }
+
+    const InitialValues = () => {
+        let initialHandle = `sa-${type}-${handle}`;
+        if (initial_values_styles.items) {
+            let found = initial_values_styles.items.find(item => item.ID === initialHandle);
+            
+            if (found) {
+                const extraCSS = found.items;
+                let newStyles = {
+                    ...extraCSS
+                }
+
+                if (newStyles) {
+                    if (newStyles['background-type'] && newStyles['background-type'] === 'color') {
+                        delete newStyles['background'];
+                    }
+                }
+
+                return newStyles;
+            }
+
+            if (stdStyles['width'] && stdStyles['width'] === 'auto') {
+                stdStyles['width'] = `${width}px`;
+            }
+
+            if (stdStyles['height'] && stdStyles['height'] === 'auto') {
+                stdStyles['height'] = `${height}px`;
+            }
+
+            if (stdStyles['left'] && stdStyles['left'] === 'auto') {
+                stdStyles['left'] = `${posLeft}px`;
+            }
+
+            if (stdStyles['top'] && stdStyles['top'] === 'auto') {
+                stdStyles['top'] = `${posTop}px`;
+            }
+        }
+
+        return stdStyles;
+    }
+
+    const _initialValues = InitialValues(); 
+    
+    const SectionContentField = ({props: prop}) => {
+        const { value: _value } = prop
+        console.log("VALUE", _value.handle)
+        if(_value?.handle && _value.handle === "custom-section"){
+            return (<div style={{marginTop: 25}}>
+                <Form onSubmit={save}
+                    initialValues={_initialValues}
+                    render={({ handleSubmit, form, submitting, pristine, values }) => (
+                        <form onSubmit={handleSubmit}>
+                            <AutoSave debounce={1000} save={save} />
+                            <BgColorSelector defaultValues={ _initialValues} />
+                            <>
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`background-image`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Background Image(URL)"
+                                                value={backgroundImage}
+                                                onChange={(val) => {
+                                                    input.onChange(val)
+                                                    setBackgroundImage(val)
+                                                }}
+                                                helpText="Paste the image URL here."
+                                            />
+                                        )}
+                                    </Field>
+                                </div>  
+
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`width`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <RangeSlider
+                                                output
+                                                label="width"
+                                                min={0}
+                                                max={300}
+                                                step={1}
+                                                value={width}
+                                                onChange={(val) => {
+                                                    setWidth(val)
+                                                    input.onChange(`${val}px`)
+                                                }}
+                                                suffix={<p>{width}px</p>}
+                                                name={input.name}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`height`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Height"
+                                                value={height}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setHeight(val)
+                                                }}
+                                                suffix={'px'}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`top`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Top"
+                                                value={posTop}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setPosTop(val)
+                                                }}
+                                                suffix={'px'}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`left`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Left"
+                                                value={posLeft}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setPosLeft(val)
+                                                }}
+                                                suffix={'px'}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                            </>
+                            
+                        </form>
+                    )}
+                />
+            </div>)
+        }
+        return (
+            <TextField focused={focused} onChange={handleTextFieldChange} label="Label" value={textFieldValue} autoComplete="off" />
+        )
+    }
+
+    return (
+        <div style={{paddingBottom: 10, marginTop: 10}}>
+            <div>
+                <Header>
+                    { /* 
+                    <BackAction className={ 'space-between'}  style={{justifyContent: 'space-between'}}>
+                        <TitleWrapper style={{padding: 0}}>
+                            <Heading style={{display: 'none'}}><span className='capitalize'>{ `Section` }</span></Heading>
+                        </TitleWrapper>
+                        
+                    </BackAction>
+                    */ }
+
+                    <BackAction  style={{marginTop: 10, justifyContent: 'flex-end'}}>
+                        <ButtonRightWrapper style={{width: 'auto'}}>
+                            <Button onClick={editCSSHandle}>Edit CSS</Button>
+                        </ButtonRightWrapper>
+                    </BackAction>
+                </Header>
+                <>
+                    
+                </>
+                <SectionElement>
+                    {(loading) ? (
+                        <Flex>
+                            <Spinner
+                                size="small"
+                                accessibilityLabel="Loading"
+                                hasFocusableParent={false}
+                            />
+                        </Flex>
+                    
+                    ) : (
+                        <FormLayout>
+                                {(type === 'product') ? (
+                                    <>
+                                    <RemovePadding>
+                                        <RadioGroup style={{marginTop: 5}}>
+                                            <ChoiceList
+                                                title="Content type"
+                                                choices={[
+                                                    { label: "Button", value: "button" },
+                                                    { label: "Text", value: "text" },
+                                                ]}
+                                                selected={value}
+                                                onChange={handleChange}
+                                            />
+                                        </RadioGroup>
+                                    </RemovePadding>
+                                    <div style={{ marginTop: 10 }}>
+                                        <input ref={searchInput} type={'text'} onChange={handleContentChange} value={text} autoComplete="off"/>
+                                    </div>
+                                    </>
+                                ) : (
+                                        <>
+                                            {('sa-product-block-offer' === handle) ? (
+                                                <SectionSetting props={props} />
+                                            ): (
+                                                <SectionContentField props={props}/>
+                                            )}
+                                            
+                                        </>
+                                    
+                                )}        
+                            
+                            
+                        </FormLayout>    
+                    )}
+                </SectionElement>
+            </div>
+        </div>
+    );
+}
+
+export default SectionColumn;
+

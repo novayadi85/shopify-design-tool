@@ -8,7 +8,7 @@ class AutoSaveStyle extends React.Component {
     this.state = { values: props.values, submitting: false }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.timeout) {
       clearTimeout(this.timeout)
     }

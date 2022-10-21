@@ -24,7 +24,7 @@ const Content = ({ }) => {
     };
 
     const onReady = () => {
-        console.log("onReady");
+        //console.log("onReady");
     };
 
     return (

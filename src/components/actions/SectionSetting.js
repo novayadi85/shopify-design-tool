@@ -32,7 +32,6 @@ export default function SectionSetting({props}) {
 
         console.log(formData)
         */
-        
         if (products?.items) {
             setTemplateType(products.items[0]?.template?.type_offer)
             if(prop.handle === 'sa-product-block-offer')
@@ -55,7 +54,13 @@ export default function SectionSetting({props}) {
     }
 
     const InitialValues = () => {
+        
         if (template_type === 'tier') {
+            if(!prop?.setting){
+                prop.setting = {
+
+                }
+            }
             prop.setting.columns = 'rows'
             prop.setting.display = 'rows'
         }
@@ -68,9 +73,7 @@ export default function SectionSetting({props}) {
     }
 
     const _initialValues = InitialValues(); 
-
-    // console.log('props', props)
-
+    
     return (
         <>
             <Form

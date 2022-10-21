@@ -37,7 +37,7 @@ const Editor = ({values, handle, type}) => {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const save = async () => {
-        console.log('saving.....')
+        //console.log('saving.....')
         if (handle === 'sa-product-block-offer') {
             dispatch(updateStyles(`sa-${type}-${templateId}`, formData));
         }

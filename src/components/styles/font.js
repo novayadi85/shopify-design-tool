@@ -69,7 +69,7 @@ function Font({initialValues}) {
 
 	}, [])
 
-	console.log('font-size', fontSize)
+	//console.log('font-size', fontSize)
 
 	return (
 		<li className="has-toggle">

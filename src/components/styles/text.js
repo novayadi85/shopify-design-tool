@@ -50,7 +50,7 @@ function Text({initialValues}) {
 	}, [])
 
 
-	console.log(lineHeight)
+	//console.log(lineHeight)
 
 	return (
 		<li className="has-toggle">

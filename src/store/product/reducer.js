@@ -16,6 +16,7 @@ import {
     templateId: null,
     templateType: null,
     canAddBlock: true,
+    canAddSection: true,
     store: []
   };
   
@@ -61,6 +62,7 @@ import {
 				templateId: action.payload.templateId,
 				templateType: action.payload.type,
 				canAddBlock: action.payload.canAddBlock,
+				canAddSection: action?.payload?.canAddSection,
 				store: action.payload.format
         };
       

@@ -32,7 +32,7 @@ function BlockContent(props) {
     const [column, setColumn] = useState(prop?.setting?.column ?? 'column3');
 
     const handleChangeColumn = (val) => {
-        console.log('column', content)
+        //console.log('column', content)
         setColumn(val);
         dispatch(editBlock(value, {
             ...value.setting,
@@ -325,6 +325,7 @@ function BlockContent(props) {
         <Toast content="Copied" onDismiss={toggleActive} />
     ) : null;
 
+    //console.log('TYPE', template_type)
 
     return (
         <>
@@ -345,7 +346,7 @@ function BlockContent(props) {
                                     <TextField labelAction={{ content: <LineCSSAction /> }} multiline={4} label="Text 2" showCharacterCount={true} onChange={handleContentChange2} value={content2} autoComplete="off" />
                                 </div>
 
-                                <FieldGroup style={{display: `${template_type === 'bannerText' ? 'none': 'block'}`}}>
+                                <FieldGroup style={{display: `${template_type === 'bannerText' || template_type === 'badge' || template_type === 'ads'  ? 'none': 'block'}`}}>
                                     <Label>Column</Label>
                                     <FieldGroup style={{margin:0}}>
                                         <RadioButton
@@ -389,7 +390,7 @@ function BlockContent(props) {
                                     <div style={{display: `${template_type === 'bannerText' ? 'none': 'block'}`}}>
                                         <TextField labelAction={{ content: <CodeAction/> }} multiline={4} label="Text" showCharacterCount={true}  focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
                                     </div>
-                                    <FieldGroup style={{ display: `${template_type === 'bannerText' ? 'none' : 'block'}` }}>
+                                    <FieldGroup style={{ display: `${template_type === 'bannerText' || template_type === 'badge' || template_type === 'ads' ? 'none' : 'block'}` }}>
                                         <Label>Column</Label>
                                         <FieldGroup style={{margin:0}}>
                                             <RadioButton
@@ -433,7 +434,8 @@ function BlockContent(props) {
                 </FormLayout>
             )}
 
-            <BlockCss type={'block'}/>          
+            <BlockCss type={'block'} templateType={template_type}/> 
+
             <div style={{ height: "300px" }}>
                 <Modal
                     open={active}

@@ -1,3 +1,5 @@
+import { _formatMoney } from '../../price';
+
 const dash = require('lodash');
 
 const options = require('./option');
@@ -35,6 +37,7 @@ function groupDigital(num) {
   return !decimal ? grouped : `${grouped},${decimal}`;
 }
 
+/*
 function formatMoney(value, currency = null, config={}) {
   let withPrefix = dash.get(config, 'withPrefix', true);
   let appendix = dash.get(config, 'appendix', false);
@@ -86,6 +89,7 @@ function formatMoney(value, currency = null, config={}) {
   if (native) return `${option.symbol_native}${amt}`;
   return `${option.symbol}${amt}`;
 }
+*/
 
 
 function numberWithCommas(x, separator) {
@@ -95,17 +99,17 @@ function numberWithCommas(x, separator) {
 
 export function moneyFiltersPlugin(Liquid) {
   this.registerFilter('money', (value, currency) => {
-    return formatMoney(value, currency);
+    return _formatMoney(value, currency);
   });
 
   this.registerFilter('money_native', (value, currency) => {
-    return formatMoney(value, currency, {
+    return _formatMoney(value, currency, {
       native: true
     });
   });
 
   this.registerFilter('money_without_prefix', (value, currency) => {
-    return formatMoney(value, currency, {
+    return _formatMoney(value, currency, {
       withPrefix: false
     });
   });

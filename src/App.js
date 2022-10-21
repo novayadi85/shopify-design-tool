@@ -95,8 +95,7 @@ function App() {
 						<Route exact path="/login" element={<Login />} />
 						<Route exact path="/content/:page" element={<SimpleContent />} />
 					</Routes>
-					</>
-							
+					</>	
 				</AppProvider>
 			</Suspense>
 		</Router>

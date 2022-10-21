@@ -10,6 +10,7 @@ function Border({initialValues}) {
 	const [selected, setSelected] = useState('all');
 	const [widthType, setWidthType] = useState('px');
 	const [width, setWidth] = useState(0);
+	const [radius, setRadius] = useState(0);
 	const [style, setStyle] = useState('solid');
 	const [color, setColor] = useState({
 		hue: 0,
@@ -43,6 +44,10 @@ function Border({initialValues}) {
 	useEffect(() => {
 		if (initialValues['border-type']) {
 			setSelected(initialValues['border-type']);
+		}
+
+		if (initialValues['border-radius']) {
+			setRadius(initialValues['border-radius']);
 		}
 
 		if (initialValues['border-color']) {
@@ -131,7 +136,7 @@ function Border({initialValues}) {
 					</Field>
 
                <div style={{ marginTop: 10, display: 'inline-block', width: '100%' }}>
-                  <div style={{marginTop:10, marginBottom: 10}}>
+                  	<div style={{marginTop:10, marginBottom: 10}}>
 						<Field name={`border-width`}>
 							{({ input, meta, ...rest }) => (
 								<RangeSlider
@@ -158,8 +163,8 @@ function Border({initialValues}) {
                         <Button size="slim" pressed={(widthType === 'em')? true: false} onClick={() => handleWidthTypeChange('em')}>em</Button>
 					</ButtonGroup>
 							
-                  </div>
-						<div style={{ marginTop: 10, marginBottom: 10 }}>
+                  	</div>
+					<div style={{ marginTop: 10, marginBottom: 10 }}>
 						<Field name={`border-style`}>
 							{({ input, meta, ...rest }) => (
 								<Select
@@ -185,22 +190,45 @@ function Border({initialValues}) {
 							)}
 						</Field>
                      
-						</div>
-                  		<Popover
-							active={popoverActive}
-							activator={activator}
-							autofocusTarget="first-node"
-							onClose={togglePopoverActive}
-						>
-							<Field name={`border-color`}>
-								{({ input, meta, ...rest }) => (
-									<ColorPicker onChange={(val) => {
-										input.onChange(rgbString(hsbToRgb(val)))
-										setColor(val)
-									}} name={input.name} color={color} allowAlpha />
-								)}
-							</Field>
-						</Popover>
+					</div>
+					<div style={{marginTop:10, marginBottom: 10}}>
+						<Field name={`border-radius`}>
+							{({ input, meta, ...rest }) => (
+								<RangeSlider
+									output
+									label="Border Radius"
+									min={0}
+									max={100}
+									step={1}
+									value={radius}
+									fontSize={radius}
+									suffix={<p style={suffixStyles}>{radius}px</p>}
+									onChange={(val) => {
+										input.onChange(`${val}px`)
+										setRadius(val)
+									}}
+									name={input.name}
+								/>
+							)}
+						</Field>	
+                  	</div>	
+
+						
+				<Popover
+					active={popoverActive}
+					activator={activator}
+					autofocusTarget="first-node"
+					onClose={togglePopoverActive}
+				>
+					<Field name={`border-color`}>
+						{({ input, meta, ...rest }) => (
+							<ColorPicker onChange={(val) => {
+								input.onChange(rgbString(hsbToRgb(val)))
+								setColor(val)
+							}} name={input.name} color={color} allowAlpha />
+						)}
+					</Field>
+				</Popover>
 
                </div>
 

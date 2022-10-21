@@ -57,10 +57,22 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
     "extends": [
+      "eslint:recommended",
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-unused-vars": "off",
+      "no-mixed-spaces-and-tabs": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -75,6 +87,11 @@
     ]
   },
   "rules": {
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "no-exhaustive-deps": "off",
+    "no-mixed-spaces-and-tabs": "off"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0"
   }
 }

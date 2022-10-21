@@ -9,6 +9,11 @@ import AutoSave from '../actions/AutoSaveStyle';
 import { stdStyles } from '@helper/style';
 import { RGBAToHSB } from "@helper/color";
 
+const suffixStyles = {
+    minWidth: "24px",
+    textAlign: "right",
+};
+
 const BgColorSelector = ({defaultValues}) => {
     const [popoverBgActive, setPopoverBgActive] = useState(false);
     const [bgColor, setBgColor] = useState({
@@ -58,7 +63,7 @@ const BgColorSelector = ({defaultValues}) => {
     )
 }
 
-function BlockCss({type}) {
+function BlockCss({type, templateType}) {
     const { handle } = useParams();
     const dispatch = useDispatch();
     const initial_values_styles = (useSelector(state => state.styles));
@@ -69,6 +74,15 @@ function BlockCss({type}) {
     const [align, setAlign] = useState('left');
     const [top, setTop] = useState(0);
 	const [bottom, setBottom] = useState(0);
+	
+    /*
+    const [posLeft, setPosLeft] = useState(0);
+	const [posTop, setPosTop] = useState(0);
+	const [width, setWidth] = useState('100');
+	const [height, setHeight] = useState('100');
+	const [backgroundImage, setBackgroundImage] = useState(null);
+    */
+
     const { products: { page, templateId },} = useSelector(state => state);
 
     const [color, setColor] = useState({
@@ -165,6 +179,10 @@ function BlockCss({type}) {
         
         if (defaultValues['text-align']) {
 			setAlign(defaultValues['text-align']);
+        }
+        
+        if (defaultValues['max-width']) {
+			setMaxWidth(defaultValues['max-width']);
 		}
         
         if (defaultValues['font-size']) {
@@ -185,10 +203,33 @@ function BlockCss({type}) {
 			setBottom(defaultValues['padding-bottom'].replace('px', '').replace('vh', '').replace('em', ''));
 		}
 
+        /*
+        if (defaultValues['background-image']) {
+			setAlign(defaultValues['background-image']);
+		}
+
+        if (defaultValues['left']) {
+			setPosLeft(defaultValues['left']);
+		}
+
+        if (defaultValues['top']) {
+			setPosTop(defaultValues['top']);
+		}
+
+        if (defaultValues['width']) {
+			setWidth(defaultValues['width']);
+		}
+
+        if (defaultValues['height']) {
+			setHeight(defaultValues['height']);
+		}
+        */
+       
+
     }, [])
     
     return (
-        <div style={{marginTop: 25}}>
+        <div style={{marginTop: 10}}>
              <Form onSubmit={save}
                 initialValues={_initialValues}
                 render={({ handleSubmit, form, submitting, pristine, values }) => (
@@ -198,16 +239,22 @@ function BlockCss({type}) {
                             <div style={{ marginTop: 10 }}>
                                 <Field name={`max-width`}>
                                     {({ input, meta, ...rest }) => (
-                                        <TextField
+                                    
+                                        <RangeSlider
                                             output
-                                            label="Max Width"
+                                            label="Max width"
+                                            step={1}
                                             value={maxWidth}
+                                            width={maxWidth}
+                                            min={0}
+                                            max={1440}
                                             onChange={(val) => {
-                                                input.onChange(`${maxWidth}px`)
-                                                setMaxWidth(val)
+                                                setMaxWidth(val);
+                                                input.onChange(`${maxWidth}${'px'}`)
                                             }}
-                                            suffix={<p>px</p>}
+                                            suffix={<p style={suffixStyles}>{`${maxWidth}px`}</p>}
                                         />
+                                            
                                     )}
                                 </Field>
                             </div>
@@ -335,6 +382,89 @@ function BlockCss({type}) {
                             </Field>
                         </div>   
                         <BgColorSelector defaultValues={ _initialValues} />
+
+                        { /*
+                        {templateType === 'badge' ||  templateType === 'ads' ? (
+                            <>
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`background-image`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Background Image(URL)"
+                                                value={backgroundImage}
+                                                onChange={(val) => {
+                                                    input.onChange(val)
+                                                    setBackgroundImage(val)
+                                                }}
+                                            />
+                                        )}
+                                    </Field>
+                                </div>  
+
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`width`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Width"
+                                                value={width}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setWidth(val)
+                                                }}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`height`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Height"
+                                                value={height}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setHeight(val)
+                                                }}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`top`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Top"
+                                                value={posTop}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setPosTop(val)
+                                                }}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`left`}>
+                                        {({ input, meta, ...rest }) => (
+                                            <TextField
+                                                output
+                                                label="Left"
+                                                value={posLeft}
+                                                onChange={(val) => {
+                                                    input.onChange(`${val}px`)
+                                                    setPosLeft(val)
+                                                }}
+                                            />
+                                        )}
+                                    </Field>
+                                </div> 
+                            </>
+                        ) : (<></>) }
+                        */ }
                     </form>
                 )}
             />

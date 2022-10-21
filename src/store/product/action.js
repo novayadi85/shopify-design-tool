@@ -22,9 +22,9 @@ export const updateLiquid = liquid => ({
   payload: { liquid }
 });
 
-export const updateTemplateId = (templateId, type, canAddBlock, format) => ({
+export const updateTemplateId = (templateId, type, canAddBlock, canAddSection, format) => ({
   type: UPDATE_TEMPLATE_ID,
-  payload: { templateId, type, canAddBlock, format}
+  payload: { templateId, type, canAddBlock, canAddSection, format}
 });
 
 
@@ -51,9 +51,9 @@ export function setLiquid(liquid) {
   };
 };
 
-export function setTemplateId(id, type, canAddBlock, fromat) {
+export function setTemplateId(id, type, canAddBlock, canAddSection, fromat) {
   return dispatch => {
-    dispatch(updateTemplateId(id, type, canAddBlock, fromat));
+    dispatch(updateTemplateId(id, type, canAddBlock, canAddSection, fromat));
   };
 };
 
@@ -71,6 +71,7 @@ export function fetchProducts(url) {
       }).then(data => {
         let sch = data?.template?.schema ?? [];
         let canAddBlock = data?.template?.canAddBlock ?? true;
+        let canAddSection = data?.template?.canAddSection ?? true;
         let type = data?.template?.brickname ?? [];
         let templateId = data?.templateId ?? [];
         let cssStyles = data?.cssStyles ?? [];
@@ -87,7 +88,7 @@ export function fetchProducts(url) {
         }
 
         if (templateId.length > 0) {
-           dispatch(setTemplateId(templateId, type, canAddBlock , storeFormat));
+           dispatch(setTemplateId(templateId, type, canAddBlock , canAddSection, storeFormat));
         }
 
         if (cssStyles.length > 0) {

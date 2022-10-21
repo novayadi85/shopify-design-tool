@@ -1,14 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, {useState, useEffect, useContext } from 'react';
+
+import {
+    SkeletonPage,
+    Layout,
+    Card,
+    SkeletonBodyText,
+    TextContainer,
+    SkeletonDisplayText,
+    Spinner
+} from '@shopify/polaris'; 
+
 import IframeComm from "react-iframe-comm";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLiquid } from "../store/product/action";
- 
+import { ThemeContent } from "../Context";
+
+function Skeleton() {
+    return (
+      <SkeletonPage primaryAction>
+        <Layout>
+          <Layout.Section>
+            <Card sectioned>
+              <SkeletonBodyText />
+            </Card>
+            <Card sectioned>
+              <TextContainer>
+                <SkeletonDisplayText size="small" />
+                <SkeletonBodyText />
+              </TextContainer>
+            </Card>
+            <Card sectioned>
+              <TextContainer>
+                <SkeletonDisplayText size="small" />
+                <SkeletonBodyText />
+              </TextContainer>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </SkeletonPage>
+    );
+}
+  
 const Iframe = ({ }) => {
     const dispatch = useDispatch();
     const states = useSelector(state => state);
     const { products: { items, page, templateId, store: currency, template:templateActive }, template: { items: sections }, styles  } = useSelector(state => state);
     const [state, setState] = useState(states);
+    const [context, setContext] = useContext(ThemeContent);
+    const [loading, setLoading] = useState(true);
     const [attributes, setAttributes] = useState({
         src: "/builder/content/",
         width: "100%",
@@ -31,7 +70,9 @@ const Iframe = ({ }) => {
  
     // iframe has loaded
     const onReady = () => {
-        console.log("onReady");
+        //console.log("onReady");
+		setLoading(false);
+		if(context.ready !== true) setContext({ready: true})
     };
 
     useEffect(() => {
@@ -46,13 +87,20 @@ const Iframe = ({ }) => {
     }, [items, page, templateId, templateActive, sections, styles, currency])
  
     return (
-        <div className="device-preview" >
-            <IframeComm
-                attributes={attributes}
-                postMessageData={state}
-                handleReady={onReady}
-                handleReceiveMessage={onReceiveMessage}
-            />
+        <div className="device-preview">
+            <div style={{display: (loading) ? 'none' : 'contents'}}>
+                <IframeComm
+                    attributes={attributes}
+                    postMessageData={state}
+                    handleReady={onReady}
+                    handleReceiveMessage={onReceiveMessage}
+                />
+            </div>
+            <div style={{ display: (loading) ? 'block' : 'none' }}>
+                <div style={{textAlign:'center'}}><Spinner accessibilityLabel="Spinner example" size="small" /></div>
+                <Skeleton/>
+            </div>
+            
         </div>
     );
 };

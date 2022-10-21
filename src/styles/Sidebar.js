@@ -48,7 +48,7 @@ export const ButtonRightWrapper = styled.div`
 `
 
 export const TitleWrapper = styled.div`
-    padding: 0 10px 5px;
+    padding: 3px 10px 0px;
 `
 
 export const Section = styled.div`

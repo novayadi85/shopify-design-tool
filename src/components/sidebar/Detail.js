@@ -36,11 +36,16 @@ function Detail() {
                         <TitleWrapper>
                             <Heading>Text</Heading>
                         </TitleWrapper>
-                        <ButtonRightWrapper>
+                        
+                    </BackAction>
+                </Header>
+                <>
+                    <BackAction  style={{marginTop: 10, justifyContent: 'flex-end'}}>
+                        <ButtonRightWrapper style={{width: 'auto'}}>
                             <Button onClick={editCSSHandle}>Edit CSS</Button>
                         </ButtonRightWrapper>
                     </BackAction>
-                </Header>
+                </>
                 <Section>
                     <FormLayout>
                         <TextField label="Text" onChange={() => {}} autoComplete="off" />

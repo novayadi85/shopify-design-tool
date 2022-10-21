@@ -18,121 +18,6 @@ import { formatMoney } from "@helper/price";
 import engine from "../helper/template";
 import { dropdownHTML, stringToHTML } from "../helper/html";
 
-const convertCssItem = ({mobile, items}, page) => {
-    let jsonObject = {
-        children: {}
-    };
-
-    Object.keys(items).forEach(key => {
-        let item = items[key];
-        jsonObject['children'][`.${item.ID}`] = {
-            "attributes": getCssString(item.items)
-        }
-        
-    })
-
-    let mobileJSONCSS = {
-        children: {
-            ".shopadjust---item": {
-                "children": {},
-                "attributes": {
-                    "width": "100%",
-                }
-            }
-        }
-    };
-
-    Object.keys(mobile).forEach(key => {
-        let item = mobile[key];
-        mobileJSONCSS['children'][`.${item.ID}`] = {
-            "attributes": getCssString(item.items)
-        }
-        
-    })
-
-    let jsonMobile = {
-        children: {
-            "@media (max-width: 480px)": mobileJSONCSS
-        }
-    };
-
-    const cssDesktop = toCSS(jsonObject);
-    const cssMobile = toCSS(jsonMobile);
-    /*
-    console.log({
-        desktop: cssDesktop,
-        mobile: cssMobile,
-        mobi: mobile
-    })
-    */
-    return cssDesktop + cssMobile
-}
-
-
-const getCssString = (string) => {
-    let newObject = {};
-    let skip = ['background-type', 'box-shadow-x', 'box-shadow-y', 'box-shadow-blur', 'box-shadow-width', 'box-shadow-color', 'border-type', 'background-opacity'];
-    if (string) {
-        
-        let shadow = '{box-shadow-x} {box-shadow-y} {box-shadow-blur} {box-shadow-width} {box-shadow-color}';
-        Object.keys(string).forEach(key => {
-           // console.log(key)
-            if (!skip.includes(key)) {
-                newObject[key] = string[key];
-            }
-            if (['box-shadow-x', 'box-shadow-y','box-shadow-blur', 'box-shadow-width', 'box-shadow-color'].includes(key)) {
-                shadow = shadow.replace(`{${key}}`, string[key])
-            }
-
-            if ('border-type' === key) {
-                switch (string[key]) {
-                    case 'left':
-                        newObject['border-right'] = 'none !important';
-                        newObject['border-bottom'] = 'none !important';
-                        newObject['border-top'] = 'none !important';
-                        break;
-                    case 'bottom':
-                        newObject['border-right'] = 'none !important';
-                        newObject['border-left'] = 'none !important';
-                        newObject['border-top'] = 'none !important';
-                        break;
-                    
-                    case 'right':
-                        newObject['border-left'] = 'none !important';
-                        newObject['border-bottom'] = 'none !important';
-                        newObject['border-top'] = 'none !important';
-                        break;
-                    
-                    case 'top':
-                        newObject['border-right'] = 'none !important';
-                        newObject['border-left'] = 'none !important';
-                        newObject['border-bottom'] = 'none !important';
-                        break;
-                    case 'none':
-                        newObject['border-right'] = 'none !important';
-                        newObject['border-left'] = 'none !important';
-                        newObject['border-bottom'] = 'none !important';
-                        newObject['border-top'] = 'none !important';
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            if ('background-type' === key && string[key] === 'none') {
-                newObject['background-color'] = 'none !important';
-                newObject['background'] = 'none !important';
-            }
-
-        });
-
-        newObject['box-shadow'] = shadow;
-
-    }
-
-    return newObject;
-}
-
 const SimpleContent = (props) => {
     const urlParams = useParams();
     const dispatch = useDispatch();
@@ -146,7 +31,7 @@ const SimpleContent = (props) => {
     const [sections, setSections] = useState([]);
     const [styles, setStyles] = useState(_styles);
     const [mobile_styles, setMobStyles] = useState(_mobile_styles);
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState({});
     const [templateId, setTemplateId] = useState(null);
     // const [fetchData, setFetchData] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -215,6 +100,7 @@ const SimpleContent = (props) => {
             
             let _newProducts = [];
 
+            console.log('template?.group_type', template?.group_type)
             if (template?.group_type) {
                 switch (template.group_type) {
                     case 'free-product':
@@ -245,7 +131,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: ((_product.price * qty) / 100),
                                     totalNormalPrice: _product.price * Number(qty) / 100,
                                     addToCart: '',
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     productOfferSaveInProcent: `${toFixedNumber(100, 2)}%`
                                 },
                                 offerId: template.id
@@ -321,7 +207,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     totalNormalPrice: _product.price * Number(tierProduct.qty) / 100,
                                     addToCart: renderButtonHtml,
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                 },
                                 offerId: template.id
@@ -399,7 +285,7 @@ const SimpleContent = (props) => {
                                     totalOfferPrice: (prices.totalOfferPrice / 100),
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price / 100) * parseFloat(child),
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                     
@@ -466,10 +352,11 @@ const SimpleContent = (props) => {
                                         offerPrice: prices.totalOfferSave,
                                         totalOfferSave: prices.totalOfferSave,
                                         totalNormalPrice: _product.price * Number(child.quantity) / 100,
+                                        normalPrice:  _product.price * Number(child.quantity) / 100,
                                         selectVariants: dropdown,
                                         totalOfferPrice: prices.totalOfferPrice / 100,
                                         addToCart: renderButtonHtml,
-                                        imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                        imageHtml: "<img src='" + _product.featured_image + "'>",
                                         productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`
                                     },
                                     offerId: offer.id
@@ -558,7 +445,7 @@ const SimpleContent = (props) => {
                                     OfferSave: _product.price - _product.finalPrice,
                                     addToCart: renderButtonHtml,
                                     normalPrice: (_product.price) * parseFloat(1),
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(((_product.price - _product.finalPrice) / _product.price) * 100, 2)}%`,
                                 }
@@ -645,14 +532,14 @@ const SimpleContent = (props) => {
                                     ..._product,
                                     quantity: 1,
                                     specialPrice: discs,
-                                    offerPrice: prices.offerPrice,
+                                    offerPrice: prices.offerPrice ,
                                     OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
                                     totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
                                     selectVariants: '',
-                                    totalOfferPrice: (prices.totalOfferPrice / 100),
+                                    totalOfferPrice: (prices.totalOfferPrice ),
                                     addToCart: renderButtonHtml,
-                                    normalPrice: (_product.price / 100) * parseFloat(1),
-                                    imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                    normalPrice: (_product.price ) * parseFloat(1),
+                                    imageHtml: "<img src='" + _product.featured_image + "'>",
                                     image: _product?.media ? _product.media[0] : '',
                                     productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                 }
@@ -684,7 +571,7 @@ const SimpleContent = (props) => {
                                 _product.featured_image = '';
                                 if (_product?.images && _product.images.length >= 0) {
                                     _product.featured_image = _product.images[0]?.src
-                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "' width='100px'>",
+                                    // imageHtml = "<img src='" + _product?.featured_image ? _product.featured_image : featured_image + "'>",
                                 }
 
                                 _product.variantBlock = '';
@@ -702,7 +589,7 @@ const SimpleContent = (props) => {
                                 }).then(html => html);
 
                             
-                                console.log('__products', _product)
+                               // console.log('__products', _product)
 
                                 let dropdown = '';
                             
@@ -735,14 +622,14 @@ const SimpleContent = (props) => {
                                     ...{
                                         quantity: child.qty,
                                         specialPrice: child.specialPrice,
-                                        offerPrice: prices.offerPrice,
+                                        offerPrice: prices.offerPrice * 100,
                                         OfferSave: prices?.totalOfferSave ? prices.totalOfferSave : prices.saved,
                                         totalOfferSaveInProcent: toFixedNumber(prices.totalOfferSaveInProcent, 2),
                                         selectVariants: dropdown,
-                                        totalOfferPrice: (prices.totalOfferPrice / 100),
+                                        totalOfferPrice: (prices.totalOfferPrice),
                                         addToCart: renderButtonHtml,
-                                        normalPrice: (_product.price / 100) * parseFloat(child.qty),
-                                        imageHtml: "<img src='" + _product.featured_image + "' width='100px'>",
+                                        normalPrice: (_product.price) * parseFloat(child.qty),
+                                        imageHtml: "<img src='" + _product.featured_image + "'>",
                                         image: _product?.media ? _product.media[0] : '',
                                         productOfferSaveInProcent: `${toFixedNumber(prices.totalOfferSaveInProcent, 2)}%`,
                                     
@@ -776,7 +663,7 @@ const SimpleContent = (props) => {
 
             
             _products.forEach(t => {
-                totalOfferSave += t?.OfferSave ? parseFloat(t.OfferSave) : 0;
+                totalOfferSave += t?.OfferSave ? parseFloat(t.OfferSave) * 100 : 0;
             });
         
 
@@ -800,6 +687,9 @@ const SimpleContent = (props) => {
                 }
             }
                 
+
+            console.log(params);
+            
             try {
                 params['offer_text_product_top'] = parseJSON(params['offer_text_product_top']);
                 params['offer_text_cart_product_accomplished'] = parseJSON(params['offer_text_cart_product_accomplished']);
@@ -809,7 +699,7 @@ const SimpleContent = (props) => {
                 params['offer_text_cart_top_not_accomplished'] = parseJSON(params['offer_text_cart_top_not_accomplished']);
             }
             catch (err) {
-                console.log(err)
+                //console.log(err)
             }
 
 
@@ -822,9 +712,115 @@ const SimpleContent = (props) => {
             
         }
 
-        console.log('params', [params])
         setProducts(params)
         return params
+    }
+
+    const convertCssItem = ({mobile, items}, page) => {
+        let jsonObject = {
+            children: {}
+        };
+
+        Object.keys(items).forEach(key => {
+            let item = items[key];
+            jsonObject['children'][`.${item.ID}`] = {
+                "attributes": getCssString(item.items)
+            }
+            
+        })
+
+        let mobileJSONCSS = {
+            children: {
+                ".shopadjust---item": {
+                    "children": {},
+                    "attributes": {
+                        "width": "100%",
+                    }
+                }
+            }
+        };
+
+        Object.keys(mobile).forEach(key => {
+            let item = mobile[key];
+            mobileJSONCSS['children'][`.${item.ID}`] = {
+                "attributes": getCssString(item.items)
+            }
+            
+        })
+
+        let jsonMobile = {
+            children: {
+                "@media (max-width: 480px)": mobileJSONCSS
+            }
+        };
+
+        const cssDesktop = toCSS(jsonObject);
+        const cssMobile = toCSS(jsonMobile);
+        return cssDesktop + cssMobile
+    }
+
+
+    const getCssString = (string) => {
+        let newObject = {};
+        let skip = ['background-type', 'box-shadow-x', 'box-shadow-y', 'box-shadow-blur', 'box-shadow-width', 'box-shadow-color', 'border-type', 'background-opacity'];
+        if (string) {
+            
+            let shadow = '{box-shadow-x} {box-shadow-y} {box-shadow-blur} {box-shadow-width} {box-shadow-color}';
+            Object.keys(string).forEach(key => {
+                if (!skip.includes(key)) {
+                    newObject[key] = string[key];
+                }
+                if (['box-shadow-x', 'box-shadow-y','box-shadow-blur', 'box-shadow-width', 'box-shadow-color'].includes(key)) {
+                    shadow = shadow.replace(`{${key}}`, string[key])
+                }
+
+                if ('border-type' === key) {
+                    switch (string[key]) {
+                        case 'left':
+                            newObject['border-right'] = 'none !important';
+                            newObject['border-bottom'] = 'none !important';
+                            newObject['border-top'] = 'none !important';
+                            break;
+                        case 'bottom':
+                            newObject['border-right'] = 'none !important';
+                            newObject['border-left'] = 'none !important';
+                            newObject['border-top'] = 'none !important';
+                            break;
+                        
+                        case 'right':
+                            newObject['border-left'] = 'none !important';
+                            newObject['border-bottom'] = 'none !important';
+                            newObject['border-top'] = 'none !important';
+                            break;
+                        
+                        case 'top':
+                            newObject['border-right'] = 'none !important';
+                            newObject['border-left'] = 'none !important';
+                            newObject['border-bottom'] = 'none !important';
+                            break;
+                        case 'none':
+                            newObject['border-right'] = 'none !important';
+                            newObject['border-left'] = 'none !important';
+                            newObject['border-bottom'] = 'none !important';
+                            newObject['border-top'] = 'none !important';
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if ('background-type' === key && string[key] === 'none') {
+                    newObject['background-color'] = 'none !important';
+                    newObject['background'] = 'none !important';
+                }
+
+            });
+
+            newObject['box-shadow'] = shadow;
+
+        }
+
+        return newObject;
     }
 
     const renderButton = (offer) => {
@@ -861,9 +857,8 @@ const SimpleContent = (props) => {
 
     const renderChildrenLIQUID = (section, templateId) => {
         const { ID, items = [] , setting: sectionSetting } = section;
-        console.log('sectionSetting', sectionSetting)
-        
         if (items.length) {
+            
             const rows = {};
             let set = 0;
             items.forEach((item) => {
@@ -902,36 +897,34 @@ const SimpleContent = (props) => {
 
                 }
             })
-
-            // console.log('ROW', rows)
-
             return (
                 <>
-                    <div className={`grid-display sa-section-${templateId} sa-section-${ID}`} style={{marginTop: "10px"}}>
+                    <div className={`grid-display sa-section-${templateId} sa-grid-section-${ID}`}>
                         {Object.keys(rows).map((index) => {
                             let rootClass = "";
                             if (Object.values(rows[index]).length === 1) rootClass = 'root-columnFullWidth';
                             let styles = { gridTemplateColumns : `${sectionSetting?.widthColumn1 ?? '50%'} ${sectionSetting?.widthColumn2 ?? '50%'}` };    
 
-                            if(rootClass === 'root-columnFullWidth') styles = {}
+                            if (rootClass === 'root-columnFullWidth') styles = {}
+                            if(templateId === 'upsell-product-page') styles = { gridTemplateColumns : `35px ${sectionSetting?.widthColumn1 ?? '50%'} ${sectionSetting?.widthColumn2 ?? '50%'}` };    
 
-                            return (<div className={`grid-row ${rootClass}`} style={styles}>
+                            return (
+                                <div key={`grid-${index}`} className={`grid-row ${rootClass}`} style={styles}>
+                                {templateId === 'upsell-product-page' ? ('<input data-component="crosellInput" data-offer="{{offerid}}" type="checkbox" value="{{product.variants[0].id}}" data-product="{{product.id}}">') : (null)}
                                 {
                                     Object.keys(rows[index]).map(columnIndex => {
                                         let columns = rows[index][columnIndex];
                                         // console.log('columns', Object.values(rows[index]).length)
                                         let className = (columnIndex === "0") ? "root-columnLeft" : "root-columnRight";
                                         if(Object.values(rows[index]).length === 1) className = 'root-columnFullWidth'
-                                        return <div className={`grid-column column-${className}`}>
+                                        return <div key={ `grid-child-${columnIndex}`} className={`grid-column column-${className}`}>
                                             {columns.map((col, colIndex) => {
-                                                
-
                                                 return (
-                                                    <div className={`grid-column-rows rows-index${colIndex } ${col?.className}`}>
+                                                    <div key={ `colIndex-${colIndex}`} className={`grid-column-rows rows-index${colIndex } ${col?.className}`}>
                                                         {(col.handle === 'block-button') ? (
-                                                            <div style={{ display: 'inline-block' }} key={columnIndex} className={`sa-content sa-block-${col.ID}`}>{ `{{addToCart | label: "${col?.setting?.content + col?.setting?.content2}", product}}` }</div>
+                                                            <div style={{ display: 'inline-block' }} key={columnIndex} className={`sa-content sa-block-${col.ID}`}>{ section.handle != 'offer-product' ?  `{{addToCart | label: "${col?.setting?.content + col?.setting?.content2}"}}` :  `{{product.addToCart | label: "${col?.setting?.content + col?.setting?.content2}", product}}` }</div>
                                                         ) : (
-                                                            <div key={`child-${colIndex}`} className={`sa-content sa-block-${col.ID}`}>
+                                                            <div key={`child-${colIndex}`} className={`sa-content sa-block-${col.ID} ${col.handle}`}>
                                                                 {('block-product' === col.handle || col.handle === 'offer-product') ? (
                                                                     <>
                                                                         <div className={`sa-row`}>
@@ -959,7 +952,7 @@ const SimpleContent = (props) => {
                                                                         </div>
                                                                     </>
                                                                     ) : ( 
-                                                                        <div key={colIndex}>{col.label}</div>
+                                                                       <>{col.label}</> 
                                                                     )}
                                                             </div>
                                                         )}
@@ -975,36 +968,22 @@ const SimpleContent = (props) => {
                     </div>
                 </>
             )
-        }
-
-        /*
-        return (
-            <>
-                <div className="grid-display" style={{border: "1px solid red", margin: "10px 0", padding: 10}}>
-                    {Object.keys(rows).map((item, index) => {
-                        return (<div></div>)
-                    })}
-                </div>
-            </>
-        )
-        */
-        
+        }     
 	}
 
     const RenderOffer = () => {
         const element = (
             <>
             {sections.map((value, index) => (
-                <Section className={`sa-section-${value.ID}`} key={`${value.handle}-${index}`}>
+                <Section className={`sa-section-${value.ID}`} key={`section-${value.handle}-${index}`}>
                     <>
                     <Block className={`aside-block-item-offer aside-display-${value?.setting?.display}`}>
                         {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
-                                    <div className="shopadjust---item">
+                                    <div className={value?.setting?.separator ? ('shopadjust---item item-separator') : ('shopadjust---item')}>
                                         {renderChildrenLIQUID(value, templateId)}
                                     </div>
-                                    {value?.setting?.separator ? (<div className="loop-separator"></div>) : (null)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (
@@ -1040,7 +1019,6 @@ const SimpleContent = (props) => {
         })
 
         liquidEngine.registerFilter('label', (initial, arg1, arg2, arg3) => {
-            //let params = liquidEngine?.params ? liquidEngine.params : {};
             let html = stringToHTML(initial);
             if (html.querySelector('span.label')) {
                 html.querySelector('span.label').innerHTML = arg1;
@@ -1049,24 +1027,16 @@ const SimpleContent = (props) => {
             let contentHtml = `<div>${html.innerHTML}</div>`;
             contentHtml = contentHtml.replace(/\[/g, "{{");
             contentHtml = contentHtml.replace(/\]/g, "}}");
-            /*
-            contentHtml = contentHtml.replace(/totalNormalPrice/g, "{{totalNormalPrice}}");
-            contentHtml = contentHtml.replace(/totalOfferSave/g, "{{totalOfferSave | money}}");
-            contentHtml = contentHtml.replace(/totalOfferPrice/g, "{{totalOfferPrice | money}}");
-            contentHtml = contentHtml.replace(/totalOfferSaveInProcent/g, "{{totalOfferSaveInProcent}}");
-            contentHtml = contentHtml.replace(/productOfferSaveInProcent/g, "{{productOfferSaveInProcent}}");
-            contentHtml = contentHtml.replace(/price/g, "{{price  | money}}");
-            contentHtml = contentHtml.replace(/productQuantity/g, "{{productQuantity}}");
-            */
-            
             return engine.parseAndRenderSync(contentHtml, arg2);
         })
 
         localStorage.setItem('params', JSON.stringify(params))
-        //let renderedTemplate = Promise.all([engine.parseAndRender(template, params).then(html => html)])
-        //console.log('renderedTemplate', renderedTemplate)
-        setLoading(false)
 
+        if(typeof params !== 'object') params = params.reduce(function(acc, cur, i) {
+            acc[i] = cur;
+            return acc;
+        }, {});
+        
         return (
             <>
                 <ReactLiquid
@@ -1087,41 +1057,6 @@ const SimpleContent = (props) => {
         </div>
     }
 
-    const updateLiquid = (sections) => {
-        const element = (
-            <>
-            {sections.map((value, index) => (
-                <div className={`sa-section-${value.ID}`} key={index}>
-                    <div className={`aside-block-item-offer aside-display-${templateOffer?.type_offer}-${value?.setting?.display} items-${value?.setting?.separator ? 'separator' : 'no-separator'}`}>
-                            {('block-product' === value.handle || value.handle === 'offer-product') ? (
-                            <>
-                                {`{%- for product in products -%}`}
-                                    <div className="shopadjust---item">
-                                    {renderChildrenLIQUID(value, templateId)}
-                                    {`<div class="all-in-one-offer-bundle-1-item_center" {% if product.variants.size==1 %} style="display: none; " {% endif%}>
-                                            <div class="all-in-one-offer-bundle-1-item_vartiants">
-                                                {{product.selectVariants}}
-                                            </div>
-                                        </div>`}
-                                    </div>
-                                {`{%- endfor -%}`}
-                            </>
-                        ): (
-                            <>{renderChildrenLIQUID(value)}</>
-                        )}
-                    </div>  
-                </div>
-            ))}  
-            </>
-        )
-
-        const template = ReactDOMServer.renderToStaticMarkup(element);
-        const html = `<div class="sa-global-${templateId}">${template}</div>`;
-
-        // dispatch(setLiquid(html))
-        // console.log('change liquid', html)
-    }
-
     useEffect(() => {
         const element = (
             <>
@@ -1131,7 +1066,7 @@ const SimpleContent = (props) => {
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
                                 {`{%- for product in products -%}`}
-                                    <div className="shopadjust---item">
+                                <div className={ value?.setting?.separator ? 'shopadjust---item item-separator': 'shopadjust---item'}>
                                         {renderChildrenLIQUID(value, templateId)}
                                         {`<div class="all-in-one-offer-bundle-1-item_center" {% if product.variants.size==1 %} style="display: none; " {% endif%}>
                                                 <div class="all-in-one-offer-bundle-1-item_vartiants">
@@ -1139,7 +1074,6 @@ const SimpleContent = (props) => {
                                                 </div>
                                         </div>`}
                                     </div>
-                                {value?.setting?.separator ? (`<div class="loop-separator"></div>`) : (null)}
                                 {`{%- endfor -%}`}
                             </>
                         ): (
@@ -1154,13 +1088,13 @@ const SimpleContent = (props) => {
         const template = ReactDOMServer.renderToStaticMarkup(element);
         const html = `<div class="sa-global-${templateId}">${template}</div>`;
 
+        // console.log('LIQUID', html)
         dispatch(setLiquid(html))
         window.parent.postMessage(JSON.stringify(html), '*');
     }, [sections])
 
     return (
         <>
-            {loading ? <PageLoading/> : null }
             <Main style={{display: 'block', width: '100%'}}>
                 <Helmet>
                     <style type="text/css">{ 
@@ -1173,7 +1107,7 @@ const SimpleContent = (props) => {
                     </style>
                 </Helmet>
                 <div className={`sa-global-${templateId}`}>
-                <RenderOffer/>
+                    <RenderOffer/>
                 </div>
             </Main>
         </>

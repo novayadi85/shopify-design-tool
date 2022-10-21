@@ -117,16 +117,17 @@ engine.registerFilter('save', (initial, arg1) => {
 
 })
 
-/*
-
-engine.registerFilter('label', (initial, arg1, arg2) => {
+engine.registerFilter('label', (initial, arg1, arg2, arg3) => {
+  //let params = liquidEngine?.params ? liquidEngine.params : {};
   let html = stringToHTML(initial);
   if (html.querySelector('span.label')) {
-    html.querySelector('span.label').innerHTML = arg1;
-    return `<div>${html.innerHTML}</div>`
+      html.querySelector('span.label').innerHTML = arg1;
   }
 
-  return initial
+  let contentHtml = `<div>${html.innerHTML}</div>`;
+  contentHtml = contentHtml.replace(/\[/g, "{{");
+  contentHtml = contentHtml.replace(/\]/g, "}}");
+  return engine.parseAndRenderSync(contentHtml, arg2);
 })
 
 var stringToHTML = function (str) {
@@ -134,7 +135,7 @@ var stringToHTML = function (str) {
 	var doc = parser.parseFromString(str, 'text/html');
 	return doc.body;
 };
-*/
+
 
 
 export default engine

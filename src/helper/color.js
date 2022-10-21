@@ -118,7 +118,7 @@ const hslToRgb = (h,s,l) => {
 
   const makeHSL = attributes => {
       const [h, s, l] = rgbToHsl(attributes.red / 255, attributes.green / 255, attributes.blue / 255);
-      console.log(attributes)
+      //console.log(attributes)
     return {
         saturation: Math.round(s * 100),
         brightness: Math.round(l * 100),

@@ -9,7 +9,7 @@ import BlockCss from './BlockCss';
 
 function GeneralSetting(props) {
     const { value: prop } = props;
-    console.log(prop)
+    //console.log(prop)
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [value, setValue] = useState(prop);

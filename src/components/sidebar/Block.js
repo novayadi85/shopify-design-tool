@@ -90,11 +90,15 @@ function Block() {
                         <TitleWrapper style={{maxWidth: 100}}>
                             <Heading><span className='capitalize truncate-text'>{ value.label }</span></Heading>
                         </TitleWrapper>
-                        <ButtonRightWrapper>
-                            <Button onClick={editCSSHandle}>Edit CSS</Button>
-                        </ButtonRightWrapper>
                     </BackAction>
                 </Header>
+                <>
+                <BackAction style={{marginTop: 10}}>
+                    <ButtonRightWrapper>
+                        <Button onClick={editCSSHandle}>Edit CSS</Button>
+                    </ButtonRightWrapper>
+                </BackAction>
+                </>
                 <SectionElement>
                     {(loading) ? (
                         <Flex>

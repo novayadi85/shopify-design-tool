@@ -64,7 +64,7 @@ const ExitAction = styled.div`
 `
   
 function Header() {
-    const [selected, setSelected] = useState(null);
+    const [selected, setSelected] = useState('');
     const [alert, setAlert] = useState(false);
     const [options, setOptions] = useState([]);
     const [liveLink, setLiveLink] = useState('/builder');
@@ -92,7 +92,7 @@ function Header() {
                 domain = configs.store;
             
             } catch (error) {
-                console.log(error)     
+                // console.log(error)     
             }
                 
             
@@ -164,7 +164,7 @@ function Header() {
         
         } catch (error) {
 
-            console.log(error)     
+           // console.log(error)     
         }
     
         try {
@@ -205,7 +205,7 @@ function Header() {
             });
         } catch (error) {
 
-            console.log(error)     
+            //console.log(error)     
         }
 
         dispatch(updatePage(value))
@@ -230,8 +230,6 @@ function Header() {
                 
             }
              
-             console.log('states', states)
-             
             const rawResponse = await fetch(url, {
                 method: 'OPTIONS',
                 headers: {
@@ -247,17 +245,18 @@ function Header() {
                     templateType: states?.products?.templateType ?? null,
                     domain: domain
                 })
-            }).then(() => {
+            }).then((res) => {
+               // console.log('res', res)
                 toggleActive();
             })
-                .catch(err => {
-                    console.log(err)
-                    // alert('We have CORS problem, I\'d like to back later!')
-                    toggleActive();
-                })
+            .catch(err => {
+                console.log(err)
+                // alert('We have CORS problem, I\'d like to back later!')
+                toggleActive();
+            })
 
             const content = await rawResponse.json();
-            console.log(content);
+            //console.log(content);
             
         })();
     }
@@ -300,7 +299,7 @@ function Header() {
             window.location.href = `https://${domain}/${liveLink}`
            
         } catch (error) {
-           console.log(error)     
+           //(error)     
         }
     }
 

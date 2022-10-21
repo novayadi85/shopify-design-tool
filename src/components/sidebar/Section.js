@@ -11,6 +11,7 @@ import { Button, Heading, FormLayout, Spinner, Select, Modal, TextContainer  } f
 import { useSelector, useDispatch } from 'react-redux';
 import SectionColumn from './SectionColumn';
 import { updateSidebar } from '@store/template/action';
+import CustomSectionColumn from './CustomSectionColumn';
 
 function Section() {
     let { handle } = useParams();
@@ -89,6 +90,10 @@ function Section() {
     }
 
     const ColumnBlock = () => {
+        //console.log('vALLL', value.handle)
+        if(value.handle === "custom-section"){
+            return <CustomSectionColumn type={'section'} value={value} setting={(value?.setting) ? value.setting: []} column={selected} handle={handle}/>
+        }
         return <SectionColumn type={'section'} value={value} setting={(value?.setting) ? value.setting: []} column={selected} handle={handle}/>
     }
 
