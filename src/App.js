@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 import Header from "@components/Header";
 import Sidebar from "@components/sidebar/Sidebar";
 import SimpleContent from "./pages/Content";
+import Simple from "./pages/Simple";
 
 import './i18n';
 

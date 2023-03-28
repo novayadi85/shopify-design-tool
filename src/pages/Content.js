@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOMServer from 'react-dom/server';
+import ReactDOM from 'react-dom';
 import { useParams } from 'react-router-dom';
 import { Spinner } from "@shopify/polaris";
 import SmoothRender from 'react-smooth-render';
@@ -920,11 +921,11 @@ const SimpleContent = (props) => {
                                         return <div key={ `grid-child-${columnIndex}`} className={`grid-column column-${className}`}>
                                             {columns.map((col, colIndex) => {
                                                 return (
-                                                    <div key={ `colIndex-${colIndex}`} className={`grid-column-rows rows-index${colIndex } ${col?.className}`}>
+                                                    <div data-click={`/block/${col.ID}`} key={ `colIndex-${colIndex}`} className={`grid-column-rows rows-index${colIndex } ${col?.className}`}>
                                                         {(col.handle === 'block-button') ? (
-                                                            <div style={{ display: 'inline-block' }} key={columnIndex} className={`sa-content sa-block-${col.ID}`}>{ section.handle != 'offer-product' ?  `{{addToCart | label: "${col?.setting?.content + col?.setting?.content2}"}}` :  `{{product.addToCart | label: "${col?.setting?.content + col?.setting?.content2}", product}}` }</div>
+                                                            <div data-click={`/block/${col.ID}`} style={{ display: 'inline-block' }} key={columnIndex} className={`sa-content sa-block-${col.ID}`}>{ section.handle != 'offer-product' ?  `{{addToCart | label: "${col?.setting?.content + col?.setting?.content2}"}}` :  `{{product.addToCart | label: "${col?.setting?.content + col?.setting?.content2}", product}}` }</div>
                                                         ) : (
-                                                            <div key={`child-${colIndex}`} className={`sa-content sa-block-${col.ID} ${col.handle}`}>
+                                                            <div data-click={`/block/${col.ID}`} key={`child-${colIndex}`} className={`sa-content sa-block-${col.ID} ${col.handle}`}>
                                                                 {('block-product' === col.handle || col.handle === 'offer-product') ? (
                                                                     <>
                                                                         <div className={`sa-row`}>
@@ -952,7 +953,7 @@ const SimpleContent = (props) => {
                                                                         </div>
                                                                     </>
                                                                     ) : ( 
-                                                                       <>{col.label}</> 
+                                                                       <span data-click={`/block/${col.ID}`}>{col.label}</span> 
                                                                     )}
                                                             </div>
                                                         )}
@@ -969,13 +970,19 @@ const SimpleContent = (props) => {
                 </>
             )
         }     
-	}
+    }
+    
+    const RenderOfferConvert = () => {
+        const html = RenderOffer();
+        console.log('domNode', html)
+        return html;
+    }
 
     const RenderOffer = () => {
         const element = (
             <>
             {sections.map((value, index) => (
-                <Section className={`sa-section-${value.ID}`} key={`section-${value.handle}-${index}`}>
+                <Section onClick={() => activateSectionBlock(value.ID)} data-click={`/section/${value.ID}`} className={`sa-section-${value.ID}`} key={`section-${value.handle}-${index}`}>
                     <>
                     <Block className={`aside-block-item-offer aside-display-${value?.setting?.display}`}>
                         {('block-product' === value.handle || value.handle === 'offer-product') ? (
@@ -999,6 +1006,7 @@ const SimpleContent = (props) => {
         let params = products;
         const template = decodeHTML(ReactDOMServer.renderToString(element));
 
+        //console.log(template);
         liquidEngine.registerFilter('money', (initial, args) => {
             let price = formatMoney(initial, currency?.money_format)
             return price
@@ -1058,10 +1066,37 @@ const SimpleContent = (props) => {
     }
 
     useEffect(() => {
+        document.addEventListener('click', (elm) => {
+            if (elm.target.closest('[data-click]')) {
+                const link = elm.target.closest('[data-click]').getAttribute('data-click')
+                console.log('clicked', link);
+                window.parent.postMessage(JSON.stringify([
+                    {
+                        link: link
+                    }
+                ]), '*');
+            }
+        });
+
+    }, [sections]);
+
+    const activateSectionBlock = (value) => {
+        console.log('value', value)
+        if (value?.ID) {
+            const link = `/block/${value?.ID}`
+            window.parent.postMessage(JSON.stringify([
+                {
+                    link: link
+                }
+            ]), '*');
+        }
+    }
+
+    useEffect(() => {
         const element = (
             <>
             {sections.map((value, index) => (
-                <div className={`sa-section-${value.ID}`} key={index}>
+                <div onClick={() => activateSectionBlock(value.ID)} data-click={`${value.ID}`} className={`sa-section-${value.ID}`} key={index}>
                     <div className={`aside-block-item-offer aside-display-${value?.setting?.display}`}>
                             {('block-product' === value.handle || value.handle === 'offer-product') ? (
                             <>
@@ -1093,7 +1128,7 @@ const SimpleContent = (props) => {
         window.parent.postMessage(JSON.stringify(html), '*');
     }, [sections])
 
-    return (
+    return (  
         <>
             <Main style={{display: 'block', width: '100%'}}>
                 <Helmet>
@@ -1105,9 +1140,10 @@ const SimpleContent = (props) => {
                     `
                     }
                     </style>
+
                 </Helmet>
                 <div className={`sa-global-${templateId}`}>
-                    <RenderOffer/>
+                    <RenderOfferConvert/>
                 </div>
             </Main>
         </>

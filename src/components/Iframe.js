@@ -14,6 +14,7 @@ import IframeComm from "react-iframe-comm";
 import { useDispatch, useSelector } from "react-redux";
 import { setLiquid } from "../store/product/action";
 import { ThemeContent } from "../Context";
+import { useNavigate } from 'react-router-dom';
 
 function Skeleton() {
     return (
@@ -43,6 +44,7 @@ function Skeleton() {
   
 const Iframe = ({ }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const states = useSelector(state => state);
     const { products: { items, page, templateId, store: currency, template:templateActive }, template: { items: sections }, styles  } = useSelector(state => state);
     const [state, setState] = useState(states);
@@ -58,21 +60,24 @@ const Iframe = ({ }) => {
     // parent received a message from iframe
     const onReceiveMessage = (event) => {
         const { data } = event;
-        // dispatch(setLiquid(JSON.parse(msg.data)))
         try {
             const html = JSON.parse(data);
+            if (Array.isArray(html)) {
+              const link = html[0].link;
+              navigate(link)
+            }
             dispatch(setLiquid(html))
         } catch (error) {
 
         }
-        // console.log("onReceiveMessage", event);
+        //console.log("onReceiveMessage", JSON.parse(data));
     };
  
     // iframe has loaded
     const onReady = () => {
         //console.log("onReady");
-		setLoading(false);
-		if(context.ready !== true) setContext({ready: true})
+      setLoading(false);
+      if(context.ready !== true) setContext({ready: true})
     };
 
     useEffect(() => {

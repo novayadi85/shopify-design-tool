@@ -77,7 +77,7 @@ console.warn = function filterWarnings(msg) {
 
 const Main = () => {
     const [context, setContext] = useState({
-		ready: false
+		ready: true
     });
     
     return (

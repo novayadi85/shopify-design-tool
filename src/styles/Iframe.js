@@ -103,6 +103,10 @@ export const iframeStyle = `
         flex-wrap: wrap;
     }
 
+    [data-click^="/block"]:hover {
+        border: .1px dashed #0d85d1;
+    }
+
     .aside-display-columns > * {
         flex: 1 1 180px;
         max-width: calc( 50% - 10px);
