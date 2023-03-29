@@ -24,7 +24,6 @@ const SimpleContent = (props) => {
     const dispatch = useDispatch();
     const _state = useSelector(state => state);
     const { styles: { items: _styles, mobile: _mobile_styles } } = _state;
-    // console.log('_state', _state)
     const [state, setState] = useState(_state);
     const [items, setItems] = useState([]);
     const [pageId, setpageId] = useState(null);
@@ -34,14 +33,13 @@ const SimpleContent = (props) => {
     const [mobile_styles, setMobStyles] = useState(_mobile_styles);
     const [products, setProducts] = useState({});
     const [templateId, setTemplateId] = useState(null);
-    // const [fetchData, setFetchData] = useState(false)
     const [loading, setLoading] = useState(false)
     const [page, setPage] = useState(pageId ? pageId : urlParams?.page)
     const [templateOffer, setTemplate] = useState(null);
 
     const onMessageReceivedFromIframe = React.useCallback(
         event => {
-            //console.log("onMessageReceivedFromIframe", state, event);
+            console.log("onMessageReceivedFromIframe", state, event);
             const { page: pg } = urlParams;
             const { data } = event;
            // console.log('STATES', data)
@@ -81,6 +79,7 @@ const SimpleContent = (props) => {
     
 
     useEffect(() => {
+        console.log('USE EFFECT', items)
     }, [items, page, templateId, currency, sections, styles]);
 
     const renderPage = async (items) => {
@@ -101,7 +100,6 @@ const SimpleContent = (props) => {
             
             let _newProducts = [];
 
-            console.log('template?.group_type', template?.group_type)
             if (template?.group_type) {
                 switch (template.group_type) {
                     case 'free-product':
@@ -689,7 +687,7 @@ const SimpleContent = (props) => {
             }
                 
 
-            console.log(params);
+           // console.log(params);
             
             try {
                 params['offer_text_product_top'] = parseJSON(params['offer_text_product_top']);
@@ -974,7 +972,7 @@ const SimpleContent = (props) => {
     
     const RenderOfferConvert = () => {
         const html = RenderOffer();
-        console.log('domNode', html)
+        //console.log('domNode', html)
         return html;
     }
 
@@ -1128,6 +1126,8 @@ const SimpleContent = (props) => {
         window.parent.postMessage(JSON.stringify(html), '*');
     }, [sections])
 
+    
+
     return (  
         <>
             <Main style={{display: 'block', width: '100%'}}>
@@ -1140,11 +1140,23 @@ const SimpleContent = (props) => {
                     `
                     }
                     </style>
-
                 </Helmet>
                 <div className={`sa-global-${templateId}`}>
                     <RenderOfferConvert/>
                 </div>
+                { /*<pre style={{
+                        height: "auto",
+                        color: "#666",
+                        tabSize: 4,
+                        overflow: "auto",
+                        padding: "10px",
+                        border: "1px solid #e5e5e5",
+                        borderRadius: "3px",
+                        background: "#eee"
+                        }}>
+                        <code>{JSON.stringify(_state.template, null, 2)}</code>
+                </pre>
+                    */ }
             </Main>
         </>
     );

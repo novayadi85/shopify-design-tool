@@ -15,14 +15,14 @@ export const add = items => ({
   payload: { items }
 });
 
-export const addBlock = (section, items) => ({
+export const addBlock = (section, items, handle) => ({
   type: ADD_BLOCK,
-  payload: { section, items }
+  payload: { section, items , handle}
 });
 
-export const editBlock = (block, items) => ({
+export const editBlock = (block, items, handle) => ({
   type: UPDATE_BLOCK,
-  payload: { block, setting: items }
+  payload: { block, setting: items , handle}
 });
 
 export const get =  () => ({
@@ -41,9 +41,9 @@ export function addSidebar(items) {
   };
 }
 
-export function addNewBlock(section, items) {
+export function addNewBlock(section, items, handle) {
   return dispatch => {
-    dispatch(addBlock(section, items));
+    dispatch(addBlock(section, items, handle));
   };
 }
 

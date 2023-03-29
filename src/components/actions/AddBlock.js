@@ -4,7 +4,7 @@ import { TextAlignmentLeftMajor, CirclePlusOutlineMinor, BlockMinor } from "@sho
 import { useSelector, useDispatch } from 'react-redux';
 import { getSidebar, addNewBlock } from "../../store/template/action";
 
-export default function AddBlock({ handle }) {
+export default function AddBlock({ handle = null, section = null}) {
     const [active, setActive] = useState(false);
     const [loading, setLoading] = useState(true);      
     const [lists, setLists] = useState([]);      
@@ -15,7 +15,7 @@ export default function AddBlock({ handle }) {
     const [isClicked, setIsClicked] = useState(Array(actions.length).fill(false));
     const toggleActive = useCallback(() => setActive((active) => !active), []);
     const activator = (
-        <Button onClick={toggleActive} icon={CirclePlusOutlineMinor}>Add Block</Button>
+        <Button dataID={handle} onClick={toggleActive} icon={CirclePlusOutlineMinor}>Add Content</Button>
     );
 
     const handleClick = (index) => {
@@ -26,7 +26,9 @@ export default function AddBlock({ handle }) {
         ...prev.slice(index + 1)
         ]);
 
-        dispatch(addNewBlock(handle, actions[index]))
+        console.log([section, actions[index]], handle)
+
+        dispatch(addNewBlock(section, actions[index], handle))
         toggleActive();
     };
 
@@ -42,7 +44,10 @@ export default function AddBlock({ handle }) {
 
         setLists(_lists);
         dispatch(getSidebar())
+        
     }, [])
+
+    console.log('state', state)
 
     return (
         <div className="add-block">

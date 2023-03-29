@@ -48,7 +48,8 @@ import {
             icon: NoteMajor,
             type: 'section',
             helpText: 'Insert new section into content',
-            setting: {}
+            setting: {},
+            columns: []
           },
           /*{
             handle: 'product-section',

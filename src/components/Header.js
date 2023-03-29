@@ -250,7 +250,7 @@ function Header() {
                 toggleActive();
             })
             .catch(err => {
-                console.log(err)
+                //console.log(err)
                 // alert('We have CORS problem, I\'d like to back later!')
                 toggleActive();
             })

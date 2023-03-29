@@ -165,7 +165,7 @@ export default function SectionSetting({props}) {
                                             checked={_initialValues['separator'] ? true : false}
                                             onChange={(value) => {
                                                 handleFieldChange('separator', value)
-                                                console.log('separator', value)
+                                               // console.log('separator', value)
                                                 input.onChange(value)
                                             }}
                                         />

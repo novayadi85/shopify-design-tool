@@ -45,6 +45,7 @@ function BlockContent(props) {
     }
 
     const handleContentChange = (val) => {
+        
         setContent(val);
         dispatch(editBlock(value, {
             content: val,
@@ -332,7 +333,7 @@ function BlockContent(props) {
             {toastMarkup}
             {(!prop?.handle) ? (
                 <FormLayout>
-                    <TextField labelAction={{ content: <CodeAction/> }} multiline={4} disabled label="Text" showCharacterCount={true} focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
+                    <TextField labelAction={{ content: <CodeAction/> }} multiline={4} label="Text" showCharacterCount={true} focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
                 </FormLayout>
             ) : (
                     <FormLayout>

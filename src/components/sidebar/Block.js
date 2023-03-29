@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import BlockContent from './BlockContent';
 import { updateSidebar } from '@store/template/action';
+import { getBlockbyId } from '../../helper/block';
 
 function Block() {
     let { handle } = useParams();
@@ -44,16 +45,19 @@ function Block() {
         
     }, []);
         
+    /*
     items.forEach(item => {
         if (item.type === 'section' && item?.items) {
             item.items.forEach(t => {
                 if (t.ID === handle && t.type === 'block') {
                     value = t;
                 }
-
             })
         }
     });
+    */
+    
+    value = getBlockbyId(items, handle)
 
     useEffect(() => {
         setLoading(true);
@@ -88,7 +92,7 @@ function Block() {
                             <Button onClick={backHandle} plain icon={ ChevronLeftMinor}></Button>
                         </ButtonWrapper>
                         <TitleWrapper style={{maxWidth: 100}}>
-                            <Heading><span className='capitalize truncate-text'>{ value.label }</span></Heading>
+                            <Heading><span className='capitalize truncate-text'>{ value?.label }</span></Heading>
                         </TitleWrapper>
                     </BackAction>
                 </Header>

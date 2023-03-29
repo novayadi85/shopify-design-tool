@@ -32,7 +32,7 @@ function CssEditor({ type = false }) {
     const [selector, setSelector] = useState(handle);
     const { products: { page, templateId },} = useSelector(state => state);
 
-    console.log('handle', handle)
+    //console.log('handle', handle)
 
     useEffect(() => {
         setLoading(true);

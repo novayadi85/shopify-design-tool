@@ -689,7 +689,7 @@ const SimpleContent = (props) => {
             }
                 
 
-            console.log(params);
+            // console.log(params);
             
             try {
                 params['offer_text_product_top'] = parseJSON(params['offer_text_product_top']);
@@ -1097,7 +1097,7 @@ const SimpleContent = (props) => {
     }, [sections])
 
     const activateSectionBlock = (value) => {
-        console.log('value', value)
+        //console.log('value', value)
         if (value?.ID) {
             const link = `/block/${value?.ID}`
             window.parent.postMessage(JSON.stringify([
@@ -1207,6 +1207,8 @@ const SimpleContent = (props) => {
                     }
                     </style>
                 </Helmet>
+
+                
                 <div className={`sa-global-${templateId}`}>
                     <RenderTemplate/>
                 </div>

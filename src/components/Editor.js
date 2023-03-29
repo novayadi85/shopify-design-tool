@@ -95,7 +95,7 @@ const Editor = ({values, handle, type}) => {
             <SidePanelBottom>
                 <div style={{ margin: '10px'}}>
                     <Button onClick={async () => {
-                        console.log('saving...')
+                       // console.log('saving...')
                         await save();
                     }} primary monochrome removeUnderline icon={SaveMinor}>{t('Apply')} CSS</Button>
                 </div>

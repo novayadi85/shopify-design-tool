@@ -5,11 +5,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import {sortableContainer,sortableElement, sortableHandle } from 'react-sortable-hoc';
 import {Button, Icon, Spinner } from "@shopify/polaris";
 import { arrayMoveImmutable } from 'array-move';
-import { DropdownMinor, DragHandleMinor, SettingsMinor, SectionMajor, BlockMinor, ProductsMajor, TextAlignmentLeftMajor, ButtonMinor} from "@shopify/polaris-icons";
+import { DropdownMinor, DragHandleMinor, SettingsMinor, SectionMajor, BlockMinor, ProductsMajor, TextAlignmentLeftMajor, ButtonMinor, MobileHamburgerMajor} from "@shopify/polaris-icons";
 import { Flex, PrimaryBox, ListItemWrapperContainer, CollapseToggle, ListItemContent, ListItemWrapper, ListItem, ListItemHandler, SidePanelAreaWrapper } from "@styles/Sidebar";
 import { updateSidebar } from "@store/template/action";
 import AddSection from "@components/actions/AddSection";
 import AddBlock from "@components/actions/AddBlock";
+import AddColumn from "@components/actions/AddColumn";
 import { getSidebar } from "../../store/template/action";
 import { ThemeContent } from "../../Context";
 
@@ -63,23 +64,44 @@ function Home() {
     useEffect(() => {
         dispatch(getSidebar())
         // if(!loaded) setLoading(true);
-        console.log('context', context)
+       // console.log('context', context)
         if (!context.ready) {
             setLoading(true);
         }
         setItems(state.template.items);
     }, [_items])
 	
-    const renderChildren = ({ ID, items = [], open = false }) => {
+    const renderChildren = ({ ID, items = [], open = true, columns = [] , column = false, type = false, side = false}) => {
+       // console.log('columns', columns)
         return (
             <div className={`collapse ${(open) ? 'visible': 'hidden'}`} style={{marginLeft: '1.2rem'}}>
                 <SortableContainer props={{ id: ID}}  onSortEnd={onSortChildEnd} useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
-                    <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
-                ))}
+                        <>
+                            <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
+                            {(value?.side) ? <PrimaryBox><AddBlock section={ID} handle={value.ID} /></PrimaryBox> : null}
+                        </>
+                    ))}
                 </SortableContainer>
                 <PrimaryBox>
-                    {(canAddBlock) ? (<AddBlock handle={ID} />) : (null)}
+                    { /* {(canAddBlock) ? (<AddBlock handle={ID} />) : (null)} */}
+                    {(canAddBlock && !column && type != 'block' && !side) ? (<AddColumn handle={ID} />) : (null)}
+                </PrimaryBox>
+            </div>
+        )
+    }
+
+    const renderChildrenColumns = ({ ID, items = [], open = true, columns = [] , type = false}) => {
+        return (
+            <div className={`collapse ${(open) ? 'visible': 'hidden'}`} style={{marginLeft: '1.2rem'}}>
+                <SortableContainer props={{ id: ID}}  onSortEnd={onSortChildEnd} useDragHandle style={{marginLeft: '10px'}}>
+                    {columns.map((value, index) => (
+                        <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
+                    ))}
+                </SortableContainer>
+                <PrimaryBox>
+                    { /* {(canAddBlock) ? (<AddBlock handle={ID} />) : (null)} */}
+                    {(canAddBlock && type != 'block') ? (<AddColumn handle={ID} />) : (null)}
                 </PrimaryBox>
             </div>
         )
@@ -130,6 +152,7 @@ function Home() {
             'offer-product': ProductsMajor,
             'block-editor': TextAlignmentLeftMajor,
             'block-button': ButtonMinor,
+            'column' : MobileHamburgerMajor
         }
 
         if (!Icons[value.handle] && value.type === 'block') {
@@ -147,7 +170,6 @@ function Home() {
                     <Button onClick={() => collapseHandler(value)} icon={DropdownMinor}/>
                 </CollapseToggle>
                 ) : (<></>)}
-                
                 
 				<ListItemContent>
 					<ListItemWrapper>
@@ -167,7 +189,7 @@ function Home() {
                                         {(value.label) ? <>{value.label}</> :  '...'}
                                     </ReactRouterLink>
                                 ): (
-                                    <ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value.ID}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  
+                                    <ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value?.ID ? value.ID : value?.handle}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  
                                 )}
 							</div>
 							
@@ -181,9 +203,11 @@ function Home() {
 					</div>
 				</ListItemHandler>
 			</ListItemWrapperContainer>
-			{renderChildren(value)}
+            {value?.columns ? renderChildrenColumns(value) : renderChildren(value)}
 		</li>
     ));
+
+   // console.log('items', items)
     
     return (
         <SidePanelAreaWrapper>
@@ -200,10 +224,17 @@ function Home() {
                     <>
                         {(canAddBlock && canAddSection) ? (<ParentSection/>) : (null)}
                         <SortableContainer onSortEnd={onSortEnd} useDragHandle>
-                            {items.map((value, index) => (
-                                <SortableItem child={ value.child} key={`item-${index}`} index={index} value={value} />
-                            ))}
+                                {Array.isArray(items) ? (
+                                    items.map((value, index) => (
+                                    <SortableItem child={value.child} key={`item-${index}`} index={index} value={value} />
+                                    ))
+                                ) : (
+                                <div>Invalid items format: expected an array.</div>
+                            )}
+                            
                         </SortableContainer>   
+
+                        
                     </>
                 
             )}

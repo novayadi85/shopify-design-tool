@@ -14,7 +14,8 @@ import IframeComm from "react-iframe-comm";
 import { useDispatch, useSelector } from "react-redux";
 import { setLiquid } from "../store/product/action";
 import { ThemeContent } from "../Context";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Column from '../pages/Column';
 
 function Skeleton() {
     return (
@@ -42,9 +43,10 @@ function Skeleton() {
     );
 }
   
-const Iframe = ({ }) => {
+const Iframe = (params) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const states = useSelector(state => state);
     const { products: { items, page, templateId, store: currency, template:templateActive }, template: { items: sections }, styles  } = useSelector(state => state);
     const [state, setState] = useState(states);
@@ -59,8 +61,9 @@ const Iframe = ({ }) => {
 
     // parent received a message from iframe
     const onReceiveMessage = (event) => {
-        const { data } = event;
-        try {
+		const { data } = event;
+		// console.log(data)
+        /*try {
             const html = JSON.parse(data);
             if (Array.isArray(html)) {
               const link = html[0].link;
@@ -70,7 +73,8 @@ const Iframe = ({ }) => {
         } catch (error) {
 
         }
-        //console.log("onReceiveMessage", JSON.parse(data));
+		*/
+        // console.log("onReceiveMessage", JSON.parse(data));
     };
  
     // iframe has loaded
@@ -88,18 +92,26 @@ const Iframe = ({ }) => {
             ...{
                 src: `/builder/content/${page}`
             }
-        })
-    }, [items, page, templateId, templateActive, sections, styles, currency])
+		})
+
+	}, [items, page, templateId, templateActive, sections, styles, currency])
+	
+	console.log('ITEMS', states)
  
     return (
         <div className="device-preview">
             <div style={{display: (loading) ? 'none' : 'contents'}}>
-                <IframeComm
-                    attributes={attributes}
-                    postMessageData={state}
-                    handleReady={onReady}
-                    handleReceiveMessage={onReceiveMessage}
-                />
+                
+				
+				{(location.pathname.includes('/column')) ? (<Column/>) : (
+					<IframeComm
+						attributes={attributes}
+						postMessageData={state}
+						handleReady={onReady}
+						handleReceiveMessage={onReceiveMessage}
+					/>
+				)}
+
             </div>
             <div style={{ display: (loading) ? 'block' : 'none' }}>
                 <div style={{textAlign:'center'}}><Spinner accessibilityLabel="Spinner example" size="small" /></div>
