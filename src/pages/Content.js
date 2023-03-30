@@ -25,7 +25,7 @@ const SimpleContent = (props) => {
     const _state = useSelector(state => state);
     const { styles: { items: _styles, mobile: _mobile_styles } } = _state;
     const [state, setState] = useState(_state);
-    const [items, setItems] = useState([]);
+    const [_items, setItems] = useState([]);
     const [pageId, setpageId] = useState(null);
     const [currency, setCurrency] = useState(true);
     const [sections, setSections] = useState([]);
@@ -36,6 +36,7 @@ const SimpleContent = (props) => {
     const [loading, setLoading] = useState(false)
     const [page, setPage] = useState(pageId ? pageId : urlParams?.page)
     const [templateOffer, setTemplate] = useState(null);
+    const [received, setReceived] = useState(null);
 
     const onMessageReceivedFromIframe = React.useCallback(
         event => {
@@ -44,6 +45,7 @@ const SimpleContent = (props) => {
             const { data } = event;
            // console.log('STATES', data)
             setLoading(true)
+            setReceived(data)
             try {
                 const _data = JSON.parse(data)
                 const { products: { items, page: pageId, templateId, store: currency, liquid: liquidCode }, template: { items: sections }, styles: { items: styles, mobile: cssMobile } } = _data;
@@ -79,8 +81,16 @@ const SimpleContent = (props) => {
     
 
     useEffect(() => {
-        console.log('USE EFFECT', items)
-    }, [items, page, templateId, currency, sections, styles]);
+        // console.log('USE EFFECT', items)
+        if (received) {
+            const _data = JSON.parse(received)
+            const { products: { items, page: pageId, templateId, store: currency, liquid: liquidCode }, template: { items: sections }, styles: { items: styles, mobile: cssMobile } } = _data;
+            setItems(items);
+            console.log('USE EFFECT', _items)
+        }
+       
+
+    }, [received]);
 
     const renderPage = async (items) => {
         let _products = [];

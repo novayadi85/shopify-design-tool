@@ -39,19 +39,41 @@ function Home() {
 	const onSortEnd = ({ oldIndex, newIndex }) => {
         setItems(arrayMoveImmutable(items, oldIndex, newIndex));
     };
+
+    const findItemById = (items, id) => {
+        for (const item of items) {
+            if (item.ID === id) {
+                return item;
+            } else if (item?.columns) {
+                const nestedItem = findItemById(item.columns, id);
+                if (nestedItem) {
+                    return nestedItem;
+                }
+            }
+            else if (item.items) {
+                const nestedItem = findItemById(item.items, id);
+                if (nestedItem) {
+                    return nestedItem;
+                }
+            }
+        }
+
+        return null;
+    };
     
     const onSortChildEnd = (data) => {
-        const { collection, newIndex, oldIndex } = data 
-        const updates = items.map(({...item}) => {
-            if (item.ID === collection) {
-                item.items = arrayMoveImmutable(item.items, oldIndex, newIndex)
-            }
-
-            return item;
-        })
-
-        setItems(updates);
-
+        const { collection, newIndex, oldIndex } = data;
+        const itemToUpdate = findItemById(items, collection);
+      
+        if (!itemToUpdate) return;
+      
+        if (itemToUpdate.columns) {
+          itemToUpdate.columns = arrayMoveImmutable(itemToUpdate.columns, oldIndex, newIndex);
+        } else {
+          itemToUpdate.items = arrayMoveImmutable(itemToUpdate.items, oldIndex, newIndex);
+        }
+      
+        setItems([...items]);
     };
     
     
@@ -72,10 +94,10 @@ function Home() {
     }, [_items])
 	
     const renderChildren = ({ ID, items = [], open = true, columns = [] , column = false, type = false, side = false}) => {
-       // console.log('columns', columns)
+        // console.log('type', [type, ID])
         return (
             <div className={`collapse ${(open) ? 'visible': 'hidden'}`} style={{marginLeft: '1.2rem'}}>
-                <SortableContainer props={{ id: ID}}  onSortEnd={onSortChildEnd} useDragHandle style={{marginLeft: '10px'}}>
+                <SortableContainer props={{ id: ID}}  onSortEnd={ onSortChildEnd } useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
                         <>
                             <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
@@ -188,20 +210,25 @@ function Home() {
                                     }}>
                                         {(value.label) ? <>{value.label}</> :  '...'}
                                     </ReactRouterLink>
-                                ): (
-                                    <ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/block/${value?.ID ? value.ID : value?.handle}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  
+                                ) : (
+                                        (value?.side) ? (<>{value.label}</>) : (<ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/${value.type}/${value?.ID ? value.ID : value?.handle}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  )
+                                    
                                 )}
 							</div>
 							
 						</ListItem>
 					</ListItemWrapper>
 					
-				</ListItemContent>
-				<ListItemHandler className='icon-sortable-wrapper'>
+                </ListItemContent>
+                {(!value?.side) ? (
+                    <ListItemHandler className='icon-sortable-wrapper'>
 					<div className='icon-sortable'>
 						<DragHandle />
 					</div>
-				</ListItemHandler>
+                </ListItemHandler>
+                ) : null}
+				
+                
 			</ListItemWrapperContainer>
             {value?.columns ? renderChildrenColumns(value) : renderChildren(value)}
 		</li>

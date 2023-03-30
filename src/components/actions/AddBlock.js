@@ -2,16 +2,18 @@ import React, { useCallback, useState, useEffect } from "react";
 import { ActionList, Button, Icon, Popover } from "@shopify/polaris";
 import { TextAlignmentLeftMajor, CirclePlusOutlineMinor, BlockMinor } from "@shopify/polaris-icons";
 import { useSelector, useDispatch } from 'react-redux';
-import { getSidebar, addNewBlock } from "../../store/template/action";
+import { getSidebar, addNewBlock, updateSidebar } from "../../store/template/action";
+import { useNavigate } from "react-router-dom";
 
 export default function AddBlock({ handle = null, section = null}) {
     const [active, setActive] = useState(false);
     const [loading, setLoading] = useState(true);      
     const [lists, setLists] = useState([]);      
     const dispatch = useDispatch();    
+    const navigate = useNavigate();
     const { blocks: { items: actions } } = useSelector(state => state);
     const state = useSelector(state => state);
-
+    const { items : _items } = useSelector(state => state.template);
     const [isClicked, setIsClicked] = useState(Array(actions.length).fill(false));
     const toggleActive = useCallback(() => setActive((active) => !active), []);
     const activator = (
@@ -26,10 +28,13 @@ export default function AddBlock({ handle = null, section = null}) {
         ...prev.slice(index + 1)
         ]);
 
-        console.log([section, actions[index]], handle)
-
+        // console.log([section, actions[index]], handle)
+        // console.log('actions[index]]', actions[index])
         dispatch(addNewBlock(section, actions[index], handle))
         toggleActive();
+
+        dispatch(updateSidebar(_items))
+       // navigate(`/block/${actions[index].ID}`);
     };
 
     useEffect(() => {

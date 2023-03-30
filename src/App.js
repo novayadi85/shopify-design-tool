@@ -3,7 +3,7 @@ import { AppProvider, Frame, SkeletonPage, Layout, Card, TextContainer, Skeleton
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
 import Header from "@components/Header";
 import Sidebar from "@components/sidebar/Sidebar";
-import SimpleContent from "./pages/Content";
+import SimpleContent from "./pages/NewContent";
 import Simple from "./pages/Simple";
 
 import './i18n';

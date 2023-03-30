@@ -20,7 +20,7 @@ const Content = ({ }) => {
     ]);
 
     const onReceiveMessage = () => {
-        //console.log("onReceiveMessage");
+        console.log("onReceiveMessage");
     };
 
     const onReady = () => {

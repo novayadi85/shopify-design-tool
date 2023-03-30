@@ -51,6 +51,7 @@ const FlexBox = styled.div`
 function Column() {
     let params = useParams();
     let location = useLocation();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { items } = useSelector(state => state.template);
     const updateColumn = ({column}) => {
@@ -97,6 +98,7 @@ function Column() {
                         column: column,
                         label: (column === 2) ? `Double Column` : `Single Column`,
                         handle: 'column',
+                        type: 'row', 
                         items: item_holders,
                         open: true,
                         ID: uuid()
@@ -108,11 +110,13 @@ function Column() {
            // console.log(_items);
             dispatch(updateSidebar(_items));
 
+
+
         } else {
             console.log("No match found");
         }
 
-       
+        navigate(`/`);
     }
     return (
         <Swicth>
@@ -128,7 +132,7 @@ function Column() {
                 </FlexBox>
                 <FlexBox>
                     <TextContainer>Double Column</TextContainer>
-                    <img class="hasHover" column={2} onClick={() => updateColumn({
+                    <img className="hasHover" column={2} onClick={() => updateColumn({
                         column: 2
                     })} style={{
                         marginTop: '5px'

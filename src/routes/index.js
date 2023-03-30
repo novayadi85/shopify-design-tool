@@ -6,6 +6,7 @@ import {
 
 import Block from '@sidebar/Block';
 import Section from '@sidebar/Section';
+import Row from '@sidebar/Row';
 import Product from '@sidebar/Product';
 
 import Home from '@sidebar/Home';
@@ -17,6 +18,7 @@ const MainRoutes = () => {
     return <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/section/:handle" element={<Section/>} />
+        <Route path="/row/:handle" element={<Row/>} />
         <Route path="/block/:handle" element={<Block/>} />
         <Route path="/column/:handle" element={<Home/>} />
         <Route path="/product/:handle" element={<Product/>} />

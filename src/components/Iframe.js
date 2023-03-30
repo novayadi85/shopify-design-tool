@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useContext } from 'react';
 
 import {
@@ -92,11 +93,13 @@ const Iframe = (params) => {
             ...{
                 src: `/builder/content/${page}`
             }
-		})
+        })
+      
+      // console.log('SECTIONS', sections)
 
-	}, [items, page, templateId, templateActive, sections, styles, currency])
+	}, [states])
 	
-	console.log('ITEMS', states)
+	
  
     return (
         <div className="device-preview">

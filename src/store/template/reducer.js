@@ -125,15 +125,25 @@ const updateItemById = (obj, itemId, payload) => {
 };
 
 const addItemToArray = (obj, itemId, subItemId, newItemsArray) => {
+    const temp = [];
     for (let item of obj.items) {
         if (item?.columns) {
             for (let column of item.columns) {
                 if (column.ID === itemId) {
-                    
                     for (let subItem of column.items) {
                         if (subItem.ID === subItemId) {
-                            newItemsArray.ID  = newItemsArray?.ID ?? uuid();
-                            subItem.items.push(newItemsArray);
+                            const newItem = { ...newItemsArray, ID: uuid() };
+                            subItem.items.push(newItem);
+
+                            if (!temp.includes(newItem.ID)) {
+                                temp.push(newItem.ID);
+                            }
+                            else {
+                                // regenerate UUID if necessary
+                                newItem.ID = uuid();
+                            }
+
+                            console.log(newItem)
                             return obj;
                         }
                     }
@@ -232,6 +242,7 @@ const templateReducer = (state = initialState, action) => {
             };
         case 'UPDATE_BLOCK':
             const { block, setting } = action.payload
+            console.log('action.payload', action.payload)
             //const { headline } = setting;
             const _newItems = updateItemById(state, block.ID, action.payload);
 
