@@ -72,16 +72,18 @@ function CssEditor({ type = false }) {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const save = async lines => {
-       // console.log('Saving', [handle, `sa-global-${templateId}`])
+       // console.log('Saving', [handle, `sa-template-${templateId}`])
+        
+        console.log('handle', `sa-${type}-${templateId}`)
         
         if (handle === 'sa-product-block-offer') {
             dispatch(updateStyles(`sa-${type}-${templateId}`, lines));
         }
         else if(handle === 'global') {
-            dispatch(updateStyles(`sa-global-${templateId}`, lines));
+            dispatch(updateStyles(`sa-template-${templateId}`, lines));
         }
         else if(handle === 'offer-setting') {
-            dispatch(updateStyles(`sa-global-${templateId}`, lines));
+            dispatch(updateStyles(`sa-template-${templateId}`, lines));
         }
         else {
             dispatch(updateStyles(`sa-${type}-${handle}`, lines));
@@ -98,10 +100,10 @@ function CssEditor({ type = false }) {
             initialHandle = `sa-${type}-${templateId}`;
         }
         else if (handle === 'global') {
-            initialHandle = `sa-global-${templateId}`
+            initialHandle = `sa-template-${templateId}`
         }
         else if (handle === 'offer-setting') {
-            initialHandle = `sa-global-${templateId}`
+            initialHandle = `sa-template-${templateId}`
         }
         else {
             initialHandle = `sa-${type}-${handle}`;

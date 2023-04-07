@@ -169,8 +169,8 @@ const SimpleContent = (props) => {
                             _product.variantBlock = '';
                             _product.selectVariants = '';
                             _product.addToCart = '';
-                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                <div class="shopadjust_drawer-modal_product_add_toCart">
+                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                <div class="shopadjust-modal_product_add_toCart">
                                     {{product.variantBlock}}
                                     <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                 </div>
@@ -248,8 +248,8 @@ const SimpleContent = (props) => {
                             _product.variantBlock = '';
                             _product.selectVariants = '';
                             _product.addToCart = '';
-                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                    <div class="shopadjust-modal_product_add_toCart">
                                         {{product.variantBlock}}
                                         <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
@@ -317,8 +317,8 @@ const SimpleContent = (props) => {
                                 _product.variantBlock = '';
                                 _product.selectVariants = '';
                                 _product.addToCart = '';
-                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                        <div class="shopadjust_drawer-modal_product_add_toCart">
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                        <div class="shopadjust-modal_product_add_toCart">
                                             {{product.variantBlock}}
                                             <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                         </div>
@@ -412,8 +412,8 @@ const SimpleContent = (props) => {
                                 _product.variantBlock = '';
                                 _product.selectVariants = '';
                                 _product.addToCart = '';
-                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                    <div class="shopadjust-modal_product_add_toCart">
                                         {{product.variantBlock}}
                                         <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
@@ -503,8 +503,8 @@ const SimpleContent = (props) => {
                                 _product.variantBlock = '';
                                 _product.selectVariants = '';
                                 _product.addToCart = '';
-                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                    <div class="shopadjust-modal_product_add_toCart">
                                         {{product.variantBlock}}
                                         <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
@@ -1129,7 +1129,7 @@ const SimpleContent = (props) => {
         )
 
         const template = ReactDOMServer.renderToStaticMarkup(element);
-        const html = `<div class="sa-global-${templateId}">${template}</div>`;
+        const html = `<div class="sa-template-${templateId}">${template}</div>`;
 
         // console.log('LIQUID', html)
         dispatch(setLiquid(html))
@@ -1151,7 +1151,7 @@ const SimpleContent = (props) => {
                     }
                     </style>
                 </Helmet>
-                <div className={`sa-global-${templateId}`}>
+                <div className={`sa-template-${templateId}`}>
                     <RenderOfferConvert/>
                 </div>
                 { /*<pre style={{

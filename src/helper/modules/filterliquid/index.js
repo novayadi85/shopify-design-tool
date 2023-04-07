@@ -37,67 +37,13 @@ function groupDigital(num) {
   return !decimal ? grouped : `${grouped},${decimal}`;
 }
 
-/*
-function formatMoney(value, currency = null, config={}) {
-  let withPrefix = dash.get(config, 'withPrefix', true);
-  let appendix = dash.get(config, 'appendix', false);
-  let withTrailingZeros = dash.get(config, 'withTrailingZeros', true);
-  let native = dash.get(config, 'native', false);
-
-  if (!parseFloat(value) && parseFloat(value) !== 0) value = 0;
-  let option = null;
-  let money_format = '$ {{amount_with_comma_separator}}';
-
-  if (currency) option = options.currencies.filter((option) => option.value === currency)[0];
-
-  if (!option) {
-    if (withTrailingZeros) value = parseFloat(value).toFixed(2);
-    if (withPrefix) { 
-        //${{amount}} USD
-        let v = money_format.replace("{{amount_with_comma_separator}}", value);
-        v = v.replace("{{amount_no_decimals}}", value);
-        v = v.replace("{{amount_no_decimals_with_comma_separator}}", value);
-        v = v.replace("{{amount}}", value);
-        v = v.replace("{{amount_with_apostrophe_separator}}", value);
-      
-        v = v.replace("{{ amount_no_decimals }}", value);
-        v = v.replace("{{ amount_no_decimals_with_comma_separator }}", value);
-        v = v.replace("{{ amount }}", value);
-        v = v.replace("{{ amount_with_apostrophe_separator }}", value);
-
-        return v;
-    }
-    
-    return `${value}`;
-  }
-
-  let amt = parseFloat(value).toFixed(option.decimal_digits);
-  // if no trailing zeros
-  if (!withTrailingZeros) {
-    let decimalAmt = 0;
-    let splitAmt = amt.split(".");
-    if (splitAmt.length > 1) decimalAmt = parseInt(splitAmt[1]);
-    if (!decimalAmt) amt = splitAmt[0];
-  }
-
-  if(option.symbol_native == "kr") appendix = true;
-
-  // amt = amt.toLocaleString();
-  amt = numberWithCommas(amt, ',');
-  if (!withPrefix) return `${amt}`;
-  if(appendix) return `${amt}${option.symbol_native}`;
-  if (native) return `${option.symbol_native}${amt}`;
-  return `${option.symbol}${amt}`;
-}
-*/
-
-
 function numberWithCommas(x, separator) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 }
 
 
 export function moneyFiltersPlugin(Liquid) {
+
   this.registerFilter('money', (value, currency) => {
     return _formatMoney(value, currency);
   });

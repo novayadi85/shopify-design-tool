@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AutoSave from '../actions/AutoSaveStyle';
 import { stdStyles } from '@helper/style';
 import { RGBAToHSB } from "@helper/color";
+import { updateTemplate } from '../../store/template/action';
+import { toCSS } from 'cssjson';
 
 const suffixStyles = {
     minWidth: "24px",
@@ -19,7 +21,7 @@ const BgColorSelector = ({defaultValues}) => {
     const [bgColor, setBgColor] = useState({
 		hue: 0,
 		brightness: 1,
-		saturation: 0
+		saturation: 1
     });
 
     const rgbaBgColor = rgbString(hsbToRgb(bgColor));
@@ -67,13 +69,19 @@ function BlockCss({type, templateType}) {
     const { handle } = useParams();
     const dispatch = useDispatch();
     const initial_values_styles = (useSelector(state => state.styles));
+    const states = (useSelector(state => state));
+    const initial_template = (useSelector(state => state.template));
+
+    // const [templateOffer, setTemplate] = useState(null);
     const [fontSize, setFontSize] = useState(12);
     const [fontWeight, setFontWeight] = useState(400);
     const [popoverActive, setPopoverActive] = useState(false);
     const [maxWidth, setMaxWidth] = useState('1024px');
     const [align, setAlign] = useState('left');
     const [top, setTop] = useState(0);
-	const [bottom, setBottom] = useState(0);
+    const [bottom, setBottom] = useState(0);
+    const [columnType, setColumnType] = useState(initial_template?.setting?.columnType || 'automatic')
+    const [widthColumn, setWidthColumn] = useState(initial_template?.setting?.widthColumn || 100)
 	
     /*
     const [posLeft, setPosLeft] = useState(0);
@@ -83,12 +91,12 @@ function BlockCss({type, templateType}) {
 	const [backgroundImage, setBackgroundImage] = useState(null);
     */
 
-    const { products: { page, templateId },} = useSelector(state => state);
+    const { products: { page, templateId, items },} = useSelector(state => state);
 
     const [color, setColor] = useState({
 		hue: 0,
 		brightness: 1,
-		saturation: 0
+		saturation: 1
 	});
 
     const rgbaColor = rgbString(hsbToRgb(color));
@@ -110,15 +118,15 @@ function BlockCss({type, templateType}) {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
     const save = async lines => {
-       // console.log('Saving', [handle, `sa-global-${templateId}`])
+       // console.log('Saving', [handle, `sa-template-${templateId}`])
         if (handle === 'sa-product-block-offer') {
             dispatch(updateStyles(`sa-${type}-${templateId}`, lines));
         }
         else if(handle === 'global') {
-            dispatch(updateStyles(`sa-global-${templateId}`, lines));
+            dispatch(updateStyles(`sa-template-${templateId}`, lines));
         }
         else if(handle === 'offer-setting') {
-            dispatch(updateStyles(`sa-global-${templateId}`, lines));
+            dispatch(updateStyles(`sa-template-${templateId}`, lines));
         }
         else {
             dispatch(updateStyles(`sa-${type}-${handle}`, lines));
@@ -132,10 +140,10 @@ function BlockCss({type, templateType}) {
             initialHandle = `sa-${type}-${templateId}`;
         }
         else if (handle === 'global') {
-            initialHandle = `sa-global-${templateId}`
+            initialHandle = `sa-template-${templateId}`
         }
         else if (handle === 'offer-setting') {
-            initialHandle = `sa-global-${templateId}`
+            initialHandle = `sa-template-${templateId}`
         }
         else {
             initialHandle = `sa-${type}-${handle}`;
@@ -203,30 +211,98 @@ function BlockCss({type, templateType}) {
 			setBottom(defaultValues['padding-bottom'].replace('px', '').replace('vh', '').replace('em', ''));
 		}
 
-        /*
-        if (defaultValues['background-image']) {
-			setAlign(defaultValues['background-image']);
-		}
-
-        if (defaultValues['left']) {
-			setPosLeft(defaultValues['left']);
-		}
-
-        if (defaultValues['top']) {
-			setPosTop(defaultValues['top']);
-		}
-
-        if (defaultValues['width']) {
-			setWidth(defaultValues['width']);
-		}
-
-        if (defaultValues['height']) {
-			setHeight(defaultValues['height']);
-		}
-        */
-       
+        
 
     }, [])
+
+    useEffect(() => {
+        //console.log('states', states)
+        let setting = initial_template?.setting ?? {};
+        setting.columnType = columnType;
+        setting.widthColumn = columnType != 'fixed' ? null : widthColumn; 
+        const template = items[0]?.template || {}
+        let classSection = 'flex-products';
+        if (setting?.columnType) {
+            
+            let JSONCSSOBJ = {
+                children: {},
+            };
+
+            if (setting?.columnType === 'automatic') {
+                if (['bundle'].includes(template?.type_offer)) {
+                    JSONCSSOBJ['children'][`.${classSection}`] = {
+                        "children": {},
+                        "attributes": {
+                            "display": 'flex',
+                            'justify-content': 'center',
+                            'gap': '20px'
+                        }
+                    }
+                }
+                else {
+                    JSONCSSOBJ['children'][`.${classSection}`] = {
+                        "children": {},
+                        "attributes": {
+                            "width": "100%",
+                            "display": 'block'
+                        }
+                    }
+                }
+                
+            }
+
+            if (setting?.columnType === 'fixed') {
+                JSONCSSOBJ['children'][`.${classSection}`] = {
+                    "children": {},
+                    "attributes": {
+                        "width": "100%",
+                        'margin-right': '-15px',
+                        'margin-left': '-15px',
+                        "clear": "both",
+                    }
+                }
+
+                JSONCSSOBJ['children'][`.${classSection}::after`] = {
+                    "children": {},
+                    "attributes": {
+                        "clear": "both",
+                        'content': '',
+                    }
+                }
+
+                JSONCSSOBJ['children'][`.${classSection} > div`] = {
+                    "children": {},
+                    "attributes": {
+                        "width": `${setting?.widthColumn}%`,
+                        "float": 'left',
+                        'position': 'relative',
+                        'min-height': '1px',
+                        'padding-right': '15px',
+                        'padding-left': '15px',
+                    }
+                }
+
+            }
+
+            if (setting?.columnType === 'screen') {
+                JSONCSSOBJ['children'][`.${classSection}`] = {
+                    "children": {},
+                    "attributes": {
+                        "width": "100%",
+                        "display": 'block'
+                    }
+                }
+            }
+
+            setting.css = toCSS(JSONCSSOBJ);
+        }
+        
+        dispatch(updateTemplate({
+            ...setting,
+        })) 
+         
+
+    }, [columnType, widthColumn]);
     
     return (
         <div style={{marginTop: 10}}>
@@ -236,28 +312,73 @@ function BlockCss({type, templateType}) {
                     <form onSubmit={handleSubmit}>
                         <AutoSave debounce={1000} save={save} />
                         {handle === 'offer-setting' ? (
-                            <div style={{ marginTop: 10 }}>
-                                <Field name={`max-width`}>
+                            <>
+                                <div style={{marginTop:10}}>
+                                    <Field name={`columnType`}>
                                     {({ input, meta, ...rest }) => (
-                                    
-                                        <RangeSlider
-                                            output
-                                            label="Max width"
-                                            step={1}
-                                            value={maxWidth}
-                                            width={maxWidth}
-                                            min={0}
-                                            max={1440}
+                                        <Select
+                                            label="Column type"
+                                            options={
+                                                [
+                                                    { value: "automatic", label: "Automatic" },
+                                                    { value: "screen", label: "100%" },
+                                                    { value: "fixed", label: "Fixed" },
+                                                ]
+                                            }
                                             onChange={(val) => {
-                                                setMaxWidth(val);
-                                                input.onChange(`${maxWidth}${'px'}`)
+                                                setColumnType(val)
+                                                input.onChange(val)
+                                                
                                             }}
-                                            suffix={<p style={suffixStyles}>{`${maxWidth}px`}</p>}
+                                            value={columnType}
                                         />
-                                            
                                     )}
-                                </Field>
-                            </div>
+                                    </Field>
+                                </div>
+
+                                {(columnType === 'fixed') ? (
+                                <div style={{marginTop:10}}>
+                                <Field name={`---width-column`}>
+                                    {({ input, meta, ...rest }) => (
+                                        <TextField
+                                            output
+                                            label="Width Column"
+                                            name={input.name}
+                                            value={widthColumn}
+                                            onChange={(value) => {
+                                                input.onChange(value)
+                                                setWidthColumn(value)
+                                            }}
+                                        />
+                                    )}
+                                    </Field>
+                                </div>
+                                ) : (null)}
+
+                                <div style={{ marginTop: 10 }}>
+                                    <Field name={`max-width`}>
+                                        {({ input, meta, ...rest }) => (
+                                        
+                                            <RangeSlider
+                                                output
+                                                label="Max width"
+                                                step={1}
+                                                value={maxWidth}
+                                                width={maxWidth}
+                                                min={0}
+                                                max={1440}
+                                                onChange={(val) => {
+                                                    setMaxWidth(val);
+                                                    input.onChange(`${maxWidth}${'px'}`)
+                                                }}
+                                                suffix={<p style={suffixStyles}>{`${maxWidth}px`}</p>}
+                                            />
+                                                
+                                        )}
+                                    </Field>
+                                </div>
+                            </>
+                            
                         ) : null}
                         
                         <div style={{marginTop:10}}>

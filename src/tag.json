@@ -1,0 +1,62 @@
+
+
+Top / Bottom: 
+
+{{ title }}          Offer title
+{{ headline }}         Offer headline
+{{ description }}        Offer description
+
+{{ offer-total.quantity }}     Quantity need to buy of all the products to get the offer
+{{ offer-total.before_price | money }}   Before price for the offer in total
+{{ offer-total.now_price | money}}   Now price for the offer in total
+
+{{ offer-total.save_in_amount | money }}  Amount saving for the offer in total
+{{ offer-total.save_in_procent }}    Procent saving for the offer in total
+
+Product in list: 
+
+{{ product.title }}        Name of product
+{{ product.image.src }}       Productimage of product
+{{ product.quantity }}        Quantity need to buy of the product to get the offer
+
+{{ product.before_price | money }}     Before price for the product
+{{ product.now_price | money}}     Offer price for the product
+
+{{ product.save_in_procent }}     Procent saving for the product 
+{{ product.save_in_amount | money }}   Amount saving for the product
+
+
+Jeppe Kjærsgaard, [3/30/2023 11:18 AM]
+And then this for the HTML part
+
+Jeppe Kjærsgaard, [3/30/2023 11:18 AM]
+{{ title }}          Offer title
+{{ headline }}          Offer headline
+{{ description }}         Offer description
+
+{%- for product in products -%} {%- endfor %-}  Loop an array of products
+{{ product.title }}        Name of product
+{{ product.image.src }}       Productimage of product
+{{ product.quantity }}        Quantity need to buy of the product to get the offer
+
+{{ product.before_price | money }}     Before price for the product
+{{ product.now_price | money}}     Offer price for the product
+
+{{ product.save_in_procent }}     Procent saving for the product 
+{{ product.save_in_amount | money }}   Amount saving for the product 
+
+{{ offer-total.quantity }}      Quantity need to buy of all the products to get the offer
+{{ offer-total.before_price | money }}   Before price for the offer in total
+{{ offer-total.now_price | money}}    Now price for the offer in total
+
+{{ offer-total.save_in_amount | money }}  Amount saving for the offer in total
+{{ offer-total.save_in_procent }}    Procent saving for the offer in total
+
+{{addToCart |  "Add {{ offer-total.quantity }} to cart and save {{ offer-total.save_in_procent }}" }}
+
+---
+
+{{10000 | money}}         Convert number to price format
+{% assign filename = "index.html" %}{{ "website.com" | append: filename }}  assign variable and append
+{{addToCart | "Label" | translate}}    Translate text ( use quote " between Label)
+

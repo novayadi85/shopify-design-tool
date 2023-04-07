@@ -91,7 +91,8 @@ engine.registerFilter('translateLang', async (v, ...args) => {
 })
 
 engine.registerFilter('translate', async (v, ...args) => {
-	let params = engine?.params ? engine.params : {};
+  let params = engine?.params ? engine.params : {};
+  console.log('')
 	if (args.length) {
 		args.forEach(arg => {
 			params[arg[0]] = arg[1];
@@ -107,6 +108,7 @@ engine.registerFilter('translate', async (v, ...args) => {
 })
 
 engine.registerFilter('quantity', (initial, arg1) => {
+  //console.log('arg1', arg1)
   var a = initial.replace("$quantity", `${arg1}`);
   return a;
 })
@@ -119,6 +121,8 @@ engine.registerFilter('save', (initial, arg1) => {
 
 engine.registerFilter('label', (initial, arg1, arg2, arg3) => {
   //let params = liquidEngine?.params ? liquidEngine.params : {};
+  console.log('ARGS', [initial, arg1, arg2, arg3])
+  
   let html = stringToHTML(initial);
   if (html.querySelector('span.label')) {
       html.querySelector('span.label').innerHTML = arg1;

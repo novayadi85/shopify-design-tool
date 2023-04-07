@@ -9,7 +9,7 @@ import { Main, Section, Block } from "@styles/Main";
 import { iframeStyle } from '@styles/Iframe';
 import { toCSS } from 'cssjson';
 import { ReactLiquid, liquidEngine  } from 'react-liquid'
-import { discounts, toFixedNumber } from "@helper/price";
+import { calculate, toFixedNumber } from "@helper/price";
 import { parseJSON } from "@helper/json";
 import { decodeHTML } from "@helper/html";
 import { serviceUrl } from "@helper/url";
@@ -150,7 +150,7 @@ const SimpleContent = (props) => {
                             let _product = await simulateFetchData(tierProduct.id);
                         
                             _product.price = Number(_product.variants[0].price) * 100
-                            let prices = await (discounts({
+                            let prices = await (calculate({
                                 quantity: tierProduct.qty,
                                 specialPrice: tierProduct.specialPrice,
                                 priceType: child.value_type,
@@ -161,8 +161,8 @@ const SimpleContent = (props) => {
                             _product.variantBlock = '';
                             _product.selectVariants = '';
                             _product.addToCart = '';
-                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                <div class="shopadjust_drawer-modal_product_add_toCart">
+                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                <div class="shopadjust-modal_product_add_toCart">
                                     {{product.variantBlock}}
                                     <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                 </div>
@@ -229,7 +229,7 @@ const SimpleContent = (props) => {
                         let products = [];
                         for (const [index, child] of Object.entries(_childs)) {
                             _product.price = Number(_product.variants[0].price) * 100
-                            let prices = await (discounts({
+                            let prices = await (calculate({
                                 quantity: child,
                                 specialPrice: discount,
                                 priceType: template.value_type,
@@ -240,8 +240,8 @@ const SimpleContent = (props) => {
                             _product.variantBlock = '';
                             _product.selectVariants = '';
                             _product.addToCart = '';
-                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                            template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                    <div class="shopadjust-modal_product_add_toCart">
                                         {{product.variantBlock}}
                                         <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
@@ -298,7 +298,7 @@ const SimpleContent = (props) => {
                         
                         for (const [index, child] of Object.entries(extra_conditions)) {
                             if (child.quantity && child.discount) {
-                                let prices = await (discounts({
+                                let prices = await (calculate({
                                     quantity: child.quantity,
                                     specialPrice: child.discount,
                                     priceType: discount_type,
@@ -309,8 +309,8 @@ const SimpleContent = (props) => {
                                 _product.variantBlock = '';
                                 _product.selectVariants = '';
                                 _product.addToCart = '';
-                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                        <div class="shopadjust_drawer-modal_product_add_toCart">
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                        <div class="shopadjust-modal_product_add_toCart">
                                             {{product.variantBlock}}
                                             <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                         </div>
@@ -404,8 +404,8 @@ const SimpleContent = (props) => {
                                 _product.variantBlock = '';
                                 _product.selectVariants = '';
                                 _product.addToCart = '';
-                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                    <div class="shopadjust-modal_product_add_toCart">
                                         {{product.variantBlock}}
                                         <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
@@ -479,7 +479,7 @@ const SimpleContent = (props) => {
                             __products = await Promise.all(_collection_in_products.slice(0, size).map(async handle => {
                                 let _product = await simulateFetchData(handle);
                                 _product.price = Number(_product.variants[0].price) * 100;
-                                let prices = await (discounts({
+                                let prices = await (calculate({
                                     quantity: 1,
                                     specialPrice: discs,
                                     priceType: template.value_type,
@@ -495,8 +495,8 @@ const SimpleContent = (props) => {
                                 _product.variantBlock = '';
                                 _product.selectVariants = '';
                                 _product.addToCart = '';
-                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust_drawer_buttons">
-                                    <div class="shopadjust_drawer-modal_product_add_toCart">
+                                template.addToCart = await engine.parseAndRender(`<div class="shopadjust__buttons">
+                                    <div class="shopadjust-modal_product_add_toCart">
                                         {{product.variantBlock}}
                                         <a class="shopadjust-btn-add-offer-${template.group_type}"><span class="label">%label%</span></a>
                                     </div>
@@ -560,7 +560,7 @@ const SimpleContent = (props) => {
                                 let _product = await simulateFetchData(id);
                                 _product.price = _product.variants[0].price
                                 _product.price = parseFloat(_product.price) * 100;
-                                let prices = await (discounts({
+                                let prices = await (calculate({
                                     quantity: child.qty,
                                     specialPrice: child.specialPrice,
                                     priceType: template.value_type,
@@ -1089,7 +1089,7 @@ const SimpleContent = (props) => {
         )
 
         const template = ReactDOMServer.renderToStaticMarkup(element);
-        const html = `<div class="sa-global-${templateId}">${template}</div>`;
+        const html = `<div class="sa-template-${templateId}">${template}</div>`;
 
         // console.log('LIQUID', html)
         dispatch(setLiquid(html))
@@ -1209,7 +1209,7 @@ const SimpleContent = (props) => {
                 </Helmet>
 
                 
-                <div className={`sa-global-${templateId}`}>
+                <div className={`sa-template-${templateId}`}>
                     <RenderTemplate/>
                 </div>
             </Main>

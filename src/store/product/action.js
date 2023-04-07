@@ -1,4 +1,4 @@
-import { updateSidebar } from "../template/action";
+import { updateSidebar, updateTemplate } from "../template/action";
 import { replaceCSS, replaceMobileCSS } from "../style/action";
 
 export const FETCH_PRODUCTS_BEGIN   = 'FETCH_PRODUCTS_BEGIN';
@@ -71,6 +71,7 @@ export function fetchProducts(url) {
       }).then(data => {
         let sch = data?.template?.schema ?? [];
         let canAddBlock = data?.template?.canAddBlock ?? true;
+        let settings = data?.template?.setting ?? null;
         let canAddSection = data?.template?.canAddSection ?? true;
         let type = data?.template?.brickname ?? [];
         let templateId = data?.templateId ?? [];
@@ -78,9 +79,16 @@ export function fetchProducts(url) {
         let mobileStyles = data?.mobileStyles ?? [];
         let storeFormat = data?.store ?? [];
         let liquidCode = data?.template?.liquid ?? [];
+
+        localStorage.setItem('store', storeFormat ? JSON.stringify(storeFormat) : [])
+        
         
         if (sch.length >= 1) {
           dispatch(updateSidebar(sch));
+        }
+
+        if (settings) {
+          dispatch(updateTemplate(settings));
         }
 
         if (liquidCode.length > 0) {

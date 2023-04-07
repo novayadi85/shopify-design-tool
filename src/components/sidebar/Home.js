@@ -100,7 +100,7 @@ function Home() {
                 <SortableContainer props={{ id: ID}}  onSortEnd={ onSortChildEnd } useDragHandle style={{marginLeft: '10px'}}>
                     {items.map((value, index) => (
                         <>
-                            <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
+                            <SortableItem collection={ID} keyCodes={value} key={`sortableItem--item-${index}`} index={index} value={value} />
                             {(value?.side) ? <PrimaryBox><AddBlock section={ID} handle={value.ID} /></PrimaryBox> : null}
                         </>
                     ))}
@@ -118,7 +118,7 @@ function Home() {
             <div className={`collapse ${(open) ? 'visible': 'hidden'}`} style={{marginLeft: '1.2rem'}}>
                 <SortableContainer props={{ id: ID}}  onSortEnd={onSortChildEnd} useDragHandle style={{marginLeft: '10px'}}>
                     {columns.map((value, index) => (
-                        <SortableItem collection={ID} keyCodes={value} key={`item-${index}`} index={index} value={value} />
+                        <SortableItem collection={ID} keyCodes={value} key={`SortableItem---item-${index}`} index={index} value={value} />
                     ))}
                 </SortableContainer>
                 <PrimaryBox>
@@ -185,7 +185,7 @@ function Home() {
     }
 
     const SortableItem = sortableElement(({ value }) => (
-		<li className={`nav nav-sidebar has-subnav`} parent={value.ID}>
+        <li key={ `sortableElement---${value.ID}` }  className={`nav nav-sidebar has-subnav`} parent={value.ID}>
 			<ListItemWrapperContainer className={`ListItemWrapperContainer ${(value?.separator) ? '' : ''}`}>
                 {(!value?.child || value.child === false) ? (
                 <CollapseToggle value={value} className={`visible ${(value.type === 'section' && (value.child !== false)) ? 'visible' : 'hidden'} ${(value.open) ? '' : 'collapsed'}`}>
@@ -211,7 +211,7 @@ function Home() {
                                         {(value.label) ? <>{value.label}</> :  '...'}
                                     </ReactRouterLink>
                                 ) : (
-                                        (value?.side) ? (<>{value.label}</>) : (<ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/${value.type}/${value?.ID ? value.ID : value?.handle}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Products in List" : '...'}</ReactRouterLink>  )
+                                        (value?.side) ? (<>{value.label}</>) : (<ReactRouterLink title={value?.setting?.column} className="removeUnderline truncate-text" to={(value.type === 'section' ) ? `/section/${value.ID}`: `/${value.type}/${value?.ID ? value.ID : value?.handle}`}>{(value.label) ? <>{value.label}</> : (value.handle === 'offer-product') ? "Offer" : '...'}</ReactRouterLink>  )
                                     
                                 )}
 							</div>
@@ -249,11 +249,12 @@ function Home() {
                     
             ) : (
                     <>
-                        {(canAddBlock && canAddSection) ? (<ParentSection/>) : (null)}
+                        { /* (canAddBlock && canAddSection) ? (<ParentSection/>) : (null) */}
+                        <ParentSection/>
                         <SortableContainer onSortEnd={onSortEnd} useDragHandle>
                                 {Array.isArray(items) ? (
                                     items.map((value, index) => (
-                                    <SortableItem child={value.child} key={`item-${index}`} index={index} value={value} />
+                                        <SortableItem child={value.child} key={`sortableItem-item-${index}`} index={index} value={value} />
                                     ))
                                 ) : (
                                 <div>Invalid items format: expected an array.</div>

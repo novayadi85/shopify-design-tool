@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import BlockContent from './BlockContent';
 import { updateSidebar } from '@store/template/action';
-import { getBlockbyId } from '../../helper/block';
+import { deleteById, getBlockbyId } from '../../helper/block';
 
 function Block() {
     let { handle } = useParams();
@@ -34,11 +34,13 @@ function Block() {
     }, []);
 
     const handleDelete = useCallback(() => {
+        /*
         let _items = items.map(({ ...item }) => {
             item.items = item?.items ? item.items.filter(t => t.ID !== value.ID) : [];
             return item;
         })
-
+        */
+        let _items = deleteById(items, value.ID);
         dispatch(updateSidebar(_items));
         setActive(false);
         navigate('/');

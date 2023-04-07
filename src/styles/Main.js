@@ -20,7 +20,7 @@ export const Section = styled.div`
     padding: 0px;
     display: block;
     border: 1px dotted #bfbfff;
-    position: relative;
+    position: unset !important;
 
     @media (max-width: 468px) {
         width: 100% !important;

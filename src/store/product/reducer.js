@@ -44,7 +44,7 @@ import {
     	case UPDATE_LIQUID:
 			// Mark the state as "loading" so we can show a spinner or something
 			// Also, reset any errors. We're starting fresh.
-
+			// console.log('action.payload.liquid',action.payload.liquid)
 			return {
 				...state,
 				loading: false,

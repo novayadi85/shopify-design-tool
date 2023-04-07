@@ -319,3 +319,23 @@ device-preview.Mobile {
     width: 100% !important;
   }
 }
+
+.smooth-transition {
+  transition: all 2s ease;
+}
+
+
+iframe {
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+iframe.hidden {
+  opacity: 0;
+}
+
+[class^="sa-block-"] {
+  height: auto;
+  overflow: hidden;
+  display: block;
+}

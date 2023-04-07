@@ -42,10 +42,10 @@ const Editor = ({values, handle, type}) => {
             dispatch(updateStyles(`sa-${type}-${templateId}`, formData));
         }
         else if(handle === 'global') {
-            dispatch(updateStyles(`sa-global-${templateId}`, formData));
+            dispatch(updateStyles(`sa-template-${templateId}`, formData));
         }
         else if(handle === 'offer-setting') {
-            dispatch(updateStyles(`sa-global-${templateId}`, formData));
+            dispatch(updateStyles(`sa-template-${templateId}`, formData));
         }
         else {
             dispatch(updateStyles(`sa-${type}-${handle}`, formData));

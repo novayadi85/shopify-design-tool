@@ -84,7 +84,8 @@ export default function SectionSetting({props}) {
                 {() => (
                     <div className="form">
                         <AutoSave debounce={1000} save={save} />
-                        {(template_type === 'tier') ? (null): (
+                        { /*
+                        {(template_type === 'tier') ? (null) : (
                             <>
                                 <Label>Product Placement</Label>
                                 <FieldGroup style={{marginBottom: 0, marginTop: 0}}>
@@ -122,7 +123,8 @@ export default function SectionSetting({props}) {
                             </>
                         )}
                         
-                        <FieldGroup>
+                        { /*
+                         <FieldGroup>
                             <Field name={`widthColumn1`}>
                                 {({ input, meta, ...rest }) => (
                                     <TextField
@@ -139,8 +141,11 @@ export default function SectionSetting({props}) {
                                 )}
                             </Field>
                         </FieldGroup>
+                         */}
+                        
                         <FieldGroup>
-                            <Field name={`widthColumn2`}>
+                            { /**
+                             * <Field name={`widthColumn2`}>
                                     {({ input, meta, ...rest }) => (
                                         <TextField
                                             output
@@ -155,7 +160,9 @@ export default function SectionSetting({props}) {
                                         />
                                     )}
                             </Field>
+                             * */ }
                         </FieldGroup>
+                        {/** 
                         {(template_type === 'tier') ? (null) : (
                             <FieldGroup>
                                 <Field name={`separator`}>
@@ -173,7 +180,7 @@ export default function SectionSetting({props}) {
                                 </Field>
                             </FieldGroup>
                         )}
-                        
+                         */}
                     </div>
                 )}
     

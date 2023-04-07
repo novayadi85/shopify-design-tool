@@ -52,7 +52,7 @@ export default function AddBlock({ handle = null, section = null}) {
         
     }, [])
 
-    console.log('state', state)
+   // console.log('state', state)
 
     return (
         <div className="add-block">

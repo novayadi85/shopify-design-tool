@@ -53,6 +53,8 @@ const Iframe = (params) => {
     const [state, setState] = useState(states);
     const [context, setContext] = useContext(ThemeContent);
     const [loading, setLoading] = useState(true);
+	const [prevStateData, setPrevOfferData] = useState(null);
+	
     const [attributes, setAttributes] = useState({
         src: "/builder/content/",
         width: "100%",
@@ -62,44 +64,50 @@ const Iframe = (params) => {
 
     // parent received a message from iframe
     const onReceiveMessage = (event) => {
-		const { data } = event;
-		// console.log(data)
-        /*try {
-            const html = JSON.parse(data);
+      const { data } = event;
+		  console.log('loading', 'onReceiveMessage')
+        try {
+			const html = JSON.parse(data);
+			console.log('LIQUID', html)
             if (Array.isArray(html)) {
               const link = html[0].link;
               navigate(link)
             }
-            dispatch(setLiquid(html))
+            else dispatch(setLiquid(html))
+          
         } catch (error) {
 
-        }
-		*/
-        // console.log("onReceiveMessage", JSON.parse(data));
+		}
+		
     };
  
     // iframe has loaded
     const onReady = () => {
-        //console.log("onReady");
-      setLoading(false);
-      if(context.ready !== true) setContext({ready: true})
+        console.log("onReady");
+      	setLoading(false);
+      	if(context.ready !== true) setContext({ready: true})
     };
 
-    useEffect(() => {
-        setState(states);
-        const { products: { page } } = states;
-        setAttributes({
-            ...attributes,
-            ...{
-                src: `/builder/content/${page}`
-            }
-        })
-      
-      // console.log('SECTIONS', sections)
+	useEffect(() => {
+		setState(states);
+		const { products: { page } } = states;
+	
+		setAttributes({
+			...attributes,
+			...{
+				src: `/builder/content/${page}`
+			}
+		})
+	
+		if (prevStateData != null && JSON.stringify(prevStateData) !== JSON.stringify(states)) {
+			
+		}
+
+		setPrevOfferData(states)
+		
+		console.log("states changed!");
 
 	}, [states])
-	
-	
  
     return (
         <div className="device-preview">

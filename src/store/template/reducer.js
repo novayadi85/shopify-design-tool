@@ -11,25 +11,16 @@ const _items = [
         handle: 'offer-top',
         ID: uuid(),
         url: '/#',
-        label: 'List top',
+        label: 'Top',
         icon: SectionMajor,
         type: 'section',
         items: []
     },
     {
-        ID: uuid(),
-        handle: 'offer-bottom',
-        url: '/#',
-        label: 'List Bottom',
-        separator: true,
-        icon: SectionMajor,
-        type: 'section',
-    }, 
-    {
         ID: 'sa-product-block-offer',
         handle: 'offer-product',
         url: '/#',
-        label: 'Products in list',
+        label: 'Offer',
         icon: ProductsMajor,
         type: 'section',
         /*
@@ -46,7 +37,17 @@ const _items = [
             }
         ]
         */
-    }
+    },
+    {
+        ID: uuid(),
+        handle: 'offer-bottom',
+        url: '/#',
+        label: 'Bottom',
+        separator: true,
+        icon: SectionMajor,
+        type: 'section',
+    }, 
+    
 ];
 
 
@@ -104,6 +105,12 @@ const updateItemById = (obj, itemId, payload) => {
     const { headline } = setting;
 
     for (let item of obj.items) {
+        if (block.type === 'section' && item.ID === itemId) {
+            item.setting = setting;
+            item = headline;
+            return obj;
+        }
+
         if (item?.columns) {
             for (let column of item.columns) {
                 for (let subItem of column.items) {
@@ -157,7 +164,7 @@ const addItemToArray = (obj, itemId, subItemId, newItemsArray) => {
 
 const templateReducer = (state = initialState, action) => {
     const { type } = action
-
+    //if(action?.payload?.setting) console.log(action?.payload?.setting)
     switch (type) {
         case 'UPDATE_TEMPLATE':
             return {
@@ -165,6 +172,14 @@ const templateReducer = (state = initialState, action) => {
                 loading: false,
                 error: null,
                 items: action.payload.items
+            };
+        
+        case 'EDIT_TEMPLATE':
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                setting: action.payload.setting
             };
 
         case 'ADD_TEMPLATE':

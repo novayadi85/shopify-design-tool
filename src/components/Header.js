@@ -73,6 +73,7 @@ function Header() {
     const states = useSelector(state => state);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [submited, setSubmited] = useState(false);
     const [active, setActive] = useState(false);
     const [hasOffer, setHasOffer] = useState(false);
     const toggleActive = useCallback(() => setActive((active) => !active), []);
@@ -229,6 +230,11 @@ function Header() {
             } catch (error) {
                 
             }
+
+            //console.log('states?.products?.liquid', states?.products?.liquid)
+            //console.log('states?.', states)
+
+            setSubmited(true)
              
             const rawResponse = await fetch(url, {
                 method: 'OPTIONS',
@@ -248,11 +254,13 @@ function Header() {
             }).then((res) => {
                // console.log('res', res)
                 toggleActive();
+                setSubmited(false)
             })
             .catch(err => {
                 //console.log(err)
                 // alert('We have CORS problem, I\'d like to back later!')
                 toggleActive();
+                setSubmited(false)
             })
 
             const content = await rawResponse.json();
@@ -377,7 +385,8 @@ function Header() {
                             <TopBarContent style={{paddingTop: '7px'}}>
                                 <ButtonGroup>
                                     <Device />
-                                    {(!alert) ? (<Button onClick={handleSubmit} primary>Save</Button>) : (null)}
+
+                                    {(!alert) ? (<Button loading={ submited ?? false }  onClick={handleSubmit} primary>Save</Button>) : (null)}
                                     
                                 </ButtonGroup>
                             </TopBarContent>

@@ -117,3 +117,135 @@ export const dropdownHTML = `{% assign hidden = '' %}
         </div>
     </div>
 {% endif %}`
+
+
+export function removeEmptyElements(htmlString) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    const elementsToRemove = [];
+    const elements = doc.querySelectorAll("*");
+    elements.forEach((el) => {
+      if (!el.hasChildNodes() && !el.textContent.trim()) {
+        elementsToRemove.push(el);
+      }
+    });
+    elementsToRemove.forEach((el) => el.remove());
+
+    return doc.body.innerHTML;
+}
+
+
+export  const getCssString = (string) => {
+    let newObject = {};
+    let skip = ['background-type', 'box-shadow-x', 'box-shadow-y', 'box-shadow-blur', 'box-shadow-width', 'box-shadow-color', 'border-type', 'background-opacity'];
+    if (string) {
+        
+        let shadow = '{box-shadow-x} {box-shadow-y} {box-shadow-blur} {box-shadow-width} {box-shadow-color}';
+        let replaceShadow = false;
+        Object.keys(string).forEach(key => {
+            if (!skip.includes(key)) {
+                newObject[key] = string[key];
+            }
+            if (['box-shadow-x', 'box-shadow-y','box-shadow-blur', 'box-shadow-width', 'box-shadow-color'].includes(key)) {
+                shadow = shadow.replace(`{${key}}`, string[key])
+                replaceShadow = true;
+            }
+
+            if ('border-type' === key) {
+                switch (string[key]) {
+                    case 'left':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    case 'bottom':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    
+                    case 'right':
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    
+                    case 'top':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        break;
+                    case 'none':
+                        newObject['border-right'] = 'none !important';
+                        newObject['border-left'] = 'none !important';
+                        newObject['border-bottom'] = 'none !important';
+                        newObject['border-top'] = 'none !important';
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if ('background-type' === key && string[key] === 'none') {
+                newObject['background-color'] = 'none !important';
+                newObject['background'] = 'none !important';
+            }
+
+        });
+
+        if(replaceShadow)
+        newObject['box-shadow'] = shadow;
+
+    }
+
+    return newObject;
+}
+
+
+export  const cssCustoms = (string) => {
+    return `.row {
+        width: 100%;
+        display: flex;
+        gap: 2px;
+        margin: 5px 0;
+        position: relative;
+    }
+
+    .col-md-12 {
+        width: 100%;
+        position: relative;
+    }
+
+    .col-md-6 {
+        width: 50%;
+        position: relative;
+    }
+
+    .sa-section-sa-product-block-offer.flex {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .sa-section-sa-product-block-offer aside {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .sa-section-sa-product-block-offer aside img{
+        max-height: 190px;
+        margin: 20px;
+    }
+    .flex-box img{
+        width: 100%;
+        height: auto;
+    }
+    `
+}
+
+export const htmlDecodeParser = (input) => {
+    const doc = new DOMParser().parseFromString(input, "text/html");
+    // return doc.documentElement.innerHTML;
+
+    return doc.body.innerHTML;
+}

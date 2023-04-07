@@ -1,4 +1,5 @@
 export const UPDATE_TEMPLATE   = 'UPDATE_TEMPLATE';
+export const EDIT_TEMPLATE   = 'EDIT_TEMPLATE';
 export const GET_TEMPLATE   = 'GET_TEMPLATE';
 export const ADD_TEMPLATE   = 'ADD_TEMPLATE';
 export const ADD_BLOCK = 'ADD_BLOCK';
@@ -10,9 +11,15 @@ export const update = items => ({
   payload: { items }
 });
 
+
 export const add = items => ({
   type: ADD_TEMPLATE,
   payload: { items }
+});
+
+export const _updateTemplate = setting => ({
+  type: EDIT_TEMPLATE,
+  payload: { setting }
 });
 
 export const addBlock = (section, items, handle) => ({
@@ -32,6 +39,12 @@ export const get =  () => ({
 export function updateSidebar(items) {
   return dispatch => {
     dispatch(update(items));
+  };
+}
+
+export function updateTemplate(setting) {
+  return dispatch => {
+    dispatch(_updateTemplate(setting));
   };
 }
 

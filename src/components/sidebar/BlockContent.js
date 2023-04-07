@@ -7,6 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ResourceIcon from '@icons/Resource';
 import BlockCss from './BlockCss';
 import { FieldGroup } from '../../styles/Sidebar';
+import { findTopParent } from '../../helper/block';
 
 function BlockContent(props) {
     const { value: prop } = props;
@@ -21,7 +22,7 @@ function BlockContent(props) {
     const [active, setActive] = useState(false);
     const [status, setStatus] = useState(false);
 
-    const { products }  = useSelector(state => state);
+    const { products, template }  = useSelector(state => state);
     const [template_type, setTemplateType] = useState(null)
     
     const handleChange = useCallback(() => setActive(!active), [active]);
@@ -113,6 +114,58 @@ function BlockContent(props) {
         let codes = [];
         let used = [];
         let whiteList = [
+            'title',
+            'headline',
+            'description',
+            'offerTotal',
+            'addToCart',
+            'products',
+            'product',
+            'image',
+            'quantity',
+            'before_price',
+            'now_price',
+            'save_in_procent',
+            'save_in_amount',
+            'before_price',
+        ]; 
+
+        const whileLists = {
+            top: [
+                'title',
+                'headline',
+                'description',
+                'offerTotal',
+            ],
+            offer: [
+                'products',
+                'product',
+            ],
+            bottom: [
+                'title',
+                'headline',
+                'description',
+                'offerTotal',
+            ]
+        }
+
+        const parent = findTopParent(template?.items, value.ID);
+        // console.log('VALUE', parent)
+
+        if (parent?.handle === 'offer-product') {
+            whiteList = whileLists.offer;
+        }
+
+        if (parent?.handle === 'offer-top') {
+            whiteList = whileLists.top;
+        }
+
+        if (parent?.handle === 'offer-bottom') {
+            whiteList = whileLists.bottom;
+        }
+
+        /*
+        let _whiteList = [
             "addToCart",
             "headline",
             "description",
@@ -150,9 +203,13 @@ function BlockContent(props) {
             "textButton",
             "link",
         ];
+        */
+        
+        console.log('localStorage.params', localStorage.getItem('params'))
 
         if (localStorage.getItem('params')) {
             const items = JSON.parse(localStorage.getItem('params'));
+            // console.log('ITEMS', items)
             for (const property in items) {
                 if (whiteList.includes(property) && property !== 'quantity') {
                     if (!used.includes(`${property}`)) {
@@ -165,6 +222,8 @@ function BlockContent(props) {
                         })
                     }
                 }
+
+                //console.log('codes', codes)
 
                 if (property === 'products') {
                     const products = items[property]
@@ -196,7 +255,7 @@ function BlockContent(props) {
             } 
 
             
-            if (value.handle === "block-button") {
+            if (value?.handle === "block-button") {
                 codes = [];
                 used = [];
                 for (const property in items) {
@@ -227,12 +286,52 @@ function BlockContent(props) {
             }
         }
 
+        
 
-        const _initiallySortedRows = codes.map(co => {
-            //let delimeter = '{{}}';
+        const _codes = codes.filter(cd => parent?.handle !== 'offer-product' && cd.key.includes('product') ? false: true)
+        
+        if (parent?.handle === 'offer-product') {
+            [
+                'product.title',
+                'product.image.src',
+                'product.quantity',
+                'product.before_price',
+                'product.now_price',
+                'product.save_in_procent',
+                'product.save_in_amount',
+                //'product.addToCart'
+            ].forEach(item => {
+                _codes.push({
+                    key: `${item}`,
+                    type: 'string'
+                })
+
+                used.push(`${item}`)
+            })
+        }
+        else {
+            [
+                'offerTotal.quantity',
+                'offerTotal.before_price',
+                'offerTotal.now_price',
+                'offerTotal.save_in_amount',
+                'offerTotal.save_in_procent',
+                //'addToCart'
+            ].forEach(item => {
+                _codes.push({
+                    key: `${item}`,
+                    type: 'string'
+                })
+
+                used.push(`${item}`)
+            })
+        }
+
+        const _initiallySortedRows = _codes.map(co => {
+
             let example = (co.type === 'object') ? `{{${co.key}[0].fieldName}}` : `{{${co.key}}}`;
             
-            if (value.handle === "block-button") {
+            if (value?.handle === "block-button") {
                 example = (co.type === 'object') ? `[${co.key}[0].fieldName]` : `[${co.key}]`;
 
                 if (co.type === 'object' && co.key.includes('images')) {
@@ -337,7 +436,7 @@ function BlockContent(props) {
                 </FormLayout>
             ) : (
                     <FormLayout>
-                        {(value.handle === "block-button") ? (
+                        {(value?.handle === "block-button") ? (
                             <>
                                 <div style={{marginBottom: 10}}>
                                     <TextField labelAction={{ content: <LineCSSAction /> }} multiline={4} label="Text 1" showCharacterCount={true} onChange={handleContentChange} value={content} autoComplete="off" />
@@ -347,6 +446,7 @@ function BlockContent(props) {
                                     <TextField labelAction={{ content: <LineCSSAction /> }} multiline={4} label="Text 2" showCharacterCount={true} onChange={handleContentChange2} value={content2} autoComplete="off" />
                                 </div>
 
+                                {/*]
                                 <FieldGroup style={{display: `${template_type === 'bannerText' || template_type === 'badge' || template_type === 'ads'  ? 'none': 'block'}`}}>
                                     <Label>Column</Label>
                                     <FieldGroup style={{margin:0}}>
@@ -384,6 +484,8 @@ function BlockContent(props) {
                                         />
                                     </FieldGroup> 
                                 </FieldGroup>  
+                                */
+                                }
                             </>
                             
                         ) : (
@@ -391,7 +493,9 @@ function BlockContent(props) {
                                     <div style={{display: `${template_type === 'bannerText' ? 'none': 'block'}`}}>
                                         <TextField labelAction={{ content: <CodeAction/> }} multiline={4} label="Text" showCharacterCount={true}  focused={focused} onChange={handleContentChange} value={content} autoComplete="off" />
                                     </div>
-                                    <FieldGroup style={{ display: `${template_type === 'bannerText' || template_type === 'badge' || template_type === 'ads' ? 'none' : 'block'}` }}>
+                                    
+                                    { /** 
+                                     * <FieldGroup style={{ display: `${template_type === 'bannerText' || template_type === 'badge' || template_type === 'ads' ? 'none' : 'block'}` }}>
                                         <Label>Column</Label>
                                         <FieldGroup style={{margin:0}}>
                                             <RadioButton
@@ -427,7 +531,9 @@ function BlockContent(props) {
                                                 }}
                                             />
                                         </FieldGroup> 
-                                    </FieldGroup>    
+                                    </FieldGroup>  
+                                     */}                                    
+                                      
                                 </>
                             
                         )}

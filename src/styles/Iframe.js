@@ -281,6 +281,13 @@ export const iframeStyle = `
         width: 100%;
     }
 
+    [class^="shopadjust-btn-add-offer-"]{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
 `
 
 export const SaButton = styled.button``;
