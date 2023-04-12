@@ -883,7 +883,7 @@ const NewContent = (props) => {
             let content2HTML = content2 ? (`<span>${content2}</span>`) : ''
             return <>
                 <span className={`sa-block-${ID}`} { ...(liquid ? {} : { 'data-click': `/block/${ID}` }) }>
-                { parentItem?.handle != 'offer-product' ?  `{{addToCart | label: "${contentHTML + ' ' + content2HTML}"}}` :  `{{product.addToCart | label: "${contentHTML + content2HTML}", product, offerTotal}}` }
+                { parentItem?.handle != 'offer-product' ?  `{{addToCart | label: "${contentHTML + '<br>' + content2HTML}"}}` :  `{{product.addToCart | label: "${contentHTML + '<br>' + content2HTML}", product, offerTotal}}` }
                 </span>
             </>
         }
@@ -893,7 +893,7 @@ const NewContent = (props) => {
 
                 return <>
                     <span className={`sa-block-${ID}`} { ...(liquid ? {} : { 'data-click': `/block/${ID}` }) }>
-                        {`{{addToCart | label: "${contentHTML + content2HTML}", offerTotal}}`}
+                        {`{{addToCart | label: "${contentHTML + '<br>' + content2HTML}", offerTotal}}`}
                     </span>
                 </>
             
@@ -1068,6 +1068,7 @@ const NewContent = (props) => {
         })
 
         liquidEngine.registerFilter('link_to', (initial, args) => {
+            console.log('ARGS', args)
             return `<a href='${args}' title="${initial}">${initial}</a>`
         })
 

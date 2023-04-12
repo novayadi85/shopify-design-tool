@@ -126,6 +126,11 @@ function Text({initialValues}) {
 							{({ input, meta, ...rest }) => (
 								<ButtonGroup className={'test'} style={{ marginTop: 10, marginBottom: 10 }} segmented label={'text transform'}>
 									<Button onClick={() => {
+										handleTransformChange('none')
+										input.onChange('none')
+									}} size="slim" pressed={(transform === 'none') ? true : false}>none</Button>
+									
+									<Button onClick={() => {
 										handleTransformChange('uppercase')
 										input.onChange('uppercase')
 									}} size="slim" pressed={(transform === 'uppercase') ? true : false}>UPERCASE</Button>

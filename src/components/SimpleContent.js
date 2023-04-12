@@ -273,6 +273,7 @@ const SimpleContent = (props) => {
         })
 
         liquidEngine.registerFilter('link_to', (initial, args) => {
+            console.log('ARGS', args)
             return `<a href='${args}' title="${initial}">${initial}</a>`
         })
 
