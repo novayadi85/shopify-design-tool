@@ -18,7 +18,7 @@ import { serviceUrl } from "@helper/url";
 import { setLiquid } from "@store/product/action";
 import { formatMoney } from "@helper/price";
 import engine from "../helper/template";
-import { cssCustoms, dropdownHTML, getCssString, htmlDecode, htmlDecodeParser, removeEmptyElements, stringToHTML } from "../helper/html";
+import { cssCustoms, dropdownHTML, getCssString, htmlDecode, htmlDecodeParser, removeEmptyElements, replaceBrace, stringToHTML } from "../helper/html";
 import { findTopParent } from "../helper/block";
 import { updateStyles } from "../store/style/action";
 import { updateTemplate } from "../store/template/action";
@@ -873,12 +873,21 @@ const NewContent = (props) => {
 
     const renderBlockLIQUID = (item, templateId, parent = null, liquid = true) => {
         const { setting = {}, ID, label, handle} = item;
-        const content = setting.content || label;
-        const content2 = setting.content2 || null;
+        let content = setting.content || label;
+        let content2 = setting.content2 || null;
+
+        //content = engine.parseAndRenderSync(content, [])
+        //content2 = engine.parseAndRenderSync(content2, [])
 
         const parentItem = findTopParent(_items.template?.items, ID);
         //console.log('parentItem', parentItem)
         if (handle === 'block-button' && parentItem?.handle === 'offer-product') {
+            content = replaceBrace(content)
+            content2 = replaceBrace(content2)
+
+            console.log('CONTENT', content)
+            console.log('CONTENT 2', content2)
+            
             let contentHTML = (`<span>${content}</span>`)
             let content2HTML = content2 ? (`<span>${content2}</span>`) : ''
             return <>
@@ -888,6 +897,12 @@ const NewContent = (props) => {
             </>
         }
         else if (handle === 'block-button' && parentItem?.handle != 'offer-product') {
+                content = replaceBrace(content)
+                content2 = replaceBrace(content2)
+
+                console.log('CONTENT', content)
+                console.log('CONTENT 2', content2)
+
                 let contentHTML = (`<span>${content}</span>`)
                 let content2HTML = content2 ? (`<span>${content2}</span>`) : ''
 
@@ -938,18 +953,18 @@ const NewContent = (props) => {
             section.columns.map(column => {
                 // console.log('COLUMN', column)
                 return (
-                    <div className="row">
+                    <div className="row---offer">
                         {(column.column == 1) ? (
-                            <div className="col-md-12">
+                            <div className="col-md-12---offer">
                                 <Blocks contents={column.items}/>
                             </div>
                         ) : (
                                 <>
-                                 <div className="col-md-6">
+                                 <div className="col-md-6---offer">
                                     <Blocks contents={column.items} side={ 'left-side' } />
                                 </div>
     
-                                <div className="col-md-6">
+                                <div className="col-md-6---offer">
                                     <Blocks contents={column.items} side={ 'right-side' }/>               
                                 </div>
                                 </>    

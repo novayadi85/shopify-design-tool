@@ -203,7 +203,7 @@ export  const getCssString = (string) => {
 
 
 export  const cssCustoms = (string) => {
-    return `.row {
+    return `.row---offer {
         width: 100%;
         display: flex;
         gap: 2px;
@@ -211,12 +211,12 @@ export  const cssCustoms = (string) => {
         position: relative;
     }
 
-    .col-md-12 {
+    .col-md-12---offer {
         width: 100%;
         position: relative;
     }
 
-    .col-md-6 {
+    .col-md-6---offer {
         width: 50%;
         position: relative;
     }
@@ -249,3 +249,21 @@ export const htmlDecodeParser = (input) => {
 
     return doc.body.innerHTML;
 }
+
+
+export const replaceBrace = (input) => {
+    if (!input) return input;
+
+    const prefix = '$';
+
+    // Define a regular expression pattern with placeholders to match
+    const pattern = /\{\{([\w\s]+)\}\}/g;
+    
+    // Replace the placeholders with the prefix
+    const outputText = input.replace(pattern, (match, placeholder) => {
+        return prefix + placeholder.trim();
+    });
+    
+    return outputText;
+}
+
